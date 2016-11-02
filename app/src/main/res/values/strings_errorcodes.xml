@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="code_noprovider_initial">NLP1</string>
+    <string name="code_noprovider_update">NLP2</string>
+    <string name="code_oldlocationnull">OLN</string>
+</resources>

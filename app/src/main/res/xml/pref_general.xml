@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="preference_notify"
+        android:summary="@string/prefs_notif_desc"
+        android:title="@string/prefs_notif" android:enabled="true"/>
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+    <!--
+         NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it.
+    -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference android:key="refresh_time" android:title="@string/prefs_refresh" android:summary="@string/prefs_refresh_desc" android:entryValues="@array/prefs_notif_values" android:entries="@array/prefs_notif_entries" android:enabled="true"/>
+    <ListPreference android:key="notif_priority" android:title="@string/prefs_notif_priority" android:summary="@string/prefs_notif_priority_desc" android:entryValues="@array/prefs_notif_priority_values" android:entries="@array/prefs_notif_priority_entries" android:enabled="true"/>
+	<ListPreference android:key="gps_wait" android:title="@string/prefs_gpswait" android:summary="@string/prefs_gpswait_desc" android:entryValues="@array/prefs_gps_wait_values" android:entries="@array/prefs_gps_wait_entries" android:enabled="true"/>
+</PreferenceScreen>

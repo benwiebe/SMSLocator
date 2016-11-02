@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <ToggleButton
+        android:id="@+id/toggleRestriction"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/togglePassChange" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/togglePassChange"
+        android:text="Restrict phone numbers"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Enable SMSLocator"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ToggleButton
+        android:id="@+id/enableSMS"
+        android:layout_width="100dp"
+        android:layout_height="90dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="37dp" />
+
+    <Button
+        android:id="@+id/gotoSetPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/enableSMS"
+        android:layout_alignBottom="@+id/enableSMS"
+        android:layout_toRightOf="@+id/textView2"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text="Set Keyword" />
+
+    <Button
+        android:id="@+id/gotoRestrictNumbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/main_button"
+        android:text="Set Phone Numbers" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/enableSMS"
+        android:text="Change password over SMS"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ToggleButton
+        android:id="@+id/togglePassChange"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView3" />
+
+</RelativeLayout>

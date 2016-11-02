@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ls_enable">Activer SMSLocator</string>
+    <string name="ls_setkey">Régler Mot-clé</string>
+    <string name="ls_restrict">Limiter les Numéros</string>
+    <string name="ls_changepass">Changer le NIP de l\'appareil par SMS</string>
+    <string name="ls_setnums">Régler les Numéros</string>
+    
+    <string name="ls_rntext">Voici une liste de tous les numéros de téléphone qui sont autorisés à interagir avec SMSLocator sur votre téléphone lorsque la restriction est activé​​. Les numéros doivent utiliser le format: +12345678910</string>
+    <string name="ls_addnum">Ajouter un Numéro</string>
+    
+    <string name="ls_keyhere">Tapez votre mot-clé ici</string>
+    <string name="ls_retype">Re-tapez votre mot-clé</string>
+    <string name="ls_setmykey">Changer mon mot-clé</string>
+    
+    <string name="ls_back">EFFACER</string>
+</resources>

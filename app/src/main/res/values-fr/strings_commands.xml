@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="command_lock">verouiller</string>
+    <string name="command_reset">code</string>
+    <string name="command_reset_random">aléatoire</string>
+    <string name="command_sound">son</string>
+    <string name="command_ring">sonner</string>
+    <string name="command_alert">alerter</string>
+    <string name="command_cancel">annuler</string>
+    <string name="command_lost">perdu</string>
+</resources>

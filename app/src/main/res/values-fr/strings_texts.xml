@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SMS error replies -->
+    <string name="sms_notauthed">Votre numéro n\'est pas approuvé pour utiliser SMSLocator sur cet appareil.</string>
+    <string name="sms_pinerror">Erreur en vérifiant NIP!</string>
+    <string name="sms_badpin">Incorrecte ou manquante NIP!</string>
+    <string name="sms_invalidcommand">Commande non-valide.</string>
+    <string name="sms_noprovider">Cet appareil n\'a pas de fournisseur d\'emplacement disponible, comme GPS et les emplacements de réseau ne sont pas disponibles!</string>
+    <string name="sms_nopasschange">Changement de mot de passe est désactivé sur ce téléphone. Activez-le dans l\'application de SMSLocator sur le téléphone pour utiliser ce commande.</string>
+    <string name="sms_nopremium">Cet appareil n\'a pas le version deluxe, qui permet cette commande. Pour obtenir les fonctions deluxe, achète-le dans l\'application.</string>
+    <string name="sms_movementalert">[SMSLocator] L\'appareil a été dépacé plus de 50 mètres de son emplacement originale. Les nouveau coordonnés seront envoyés.</string>
+    
+    <!-- SMS generic replies -->
+    <string name="sms_locked">Téléphone verrouillé!</string>
+    <string name="sms_audio">Audio activé. Utilisez [mot-clé] [NIP] sonner pour entendre un bruit</string>
+    <string name="sms_ringing">La téléphone sonne.</string>
+    <string name="sms_alert">Vous allez maintenant recevoir une alerte lorsque l\'appareil se déplace de plus de 50 mètres de son emplacement précédent.</string>
+    <string name="sms_noalert">Vous ne recevrez plus les alertes de mouvement.</string>
+    <string name="sms_nullloc">Un erreur s\'est produit lors de trouver l\'emplacement de votre appareil!</string>
+    <string name="sms_lostOn">Appareil est maintenant dans le mode perdu. L\'emplacement et le niveau de la batterie seront envoyés à ce numéro.</string>
+    <string name="sms_lostOff">Appareil n\'est plus dans le mode perdu.</string>
+    
+    <!-- SMS reply templates -->
+    <string name="smstemp_passchange">Mot de passe changé à </string>
+    <string name="smstemp_pos1">Dernier position de téléphone connu:</string>
+    <string name="smstemp_lat">\nLatitude:\u0020</string>
+    <string name="smstemp_lon">\nLongitude:\u0020</string>
+    <string name="smstemp_acc">\Précision:\u0020</string>
+    <string name="smstemp_gml">Lien à Google Maps:\u0020</string>
+    <string name="smstemp_notacc">\nCet position n\'a PAS été récupérée en utilisant le GPS!</string>
+    <string name="smstemp_moved">Appareil déplacé plus de 50 mètres. Nouvel emplacement:</string>
+    <string name="smstemp_lowbat">[SMSLocator] La charge de la batterie est faible! Pourcentage:\u0020</string>
+    
+    <!-- Error Code Suffix -->
+    <string name="sms_errorcode">Code de l\'erreur:\u0020</string>
+</resources>

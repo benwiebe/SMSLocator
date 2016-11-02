@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+   	 	xmlns:app="http://schemas.android.com/apk/res-auto"
+    	xmlns:tools="http://schemas.android.com/tools"
+   	 	tools:context="com.t3kbau5.smslocator.MainActivity">
+
+    <item
+        android:id="@+id/menu_help"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:title="@string/title_activity_app_help"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@android:drawable/ic_menu_help"/>
+    
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_settings"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/ic_action_settings"/>
+    
+    <item android:id="@+id/menu_unlock"
+        android:title="@string/action_unlock"
+        android:visible="true"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_accounts" android:orderInCategory="100"></item>
+    <item android:id="@+id/menu_interactions" android:title="Interactions" app:showAsAction="never" android:checkable="false" android:visible="true" android:enabled="true" android:orderInCategory="99"></item>
+    <item android:id="@+id/menu_makeSystem" app:showAsAction="never" android:titleCondensed="Make System" android:enabled="false" android:title="Make System App" android:visible="false" android:checkable="false"></item>
+
+</menu>

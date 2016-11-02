@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="prefs_notif_entries">
+        <item >1 Minute</item>
+        <item >5 Minutes</item>
+        <item >10 Minutes</item>
+        <item >15 Minutes</item>
+        <item >30 Minutes</item>
+        <item >1 Heure</item>
+    </string-array>
+    
+    <string-array name="prefs_notif_priority_entries">
+        <item>Minimum</item>
+        <item>Bas</item>
+        <item>Normal</item>
+        <item>Élevé</item>
+        <item>Maximum</item>
+    </string-array>
+    
+    <string-array name="prefs_gps_wait_entries">
+        <item>Court</item>
+        <item >Normal</item>
+        <item>Long</item>
+        <item>Très Long</item>
+    </string-array>
+</resources>

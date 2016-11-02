@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="comment_command">Command executed: </string>
+    <string name="comment_unauthorized_restriction">Number isn\'t authorized.</string>
+    <string name="comment_incorrect_pin">Incorrect pin used.</string>
+    <string name="comment_nopremium">Attempted premium command.</string>
+    <string name="comment_invalid_command">Command doesn\'t exist:\u0020</string>
+    <string name="comment_nochange">Changing password not enabled.</string>
+    
+</resources>

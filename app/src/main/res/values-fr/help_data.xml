@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="help_topics_text">Touchez sur un sujet ci-dessous pour en savoir plus à ce sujet.</string>
+    
+    <string-array name="help_topics">
+        <!-- <item>Setup</item> -->
+        <item>NIP</item>
+        <item>Mot-clé</item>
+        <item>Commandes</item>
+        <item>Restriction des Numéros</item>
+    </string-array>
+    
+    <!-- <string name="help_setup">I need to decide what to put here.</string> -->
+    
+    <string name="help_pin">Votre NIP est une chaîne de nombres qui est utilisée pour vous identifier. Vous devez vous rappeler, comme il est nécessaire pour modifier les paramètres et pour l\'utilisation des commandes.\nVotre NIP doit être au moins 4 chiffres de longue, sans maximum.\nPour assurer que votre NIP reste sécurisé, il est seulement stockée dans un format crypté.</string>
+    
+    <string name="help_keyword">Votre mot-clé est un mot qui est utilisé pour s\'adresser à SMSLocator. C\'est le mot dont vous commencez votre message avec afin d\'instruire SMSLocator de répondre au message.\nPour s\'assurer qu\'il ne rentre dans une conversation normale, vous devriez inclure des lettres, des chiffres et des symboles dans votre mot-clé.</string>
+    
+    <string name="help_restriction">SMSLocator vous permet de limiter qui peut interagir avec lui sur votre téléphone. Vous pouvez entrer des numéros de téléphone des personnes qui vous avez confiance pour que seuls les chiffres sont autorisés. [br] [b] Il est [u] très [/u] important que vous serez en mesure d\'utiliser les appareils que les numéros appartiennent. Si vous ne serez pas en mesure de les utiliser, vous ne serez pas capable de parler à SMSLocator tant que la restriction est activé. Assurez-vous de tenir la liste à jour! [/b] [br] Les numéros de téléphone doivent inclure un + puis le code du pays (ex. 1 pour l\'Amérique du Nord). Par exemple, +12345678910</string>
+    
+    <string name="help_commands">Voici une liste de toutes les commandes que vous pouvez envoyer à SMSLocator. Les commandes marquées d\'un (*) sont uniquement disponibles avec la mise à niveau deluxe.</string>
+    
+    <string-array name="help_commands">
+        <item>[Mot-clé] [NIP]</item>
+        <item>[Mot-clé] [NIP] verouiller</item>
+        <item>[Mot-clé] [NIP] code aléatoire</item>
+        <item>[Mot-clé] [NIP] code [mot de passe]</item>
+        <item>[Mot-clé] [NIP] son</item>
+        <item>[Mot-clé] [NIP] sonner</item>
+    </string-array>
+    
+    <string-array name="help_commands_desc">
+        <item>Obtient l\'emplacement de l\'appareil</item>
+        <item>Verrouille l\'appareil (*)</item>
+        <item>Change le mot de passe de l\'appareil à un généré aléatoirement (*)</item>
+        <item>Change le mot de passe de l\'appareil à la valeur de [mot de passe] (*)</item>
+        <item>Met l\'appareil au mode sonore (*)</item>
+        <item>Fait que l\'appareil sonne (*)</item>
+    </string-array>
+</resources>

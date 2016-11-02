@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Core/Auto-generated Strings -->
+    
+    <string name="app_name">SMSLocator</string>
+    
+    <string name="placeholder">Le contenu est censé être ici. Si vous voyez ceci, s\'il vous plaît y retourner et essayer à nouveau.</string>
+    
+    <string name="menu_settings">Paramètres</string>
+    <string name="dev_admin">Administration de l\'Appareil</string>
+    <string name="title_activity_set_keyword">Choisir Mot-Clé</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="title_activity_more_settings">Autres Paramètres</string>
+    <string name="title_activity_app_help">Aide</string>
+    <string name="title_activity_help_display">Aide > </string>
+    <string name="title_activity_restrict_numbers">Limiter Numéros</string>
+    <string name="title_activity_message_info">Contenu du Message</string>
+    <string name="title_activity_interactions">Interactions</string>
+
+    <!-- Custom Strings -->
+    <string name="app_terms">En utilisant SMSLocator, vous confirmez que vous avez lu et compris ce qui suit: [br][br]SMSLocator peut envoyer des messages texte[br][br]Ces messages ne sont envoyés en qu\'en réponse à des messages qui sont adressés à SMSLocator utilisant votre mot-clé.[br][br]En raison de la nature de SMSLocator, il n\'est [i]pas [/i] possible de vérifier ces messages avant qu\'ils sont envoyés. Ils peuvent toutefois être observés après.[br][br]SMSLocator peut envoyer l\'emplacement de votre appareil dans les messages textes, lorsque l\'authentification de l\'utilisateur se produit.[br][br]SMSLocator ne stocke pas ni envoie vos informations personnelles.</string>
+    <string name="admin_details">SMSLocator nécessite les priviliges d\'administration afin de fonctionner. Avoir ces priviliges empêche la désinstallation de l\'application et permet à l\'application de verrouiller votre téléphone et changer votre NIP à votre demande.</string>
+    
+    <string name="keyword_message">Votre mot clé devrait contenir des lettres, des chiffres et des symboles. Les espaces ne sont pas permis.</string>
+    
+    <string name="action_unlock">Déverrouiller</string>
+    
+    <string name="clabel_number">Numéro</string>
+    <string name="clabel_date">Date</string>
+    <string name="clabel_command">Commande</string>
+    <string name="clabel_response">Réponse</string>
+    
+    <!-- Dialog/Button Strings -->
+    <string name="dialog_done">Terminé</string>
+    <string name="dialog_cancel">Annuler</string>
+    <string name="dialog_close">Fermer</string>
+    <string name="dialog_tryagain">Réessayer</string>
+    <string name="dialog_setpin">Choisir NIP</string>
+    <string name="dialog_terms">Conditions d\'utilisation</string>
+    <string name="dialog_agree">J\'Accepte</string>
+    <string name="dialog_donotagree">Je n\'Accepte Pas</string>
+    <string name="dialog_notice">Notice</string>
+    <string name="dialog_enterpin">Entrez NIP</string>
+    <string name="dialog_numopt">Options de numéro</string>
+    <string name="dialog_numbody">Voulez-vous enlever ou modifier le numéro\u0020</string>
+    <string name="dialog_remove">Enlève</string>
+    <string name="dialog_edit">Modifier</string>
+    <string name="dialog_editnum">Modifier Numéro</string>
+    <string name="dialog_add">Ajouter</string>
+    <string name="dialog_addnum">Ajouter Numéro</string>
+    <string name="dialog_firstrun">Bienvenue à SMSLocator! Pour commencer à utiliser l\'application, appuyez sur le bouton intitulé \"Activer SMSLocator\". Par défaut, vous ne serez pas en mesure d\'accéder à des commandes supplémentaires et des liens Google Maps ne seront pas envoyés. Pour activer ces fonctionnalités, s\'il vous plaît acheter la mise à niveau deluxe!</string>
+    <string name="dialog_welcome">Bienvenue!</string>
+    <string name="dialog_continue">Continue</string>
+    <string name="dialog_upgrade">En mettant SMSLocator au niveau premium, vous aurez l\'accès à toutes les commandes, les liens Google Maps seront envoyés avec les coordonnées de l\'appareil, et les publicités seront enlevés. Merci de soutenir l\'application et moi-même!</string>
+    <string name="dialog_premium">Deluxe</string>
+    <string name="dialog_restore">Restaurer</string>
+    <string name="dialog_finishSetupTitle">Finir l\'installation</string>
+    <string name="dialog_finishSetupMessage">Vous avez prèsque fini! La seule chose qui reste à faire est de choisir votre mot-clé. Après faire cela, vous pouvez commencer à utiliser l\'application! Pour voir les commandes que vous pouvez envoyez à SMSLocator, veuillez visiter la page de Commandes dans la section d\'Aide.</string>
+    <string name="dialog_gotoKeyword">Changer Mot-Clé</string>
+    <string name="dialog_pleaseWait">Attendez&#8230;</string>
+    <string name="dialog_interactionLoad">Chargement des interactions est en cours.</string>
+    <string name="dialog_clearInteractions">Effacer les Interactions?</string>
+    <string name="dialog_clearInteractionsMessage">Voulez-vous effacer la liste des interactions? Ceci est irrévercible.</string>
+    <string name="dialog_clear">Effacer</string>
+    <string name="dialog_adblock_title">Blockeur de Publicité</string>
+    <string name="dialog_adblock_msg">Il semble que vous utilisez une blockeur de publicité sur cet appareil. Pour utiliser SMSLocator, s\'il vous plaît désactivez-le, ou achetez deluxe. Si vous pensez que ce message est en erreur, s\'il vous plaît contactez-nous.</string>
+    <string name="dialog_purchase">Acheter</string>
+    
+    <!-- Messages -->
+    <string name="message_confirmpin">S\'il vous plaît confirmer votre NIP pour modifier ce paramètre.</string>
+    <string name="message_confirmdisable">S\'il vous plaît confirmer votre NIP pour désactiver SMSLocator.</string>
+    <string name="message_noadmin">Vous n\'avez pas d\'accordé des autorisations d\'administrateur à SMSLocator. Cela est nécessaire pour que l\'application fonctionne. S\'il vous plaît activer SMSLocator de nouveau et acceptez la demande de l\'administrateur.</string>
+    <string name="message_choosepin">S\'il vous plaît choisir un NIP. Vous devez vous rappeler de ceci afin de modifier les paramètres de SMSLocator.</string>
+    <string name="message_pinset">NIP sauvé.</string>
+    <string name="message_message">Message:\n</string>
+    <string name="message_to">À:\u0020</string>
+    <string name="message_admindisable">Révoquer les autorisations d\'administrateur va désactiver SMSLocator. Continuer?</string>
+    <string name="message_smslocatordisabled">SMSLocator a été désactivé!</string>
+    <string name="message_confirmpasschange">Entrez votre NIP pour confirmer le changement du mot-clé.</string>
+    <string name="message_passchanged">Mot-clé changé!</string>
+    <string name="message_of">de</string>
+    <string name="message_swipe">Glissez vers la gauche et la droite pour naviguer entre les messages.</string>
+    <string name="message_restored">Niveau deluxe restauré. Tous les fonctionnalités sont disponibles!</string>
+    <string name="message_interactionsCleared">Interactions effacés!</string>
+    
+    <!-- Error Messages -->
+    <string name="error_badpin">Mauvaise NIP!</string>
+    <string name="error_decoding">Erreur pendant le décodage du NIP. S\'il vous plait essayez de nouveau.</string>
+    <string name="error_pinmatch">Les codes PIN ne correspondent pas ou sont vides! S\'il vous plaît essayez de nouveau.</string>
+    <string name="error_loadinghelp">Oups! On dirait que cette information manque. S\'il vous plait retournez et essayez encore. Si ce problème persiste, s\'il vous plait envoyez-nous un courriel.</string>
+    <string name="error_keyspaces">Mot-clé contient des espaces!</string>
+    <string name="error_keymatch">Les mots-clés ne correspondent pas!</string>
+    <string name="error_keyblank">Mot-clé est vide!</string>
+    <string name="error_setpin">NIP est vide ou trop court. S\'il vous plaît essayez de nouveau.</string>
+    <string name="error_msgjson">Une erreur s\'est produite lors du chargement des données du message.</string>
+    <string name="error_premiumcheck">Une erreur s\'est produite lors de verifier le statut prime.</string>
+    <string name="error_purchase">Une erreur s\'est produite lors de l\'achat.</string>
+    <string name="error_notowned">Vous n\'avez pas acheté la version deluxe sur ce compte!</string>
+    
+    <!-- Notifications -->
+    <string name="notif_sent_title">Message envoyé</string>
+    <string name="notif_sent_body">Un message a été envoyé à\u0020</string>
+    <string name="notif_alert_title">Alertes d\'Emplacement Activés</string>
+    <string name="notif_alert_body">Alertes d\'Emplacement vont être envoyés à </string>
+    
+    <!-- Preferences -->
+    <string name="prefs_notif">Avertissez sur demande</string>
+    <string name="prefs_notif_desc">Lorsque SMS Locator envoie un message texte, un message sera placé dans la barre de notification.</string>
+    <string name="prefs_refresh">Temps avant de rafraîchir</string>
+    <string name="prefs_refresh_desc">Durée maximale qu\'un emplacement est valide.</string>
+    <string name="prefs_notif_priority">Priorité de Notification</string>
+    <string name="prefs_notif_priority_desc">Définit l\'importance des notifications. Notifications "heads-up" seront montrés quand "élevé" ou plus haut est sélectionné (Lollipop seulement)</string>
+    <string name="prefs_gpswait">Temps d\'attente pour GPS</string>
+    <string name="prefs_gpswait_desc">Définit combien de temps l\'appareil essaiera d\'obtenir un nouvel emplacement avant d\'envoyer un ancien emplacement</string>
+</resources>

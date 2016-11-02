@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string name="comment_command">Commande: </string>
+     <string name="comment_unauthorized_restriction">Numéro non-authorizé.</string>
+     <string name="comment_incorrect_pin">Mauvais NIP.</string>
+     <string name="comment_nopremium">Essayé d\'utiliser une commande deluxe.</string>
+     <string name="comment_invalid_command">Commande n\'existe pas:\u0020</string>
+     <string name="comment_nochange">Changer le mot de passe n\'est pas permis.</string>
+    
+</resources>

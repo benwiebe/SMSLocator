@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ls_enable">Enable SMSLocator</string>
+    <string name="ls_setkey">Set Keyword</string>
+    <string name="ls_restrict">Restrict phone numbers</string>
+    <string name="ls_changepass">Change device PIN over SMS</string>
+    <string name="ls_setnums">Set Phone Numbers</string>
+    
+    <string name="ls_rntext">Below is a list of all the phone numbers that are authorized to interact with SMSLocator on your phone when restriction is on. Numbers must use the format: +12345678910</string>
+    <string name="ls_addnum">Add Number</string>
+    
+    <string name="ls_keyhere">Type your keyword here</string>
+    <string name="ls_retype">Re-type your keyword</string>
+    <string name="ls_setmykey">Set My Keyword</string>
+    
+    <string name="ls_back">BACK</string>
+</resources>

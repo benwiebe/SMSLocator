@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="command_lock">lock</string>
+    <string name="command_reset">reset</string>
+    <string name="command_reset_random">random</string>
+    <string name="command_sound">sound</string>
+    <string name="command_ring">ring</string>
+    <string name="command_alert">alert</string>
+    <string name="command_cancel">cancel</string>
+    <string name="command_lost">lost</string>
+</resources>

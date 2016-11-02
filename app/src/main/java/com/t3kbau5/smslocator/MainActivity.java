@@ -1,0 +1,684 @@
+package com.t3kbau5.smslocator;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdRequest.Builder;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+
+import android.os.Bundle;
+import android.os.RemoteException;
+import android.preference.PreferenceManager;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.support.v7.app.ActionBarActivity;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
+
+public class MainActivity extends ActionBarActivity {
+
+	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
+	private SharedPreferences prefs;
+	
+	private Context _this;
+	ToggleButton enableSMS;
+	Boolean smsenabled = false;
+	Button gotoSetKeyword;
+	CompoundButton passSMS;
+	Button gotoRestriction;
+	CompoundButton toggleRestriction;
+	DevicePolicyManager DPM;
+	
+	BillingUtil bu;
+	
+	@SuppressLint("NewApi")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		_this = this;
+		
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+		bu = new BillingUtil(this, true);
+		
+		enableSMS = (ToggleButton) findViewById(R.id.enableSMS);
+		//enableSMS.setChecked(smsenabled);
+		enableSMS.setOnClickListener(new ToggleButton.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Boolean s = enableSMS.isChecked();
+				
+				if(s){
+					showTermsDialog();
+				}else{
+					final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmdisable));
+					adb.setCancelable(false);
+					adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Boolean isCorrectPin = false;
+							try {
+								isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+							} catch (NoSuchAlgorithmException e) {
+								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+								enableSMS.setChecked(true);
+								e.printStackTrace();
+								return;
+							} catch (UnsupportedEncodingException e) {
+								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+								enableSMS.setChecked(true);
+								e.printStackTrace();
+								return;
+							}
+							if(isCorrectPin){
+								ComponentName cm = new ComponentName(_this, DevAdmin.class);
+								DPM.removeActiveAdmin(cm);
+								prefs.edit().putBoolean("smsenabled", false).commit();
+								updateStates();
+							}else{
+								enableSMS.setChecked(true);
+								CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+							}
+						}
+						
+					});
+					adb.setHidden(true);
+					adb.show();
+					
+					
+				}
+				
+			}
+			
+		});
+		gotoSetKeyword = (Button) findViewById(R.id.gotoSetPass);
+		gotoSetKeyword.setEnabled(smsenabled);
+		/*if(!prefs.getString("keyPhrase", "TMWMPI").equals("TMWMPI")){
+			gotoSetKeyword.setBackgroundResource(R.drawable.complete_button);
+		}else{
+			gotoSetKeyword.setBackgroundResource(R.drawable.incomplete_button);
+		}*/ //TODO: update this
+		gotoSetKeyword.setOnClickListener(new Button.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(_this, SetKeyword.class);
+				startActivity(intent);
+			}
+		});
+		
+		passSMS = (CompoundButton) findViewById(R.id.togglePassChange);
+		passSMS.setOnClickListener(new CompoundButton.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				final Boolean isChecked = passSMS.isChecked();
+				final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
+				adb.setCancelable(false);
+				adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+						Boolean isCorrectPin = false;
+						try {
+							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+						} catch (NoSuchAlgorithmException e) {
+							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+							enableSMS.setChecked(!isChecked);
+							e.printStackTrace();
+							return;
+						} catch (UnsupportedEncodingException e) {
+							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+							enableSMS.setChecked(!isChecked);
+							e.printStackTrace();
+							return;
+						}
+						
+						if(isCorrectPin){
+							prefs.edit().putBoolean("passChange", isChecked).commit();
+						}else{
+							passSMS.setChecked(!isChecked);
+							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+							
+						}
+					}
+					
+				});
+				adb.setHidden(true);
+				adb.show();
+			}
+			
+		});
+		
+		toggleRestriction = (CompoundButton) findViewById(R.id.toggleRestriction);
+		toggleRestriction.setOnClickListener(new CompoundButton.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				final Boolean isChecked = toggleRestriction.isChecked();
+				final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
+				adb.setCancelable(false);
+				adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+						Boolean isCorrectPin = false;
+						try {
+							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+						} catch (NoSuchAlgorithmException e) {
+							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+							toggleRestriction.setChecked(!isChecked);
+							e.printStackTrace();
+							return;
+						} catch (UnsupportedEncodingException e) {
+							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+							toggleRestriction.setChecked(!isChecked);
+							e.printStackTrace();
+							return;
+						}
+						
+						if(isCorrectPin){
+							prefs.edit().putBoolean("enableRestriction", isChecked).commit();
+						}else{
+							toggleRestriction.setChecked(!isChecked);
+							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+							
+						}
+					}
+					
+				});
+				adb.setHidden(true);
+				adb.show();
+			}
+			
+		});
+		
+		gotoRestriction = (Button) findViewById(R.id.gotoRestrictNumbers);
+		gotoRestriction.setOnClickListener(new Button.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(_this, RestrictNumbers.class);
+            	startActivity(i);
+			}
+			
+		});
+		
+		if(bu.hasPremium() && bu.isConnected()) prefs.edit().putBoolean("premium", true);
+		
+		updateStates();
+		
+		if(prefs.getBoolean("firstRun", true)){
+			prefs.edit().putBoolean("firstRun", false).commit();
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setTitle(getStr(R.string.dialog_welcome));
+			adb.setMessage(getStr(R.string.dialog_firstrun));
+			adb.setPositiveButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			adb.show();
+		}
+		
+		if(!prefs.getBoolean("premium", false)){
+			showAd(); //if the user isn't premium, show an ad
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu){
+		super.onPrepareOptionsMenu(menu);
+		if(prefs.getBoolean("premium", false)) menu.findItem(R.id.menu_unlock).setVisible(false);
+		return true;
+	}
+	
+	@Override
+	public void onResume(){
+		
+		bu.bind();
+		
+		updateStates();
+		
+		super.onResume();
+	}
+	
+	@Override
+	public void onPause(){
+		bu.unbind();
+		super.onPause();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+        switch (item.getItemId()) {
+            case R.id.menu_help:
+            	intent = new Intent(this, AppHelp.class);
+            	startActivity(intent);
+                return true;
+            case R.id.menu_settings:
+            	intent = new Intent(this, MoreSettings.class);
+            	startActivity(intent);
+            	return true;
+            case R.id.menu_unlock:
+            	final Activity _act = this;
+            	
+            	AlertDialog.Builder adb = new AlertDialog.Builder(this);
+    			adb.setTitle(getStr(R.string.dialog_premium));
+    			adb.setMessage(getStr(R.string.dialog_upgrade));
+    			adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
+    				
+    				@Override
+    				public void onClick(DialogInterface dialog, int which) {
+    					dialog.dismiss();
+    					
+    					if(bu.hasPremium()){
+							prefs.edit().putBoolean("premium", true).commit();
+							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+						}else{
+    					
+	    					try {
+	    						bu.buyPremium(_act);
+	    					} catch (RemoteException e) {
+	    						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
+	    						e.printStackTrace();
+	    					} catch (SendIntentException e) {
+	    						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
+	    						e.printStackTrace();
+	    					}
+						}
+    				}
+    			});
+    			adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+    			adb.setNeutralButton(getStr(R.string.dialog_restore), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+						
+						if(bu.hasPremium()){
+							prefs.edit().putBoolean("premium", true).commit();
+							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+						}else{
+							prefs.edit().putBoolean("premium", false).commit();
+							CustomToast.makeText(getBaseContext(), getStr(R.string.error_notowned), Toast.LENGTH_LONG, 1).show();
+						}
+						
+					}
+				});
+    			adb.show();
+            	
+			
+            	return true;
+            case R.id.menu_interactions:
+            	intent = new Intent(this, Interactions.class);
+            	this.startActivity(intent);
+            	return true;
+            case R.id.menu_makeSystem:
+				try {
+					if(!Utils.canRunRootCommands()){
+						Log.e("SMSL", "Can't run root commands!");
+						return true;
+					}
+					Process sup = Runtime.getRuntime().exec("su");
+					 DataOutputStream os = new DataOutputStream(sup.getOutputStream());
+			         DataInputStream osRes = new DataInputStream(sup.getInputStream());
+			         os.writeBytes("mount -o remount,rw /system /system\n");
+			         os.flush();
+			         os.writeBytes("pm path com.t3kbau5.smslocator\n");
+		             os.flush();
+		             
+		             String path = osRes.readLine();
+		             path = path.substring(9);
+		             path = "/" + path;
+		             
+		             os.writeBytes("cp " + path + " /system/app/" + path.substring(9) + "\n");
+		             os.flush();
+		             android.os.Process.killProcess(android.os.Process.myPid());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+	
+	private void showAd(){
+		
+		if(Utils.checkAdBlock()){
+			
+			//disable the services
+			ComponentName cm = new ComponentName(_this, DevAdmin.class);
+			DPM.removeActiveAdmin(cm);
+			prefs.edit().putBoolean("smsenabled", false).commit();
+			updateStates();
+			
+			//show adblock warning dialog
+			final Activity _act = this;
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setTitle(getStr(R.string.dialog_adblock_title));
+			adb.setMessage(getStr(R.string.dialog_adblock_msg));
+			adb.setPositiveButton(getStr(R.string.dialog_purchase), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					try {
+						bu.buyPremium(_act);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
+						_act.finish();
+					} catch (SendIntentException e) {
+						e.printStackTrace();
+						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
+						_act.finish();
+					}
+				}
+			});
+			adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
+					
+				}
+			});
+			adb.show();
+			
+		}
+		
+		AdView mAdView = new AdView(this);
+		
+		mAdView.setAdSize(AdSize.SMART_BANNER);
+		mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
+
+		AdRequest adreq = new AdRequest.Builder().addTestDevice("5A657592A4887B85F24939FB23F721D4").build();
+		
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		mAdView.setLayoutParams(lp);
+		//layout.setLayoutParams(lp);
+		layout.addView(mAdView);
+		mAdView.loadAd(adreq);
+	}
+	
+	private Dialog showAdminDialog(){
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(getStr(R.string.dialog_notice));
+		adb.setMessage(getStr(R.string.message_noadmin));
+		adb.setNegativeButton(getStr(R.string.dialog_close), new OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface di, int arg1) {
+					di.dismiss();
+				}
+			   
+		});
+		adb.setPositiveButton(getStr(R.string.dialog_tryagain), new OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				requestAdmin();
+				
+			}
+			
+		});
+		return adb.show();
+	}
+	
+	private void requestAdmin(){
+		
+		if(prefs.getBoolean("admin", false)) return;
+		
+		ComponentName comp = new ComponentName(_this, DevAdmin.class);
+		
+		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, comp);
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_details);
+        startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
+	}
+	
+	private void setPin(){
+		final PinDialog adb = new PinDialog(_this, getStr(R.string.message_choosepin), getStr(R.string.dialog_setpin));
+		adb.setCancelable(false);
+		adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				final String pin1 = adb.getPin();
+				
+				if(pin1 == "" || pin1 == null || pin1.length() < 4){
+					enableSMS.setChecked(false);
+					CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
+					return;
+				}
+				
+				final PinDialog adbc = new PinDialog(_this, getStr(R.string.message_confirmpin), "Set Pin");
+				adbc.setCancelable(false);
+				adbc.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(pin1.equals(adbc.getPin()) && adbc.getPin() != ""){
+							String pin = "";
+							try {
+								pin = Utils.SHA1(adbc.getPin());
+							} catch (NoSuchAlgorithmException e) {
+								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+								enableSMS.setChecked(false);
+								updateStates();
+								e.printStackTrace();
+								return;
+							} catch (UnsupportedEncodingException e) {
+								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+								enableSMS.setChecked(false);
+								updateStates();
+								e.printStackTrace();
+								return;
+							}
+							
+							prefs.edit()
+							.putBoolean("smsenabled", true)
+							.putString("pin", pin)
+							.commit();
+							updateStates();
+							CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
+							showPostSetup();
+						}else{
+				        	enableSMS.setChecked(false);
+							CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
+							updateStates();
+						}
+						
+					}
+					
+				});
+				adbc.setHidden(true);
+				adbc.show();
+				
+			}
+			
+		});
+		adb.setHidden(true);
+		adb.show();
+		
+		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    // Check which request we're responding to
+	    if (requestCode == REQUEST_CODE_ENABLE_ADMIN) {
+	        // Make sure the request was successful
+	        if (resultCode == RESULT_OK) {
+	        	
+				prefs.edit().putBoolean("admin", true).commit();
+				setPin();
+	        }else{
+	        	enableSMS.setChecked(false);
+	        	showAdminDialog();
+	        	updateStates();
+	        }
+	    }else if(requestCode == BillingUtil.REQUEST_CODE){
+	    	int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
+	        String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+	        String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
+	          
+	        if (responseCode == RESULT_OK) {
+	           try {
+	        	  prefs.edit().putBoolean("premium", true).commit();
+	              JSONObject jo = new JSONObject(purchaseData);
+	              String sku = jo.getString("productId");
+	              //stuff
+	            }
+	            catch (JSONException e) {
+	               //stuff
+	               e.printStackTrace();
+	            }
+	        }
+
+
+	    }
+	}
+	
+	private void updateStates(){
+		Boolean current = smsenabled;
+		smsenabled = prefs.getBoolean("smsenabled", false);
+		if(current!= smsenabled){
+			enableSMS.setChecked(smsenabled);
+			
+		}
+		gotoSetKeyword.setEnabled(smsenabled);
+		/*if(!prefs.getString("keyPhrase", "TMWMPI").equals("TMWMPI")){
+			gotoSetKeyword.setBackgroundResource(R.drawable.complete_button);
+		}else{
+			gotoSetKeyword.setBackgroundResource(R.drawable.incomplete_button);
+		}*///TODO: update this
+		
+		passSMS.setChecked(prefs.getBoolean("passChange", false));
+		passSMS.setEnabled(smsenabled);
+		
+		toggleRestriction.setChecked(prefs.getBoolean("enableRestriction", false));
+		toggleRestriction.setEnabled(smsenabled);
+		
+		gotoRestriction.setEnabled(smsenabled);
+	}
+	
+	private void showTermsDialog(){
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(getStr(R.string.dialog_terms))
+			.setMessage(Utils.formatAndSpan(getStr(R.string.app_terms)))
+			.setPositiveButton(getStr(R.string.dialog_agree), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+					if(prefs.getBoolean("admin", false)){
+						setPin();
+					}else{
+						requestAdmin();
+					}
+				}
+			})
+			.setNegativeButton(getStr(R.string.dialog_donotagree), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					enableSMS.setChecked(false);
+					updateStates();
+					dialog.cancel();
+				}
+			});
+		
+		Dialog d = adb.show();
+		((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+	}
+	
+	public void showPostSetup(){
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(getStr(R.string.dialog_finishSetupTitle));
+		adb.setMessage(getStr(R.string.dialog_finishSetupMessage));
+		adb.setPositiveButton(getStr(R.string.dialog_gotoKeyword), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				Intent intent = new Intent(_this, SetKeyword.class);
+				_this.startActivity(intent);
+			}
+		});
+		adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		
+		adb.show();
+	}
+	
+	public String getStr(int id){
+    	return getResources().getString(id);
+    }
+}

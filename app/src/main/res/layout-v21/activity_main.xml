@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/gotoSetPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enableSMS"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="@string/ls_setkey" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/ls_enable"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ToggleButton
+        android:id="@+id/enableSMS"
+        android:layout_width="100dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Switch
+        android:id="@+id/togglePassChange"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/gotoRestrictNumbers" />
+
+    <Switch
+        android:id="@+id/toggleRestriction"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_alignLeft="@+id/togglePassChange"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/togglePassChange" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/togglePassChange"
+        android:text="@string/ls_restrict"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/togglePassChange"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/togglePassChange"
+        android:layout_toLeftOf="@+id/togglePassChange"
+        android:text="@string/ls_changepass"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/gotoRestrictNumbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toggleRestriction"
+        android:layout_centerHorizontal="true"
+        android:text="@string/ls_setnums" />
+
+</RelativeLayout>

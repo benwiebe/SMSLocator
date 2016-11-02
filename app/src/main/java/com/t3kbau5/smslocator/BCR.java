@@ -1,0 +1,439 @@
+package com.t3kbau5.smslocator;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.BatteryManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.telephony.SmsMessage;
+import android.text.format.Time;
+import android.util.Log;
+
+import com.t3kbau5.smslocator.Utils;
+
+public class BCR extends BroadcastReceiver{
+	
+	Context context;
+	SharedPreferences prefs;
+	String keyPhrase;
+	String savedPin;
+	
+	Runnable rn;
+	
+	Boolean hasPremium = false;
+	
+	private DataHandler dh;
+	
+	public void onReceive(Context context, Intent intent) {
+		this.context = context;
+		
+		dh = new DataHandler(context, null, null, 1);
+		
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		if(!prefs.getBoolean("smsenabled", false)) return; //if we have the service disabled
+		
+		String action = intent.getAction();
+		
+		if(action.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED")){
+			
+			keyPhrase = prefs.getString("keyPhrase", "TMWMPI");
+			savedPin = prefs.getString("pin", "1234");
+			
+	        Bundle pdusBundle = intent.getExtras();
+	        Object[] pdus = (Object[]) pdusBundle.get("pdus");
+	        SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);    
+	        
+	        
+	        String msgBody = message.getMessageBody();
+	        String sender = message.getOriginatingAddress();
+	        String[] words = msgBody.split(" ");
+	        
+	        if(msgBody == null || msgBody.equals("") || msgBody.equals(null) || words.length < 1) return; //error prevention
+	        
+	        String pass = words[0];
+	        String cmd;
+	        String pin;
+	        
+	        if(pass.equals(keyPhrase)) {
+	            abortBroadcast();
+	            
+	            if(prefs.getBoolean("enableRestriction", false)){
+	            	String serialized = prefs.getString("pnumbers", "");
+	        		String[] nums = serialized.split(",");
+	        		List<String> numbers = new ArrayList<String>(Arrays.asList(nums));
+	        		Boolean isOK = false;
+	        		for(int i=0; i<numbers.size(); i++){
+	        			if(numbers.get(i).equals(sender)){
+	        				isOK = true;
+	        				break;
+	        			}
+	        		}
+	        		
+	        		if(!isOK){
+	        			addInteraction(sender, msgBody, getStr(R.string.comment_unauthorized_restriction));
+	        			//reply(getStr(R.string.sms_notauthed), sender);
+	        			return;
+	        		}
+	            }
+	            
+	            
+	            try{
+	            	cmd = words[2].toLowerCase(Locale.getDefault());
+	            }catch(ArrayIndexOutOfBoundsException e){
+	            	e.printStackTrace();
+	            	cmd = "";
+	            }
+	            
+	            try{
+	            	pin = words[1];
+	            }catch(ArrayIndexOutOfBoundsException e){
+	            	e.printStackTrace();
+	            	pin = "";
+	            }
+	            
+	            /*if(pin.equals("") || pin.equals(null)){
+	            	pin = cmd;
+	            	cmd = "";
+	            }*/
+	            
+	            Boolean isCorrectPin = false;
+				try {
+					isCorrectPin = Utils.compareToSHA1(pin, savedPin);
+				} catch (NoSuchAlgorithmException e) {
+					reply(getStr(R.string.sms_pinerror), sender);
+					addInteraction(sender, cmd, getStr(R.string.sms_pinerror));
+					e.printStackTrace();
+					return;
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					reply(getStr(R.string.sms_pinerror), sender);
+					return;
+				}
+	            
+				if(!isCorrectPin){
+					addInteraction(sender, cmd, getStr(R.string.sms_badpin));
+					reply(getStr(R.string.sms_badpin), sender);
+					return;
+				}
+				
+				hasPremium = prefs.getBoolean("premium", false);
+				
+				if(cmd != null && cmd != "" && !hasPremium){
+					addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
+					reply(getStr(R.string.sms_nopremium), sender);
+					return;
+				}
+				
+	            DevicePolicyManager DPM = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	            String resp = "";
+	            if(cmd.equals(null) || cmd.equals("")){
+	            	resp = sendLocation(sender);
+	            }else if(cmd.equals(getStr(R.string.command_lock)) && isCorrectPin){
+	        		DPM.lockNow();
+	        		reply(getStr(R.string.sms_locked), sender);
+	        		resp = getStr(R.string.sms_locked);
+	            }else if(cmd.equals(getStr(R.string.command_reset)) && isCorrectPin){
+	            	if(!prefs.getBoolean("passChange", false)){
+	            		addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
+	            		reply(getStr(R.string.sms_nopasschange), sender);
+	            		addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
+	            		return;
+	            	}
+	            	if(words.length != 4) return;
+	            	if(words[3].equals(getStr(R.string.command_reset_random))){
+	            		int random1 = (int )(Math.random() * 9);
+	            		int random2 = (int )(Math.random() * 9);
+	            		int random3 = (int )(Math.random() * 9);
+	            		int random4 = (int )(Math.random() * 9);
+	            		String newCode = "" + random1 + random2 + random3  + random4;
+	            		DPM.resetPassword(newCode, 0);
+	            		reply(getStr(R.string.smstemp_passchange) + newCode, sender);
+	            		resp = getStr(R.string.smstemp_passchange) + newCode;
+	            	}else{
+	            		DPM.resetPassword(words[3], 0);
+	                	reply(getStr(R.string.smstemp_passchange) + words[3], sender);
+	                	resp = getStr(R.string.smstemp_passchange) + words[3];
+	            	}
+	            }else if(cmd.equals(getStr(R.string.command_sound)) && isCorrectPin){
+	            	AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+	            	am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+	            	//am.setStreamVolume(AudioManager.STREAM_MUSIC, am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+	            	reply(getStr(R.string.sms_audio), sender);
+	            	resp = getStr(R.string.sms_audio);
+	            }else if(cmd.equals(getStr(R.string.command_ring)) && isCorrectPin){
+	            	playSound();
+	            	reply(getStr(R.string.sms_ringing), sender);
+	            	resp = getStr(R.string.sms_ringing);
+	            }/*else if(cmd.equals(getStr(R.string.command_lost)) && isCorrectPin){
+	            	
+	            	if(prefs.getBoolean("lostMode", false)){
+	            		exitLostMode(sender);
+	            	}else{
+	            		enterLostMode(sender);
+	            	}
+	            	
+	            }*/else{
+	            	addInteraction(sender, cmd, getStr(R.string.sms_invalidcommand));
+	            	reply(getStr(R.string.sms_invalidcommand), sender);
+	            	return;
+	            }
+	            addInteraction(sender, cmd, resp);
+	        }
+		}else if(action.equalsIgnoreCase("android.intent.action.ACTION_BATTERY_LOW")){
+			if(prefs.getBoolean("lostMode", false)){
+				
+				String dest = prefs.getString("lostNumber", "");
+				
+				if(dest.equals("") || dest.equals(null)) return;
+				
+				int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+				int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+				int pct = level/scale;
+				reply(getStr(R.string.smstemp_lowbat) + pct, dest);
+			}else{
+				return;
+			}
+		}
+		
+		
+	}
+	
+	private String sendLocation(String destinationAddress){
+		if(destinationAddress.equals(null)) return ""; //if we didn't get a valid address, return
+		LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		
+		Location loc;
+		Boolean notAccurate;
+		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+			loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			notAccurate = false;
+		}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			notAccurate = true;
+		}else{
+			reply(getStr(R.string.sms_noprovider) + " "+ getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial), destinationAddress);
+			return getStr(R.string.sms_noprovider) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial);
+		}
+		
+		if(loc == null){
+			//reply(getStr(R.string.sms_nullloc), destinationAddress);
+			sendUpdatedLocation(destinationAddress);
+			return "[Sent updated location]";
+		}
+		
+		final int refreshTime = Integer.parseInt(prefs.getString("refresh_time", "300000"));
+		
+		if(System.currentTimeMillis() - loc.getTime() > refreshTime){
+			sendUpdatedLocation(destinationAddress);
+			return "[Sent updated location]";
+		}
+		
+		String resp;
+		
+		double lat = loc.getLatitude();
+		double lon = loc.getLongitude();
+		double acc = loc.getAccuracy();
+		if(notAccurate){
+			resp = getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc);
+			reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
+		}else{
+			resp = getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc;
+			reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
+		}
+		if(hasPremium){
+			resp += "\n" + getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15";
+			reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
+		}
+		return resp;
+	}
+	
+	public void sendUpdatedLocation(final String destinationAddress){
+		
+		Log.d("BCR", "sendUpdatedLocation");
+		
+		final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		
+		final Handler handler = new Handler();
+		
+		
+    	final LocationListener ll = new LocationListener(){
+    		
+    		int i=0;
+    		
+			@Override
+			public void onLocationChanged(Location loc) {
+
+				if(i < 5 && loc.getAccuracy() > 8){
+					i ++;
+					return;
+				}
+				handler.removeCallbacks(rn);
+				Log.d("OLC", String.valueOf(loc.getAccuracy()));
+				double lat = loc.getLatitude();
+				double lon = loc.getLongitude();
+				double acc = loc.getAccuracy();
+				if(loc.getProvider().equals(LocationManager.NETWORK_PROVIDER)){
+					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
+				}else{
+					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
+				}
+				if(hasPremium){
+					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
+				}
+				
+				lm.removeUpdates(this);
+				
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+				// TODO Auto-generated method stub
+				
+			}
+    		
+    	};
+    	
+    	rn = new Runnable() {
+			  @Override
+			  public void run() {
+			    lm.removeUpdates(ll);
+			    Location loc;
+			    Boolean notAccurate;
+			    if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+					loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+					notAccurate = false;
+				}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+					loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					notAccurate = true;
+				}else{
+					reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_update), destinationAddress);
+					return;
+				}
+			    
+			    if(loc == null){
+			    	reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_oldlocationnull), destinationAddress);
+			    	return;
+			    }
+			    
+			    double lat = loc.getLatitude();
+				double lon = loc.getLongitude();
+				double acc = loc.getAccuracy();
+				if(notAccurate){
+					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
+				}else{
+					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
+				}
+				if(hasPremium){
+					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
+				}
+			    
+			  }
+			};
+		
+		int waitTime = Integer.parseInt(prefs.getString("gps_wait", "20000"));
+		Log.d("BCR-WT", prefs.getString("gps_wait", "20000")); //load the wait time (default 20 sec)
+		String provider = getProvider(lm);
+		handler.postDelayed(rn, waitTime); //if we can't get a new location after waitTime ms, just send the old one
+		lm.requestLocationUpdates(provider, 0, 0, ll);
+	}
+	
+	private String enterLostMode(String destination){
+		//final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		//lm.requestLocationUpdates(getProvider(lm), 0, 50, lostModeListener);
+		
+		Intent intent = new Intent(context, LostService.class);
+		intent.putExtra("hasPremium", hasPremium);
+		context.startService(intent);
+		
+		prefs.edit().putBoolean("lostMode", true).putString("lostNumber", destination).commit();
+		reply(getStr(R.string.sms_lostOn), destination);
+		return getStr(R.string.sms_lostOn);
+	}
+	
+	private String exitLostMode(String sender){
+		//final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		//lm.removeUpdates(lostModeListener);  
+		Intent intent = new Intent(context, LostService.class);
+		context.stopService(intent);
+		prefs.edit().putBoolean("lostMode", false).putString("lostNumber", "").commit();
+		reply(getStr(R.string.sms_lostOff), sender);
+		return getStr(R.string.sms_lostOff);
+	}
+	
+	private void reply(String message, String destination){
+		Utils.sendSMS(message, destination);
+		if(prefs.getBoolean("preference_notify", true)){
+			/*Intent intent = new Intent(context, MessageInfo.class);
+			intent.putExtra("message", message);
+			intent.putExtra("destination", destination);
+			Utils.showNotif(context, getStr(R.string.notif_sent_title), getStr(R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, 0);*/
+			Utils.showMessageNotif(context, destination, message); //TODO update this to work with interactions
+		}
+		
+	}
+	
+	private void playSound(){
+		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+		Ringtone r = RingtoneManager.getRingtone(context, notification);
+		r.play();
+	}
+	
+	private String getProvider(LocationManager lm){
+		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+			return LocationManager.GPS_PROVIDER;
+		}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			return LocationManager.NETWORK_PROVIDER;
+		}else{
+			return null;
+		}
+	}
+	
+	private void addInteraction(String number, String request, String response){
+		
+		Interaction iaction = new Interaction(-1, number, request, response, System.currentTimeMillis());
+		
+		dh.addInteraction(iaction);
+	}
+	
+	public String getStr(int id){
+    	return context.getResources().getString(id);
+    }
+	        
+}

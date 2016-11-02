@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.t3kbau5.smslocator"
+    android:installLocation="auto"
+    android:versionCode="13"
+    android:versionName="BETA 2.4.1" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="21" />
+
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <!-- uses-permission android:name="android.permission.ACCESS_SUPERUSER" /> -->
+
+
+    <!-- Admob perms -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.t3kbau5.smslocator.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.t3kbau5.smslocator.BCR"
+            android:exported="true" >
+            <intent-filter android:priority="999" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.t3kbau5.smslocator.DevAdmin"
+            android:label="@string/dev_admin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_xml" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+        <activity
+            android:name="com.t3kbau5.smslocator.SetKeyword"
+            android:label="@string/title_activity_set_keyword"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.t3kbau5.smslocator.AppHelp"
+            android:label="@string/title_activity_app_help"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.t3kbau5.smslocator.HelpDisplay"
+            android:label="@string/title_activity_help_display"
+            android:parentActivityName="com.t3kbau5.smslocator.AppHelp" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.AppHelp" />
+        </activity>
+        <activity
+            android:name="com.t3kbau5.smslocator.RestrictNumbers"
+            android:label="@string/title_activity_restrict_numbers"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.t3kbau5.smslocator.MoreSettings"
+            android:label="@string/title_activity_more_settings"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.t3kbau5.smslocator.MessageInfo"
+            android:label="@string/title_activity_message_info"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
+        </activity>
+
+        <service
+            android:name="com.t3kbau5.smslocator.LostService"
+            android:enabled="true" 
+            android:exported="false">
+        </service>
+
+        <activity
+            android:name="com.t3kbau5.smslocator.Interactions"
+            android:label="@string/title_activity_interactions"
+            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.t3kbau5.smslocator.MainActivity" />
+        </activity>
+        
+        <!-- AdMob Stuff -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+ 
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+    </application>
+
+</manifest>

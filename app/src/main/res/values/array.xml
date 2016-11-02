@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="prefs_notif_entries">
+        <item >1 Minute</item>
+        <item >5 Minutes</item>
+        <item >10 Minutes</item>
+        <item >15 Minutes</item>
+        <item >30 Minutes</item>
+        <item >1 Hour</item>
+    </string-array>
+    <string-array name="prefs_notif_values" translatable="false">
+        <item translatable="false">60000</item>
+        <item translatable="false">300000</item>
+        <item translatable="false">600000</item>
+        <item translatable="false">900000</item>
+        <item translatable="false">1800000</item>
+        <item translatable="false">3600000</item>
+    </string-array>
+    
+    
+    <string-array name="prefs_notif_priority_entries">
+        <item>Min</item>
+        <item>Low</item>
+        <item>Normal</item>
+        <item>High</item>
+        <item>Max</item>
+    </string-array>
+    
+    <string-array name="prefs_notif_priority_values" translatable="false">
+        <item translatable="false">-2</item>
+        <item translatable="false">-1</item>
+        <item translatable="false">0</item>
+        <item translatable="false">1</item>
+        <item translatable="false">2</item>
+    </string-array>
+    
+    <string-array name="prefs_gps_wait_entries">
+        <item>Short</item>
+        <item >Normal</item>
+        <item>Long</item>
+        <item>Very Long</item>
+    </string-array>
+    
+    <string-array name="prefs_gps_wait_values" translatable="false">
+        <item translatable="false">10000</item>
+        <item translatable="false">20000</item>
+        <item translatable="false">40000</item>
+        <item translatable="false">80000</item>
+    </string-array>
+    
+    
+</resources>
