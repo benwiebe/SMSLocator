@@ -59,7 +59,7 @@ public class BCR extends BroadcastReceiver{
 		String action = intent.getAction();
 		
 		if(action.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED")){
-			
+			Log.d("BCR", "sms rec");
 			keyPhrase = prefs.getString("keyPhrase", "TMWMPI");
 			savedPin = prefs.getString("pin", "1234");
 			

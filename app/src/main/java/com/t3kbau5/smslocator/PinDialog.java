@@ -114,7 +114,7 @@ public class PinDialog{
 					if(hidden){
 						String display = "";
 						for(int j=0; j<input.length(); j++){
-							display = display + "•";
+							display = display + "â€¢";
 						}
 						output.setText(display);
 					}else{
@@ -134,7 +134,7 @@ public class PinDialog{
 				if(hidden){
 					String display = "";
 					for(int j=0; j<input.length(); j++){
-						display = display + "•";
+						display = display + "â€¢";
 					}
 					output.setText(display);
 				}else{

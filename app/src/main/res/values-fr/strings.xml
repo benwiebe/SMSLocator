@@ -97,6 +97,7 @@
     <string name="error_premiumcheck">Une erreur s\'est produite lors de verifier le statut prime.</string>
     <string name="error_purchase">Une erreur s\'est produite lors de l\'achat.</string>
     <string name="error_notowned">Vous n\'avez pas acheté la version deluxe sur ce compte!</string>
+    <string name="error_permissions">Droit(s) d\'accès non-accordés! Ceux-ci sont nécessaires pour que l\'appli fonctionne.</string>
     
     <!-- Notifications -->
     <string name="notif_sent_title">Message envoyé</string>

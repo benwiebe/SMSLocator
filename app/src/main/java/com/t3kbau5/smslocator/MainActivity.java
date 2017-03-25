@@ -14,6 +14,8 @@ import com.google.android.gms.ads.AdRequest.Builder;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -31,6 +33,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -51,6 +54,7 @@ import android.widget.ToggleButton;
 public class MainActivity extends ActionBarActivity {
 
 	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
+    private int REQUEST_CODE_PERMISSIONS = 1703;
 	private SharedPreferences prefs;
 	
 	private Context _this;
@@ -266,6 +270,18 @@ public class MainActivity extends ActionBarActivity {
 		
 		if(!prefs.getBoolean("premium", false)){
 			showAd(); //if the user isn't premium, show an ad
+		}
+
+
+		//Support for the new permissions system
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+				ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+				ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
+				ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
+				ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)  {
+
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
 		}
 	}
 
@@ -508,6 +524,9 @@ public class MainActivity extends ActionBarActivity {
 				final String pin1 = adb.getPin();
 				
 				if(pin1 == "" || pin1 == null || pin1.length() < 4){
+					ComponentName cm = new ComponentName(_this, DevAdmin.class);
+					DPM.removeActiveAdmin(cm);
+					prefs.edit().putBoolean("admin", true).commit();
 					enableSMS.setChecked(false);
 					CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
 					return;
@@ -545,6 +564,9 @@ public class MainActivity extends ActionBarActivity {
 							CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
 							showPostSetup();
 						}else{
+							ComponentName cm = new ComponentName(_this, DevAdmin.class);
+							DPM.removeActiveAdmin(cm);
+							prefs.edit().putBoolean("admin", true).commit();
 				        	enableSMS.setChecked(false);
 							CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
 							updateStates();
@@ -600,6 +622,26 @@ public class MainActivity extends ActionBarActivity {
 
 	    }
 	}
+
+    @Override
+    public void onRequestPermissionsResult(int resultCode, String permissions[], int[] grantResults){
+        if(resultCode == REQUEST_CODE_PERMISSIONS){
+
+            boolean permissionsGranted = true;
+            for(int i=0; i<grantResults.length; i++){
+                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                    permissionsGranted = false;
+                }
+            }
+
+            if(permissionsGranted){
+                //show something here? unsure as of yet
+            }else{
+                Toast.makeText(this, getStr(R.string.error_permissions), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
 	
 	private void updateStates(){
 		Boolean current = smsenabled;

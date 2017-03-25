@@ -32,3 +32,8 @@ proguard/
 captures/
 
 #API keys and such that should never be in a repo
+
+# IntelliJ
+.idea/
+*.iml
+gradle/
