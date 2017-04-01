@@ -5,6 +5,7 @@
     <string name="ls_restrict">Restrict phone numbers</string>
     <string name="ls_changepass">Change device PIN over SMS</string>
     <string name="ls_setnums">Set Phone Numbers</string>
+    <string name="ls_dnd">Enable Do-Not-Disturb Control</string>
     
     <string name="ls_rntext">Below is a list of all the phone numbers that are authorized to interact with SMSLocator on your phone when restriction is on. Numbers must use the format: +12345678910</string>
     <string name="ls_addnum">Add Number</string>

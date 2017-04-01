@@ -15,7 +15,9 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -33,6 +35,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
@@ -65,6 +68,7 @@ public class MainActivity extends ActionBarActivity {
 	Button gotoRestriction;
 	CompoundButton toggleRestriction;
 	DevicePolicyManager DPM;
+	CompoundButton toggleDnd;
 	
 	BillingUtil bu;
 	
@@ -248,7 +252,31 @@ public class MainActivity extends ActionBarActivity {
 			}
 			
 		});
-		
+
+        toggleDnd = (CompoundButton) findViewById(R.id.toggleDnd);
+        if(toggleDnd != null) {
+            toggleDnd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!toggleDnd.isChecked()) {
+                        prefs.edit().putBoolean("dndcontrol", false).apply();
+                    } else {
+                        //from http://stackoverflow.com/a/36162332/1896516
+                        NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                        // Check if the notification policy access has been granted for the app.
+                        if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                            startActivity(intent);
+                            //TODO: enable control once activity closes
+                        } else {
+                            prefs.edit().putBoolean("dndcontrol", true).apply();
+                        }
+                    }
+                }
+            });
+        }
+
 		if(bu.hasPremium() && bu.isConnected()) prefs.edit().putBoolean("premium", true);
 		
 		updateStates();
@@ -274,13 +302,7 @@ public class MainActivity extends ActionBarActivity {
 
 
 		//Support for the new permissions system
-		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-				ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-				ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
-				ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-				ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)  {
-
+		if (!Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
 		}
 	}
@@ -664,6 +686,32 @@ public class MainActivity extends ActionBarActivity {
 		toggleRestriction.setEnabled(smsenabled);
 		
 		gotoRestriction.setEnabled(smsenabled);
+
+		// Check if we're at a high enough API to control DND
+        //LG Phones are broken currently, see http://mobile.developer.lge.com/support/forums/general/?pageMode=Detail&tID=10000362
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Build.BRAND.toLowerCase().equals("lg")) {
+            if(prefs.getBoolean("dndcontrol", false)){
+                NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                // Check if the notification policy access has been granted for the app.
+                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                    toggleDnd.setChecked(false);
+                    prefs.edit().putBoolean("dndcontrol", false).apply();
+                }else{
+                    toggleDnd.setChecked(true);
+                }
+            }else{
+                toggleDnd.setChecked(false);
+            }
+
+            toggleRestriction.setEnabled(smsenabled);
+		}else{
+            //device doesn't support DND control, so hide the option if it exists
+            if(toggleDnd != null) {
+                toggleDnd.setVisibility(View.GONE);
+                findViewById(R.id.toggledndtext).setVisibility(View.GONE);
+            }
+		}
 	}
 	
 	private void showTermsDialog(){

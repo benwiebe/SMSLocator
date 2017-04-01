@@ -9,17 +9,19 @@
     <string name="sms_nopasschange">Changement de mot de passe est désactivé sur ce téléphone. Activez-le dans l\'application de SMSLocator sur le téléphone pour utiliser ce commande.</string>
     <string name="sms_nopremium">Cet appareil n\'a pas le version deluxe, qui permet cette commande. Pour obtenir les fonctions deluxe, achète-le dans l\'application.</string>
     <string name="sms_movementalert">[SMSLocator] L\'appareil a été dépacé plus de 50 mètres de son emplacement originale. Les nouveau coordonnés seront envoyés.</string>
-    
+    <string name="sms_nonotifpolicy">La permission de contrôl de notification pour SMSLocator a été révoquée, alors le mode "ne-pas-déranger" n\'a pas été modifié.</string>
+
     <!-- SMS generic replies -->
     <string name="sms_locked">Téléphone verrouillé!</string>
-    <string name="sms_audio">Audio activé. Utilisez [mot-clé] [NIP] sonner pour entendre un bruit</string>
+    <string name="sms_audio">Audio activé. Envoyez "[mot-clé] [NIP] sonner" pour entendre un bruit.</string>
     <string name="sms_ringing">La téléphone sonne.</string>
     <string name="sms_alert">Vous allez maintenant recevoir une alerte lorsque l\'appareil se déplace de plus de 50 mètres de son emplacement précédent.</string>
     <string name="sms_noalert">Vous ne recevrez plus les alertes de mouvement.</string>
     <string name="sms_nullloc">Un erreur s\'est produit lors de trouver l\'emplacement de votre appareil!</string>
     <string name="sms_lostOn">Appareil est maintenant dans le mode perdu. L\'emplacement et le niveau de la batterie seront envoyés à ce numéro.</string>
     <string name="sms_lostOff">Appareil n\'est plus dans le mode perdu.</string>
-    
+    <string name="sms_undnd">Le mode "ne-pas-déranger" a aussi été désactivé.</string>
+
     <!-- SMS reply templates -->
     <string name="smstemp_passchange">Mot de passe changé à </string>
     <string name="smstemp_pos1">Dernier position de téléphone connu:</string>

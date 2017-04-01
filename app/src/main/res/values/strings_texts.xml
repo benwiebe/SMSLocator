@@ -9,16 +9,18 @@
     <string name="sms_nopasschange">Password changing is disabled on this phone. Please enable in the SMSLocator app on the phone.</string>
     <string name="sms_nopremium">This device does not have premium features enabled. To do so, purchase the upgrade through the app.</string>
     <string name="sms_movementalert">[SMSLocator] The device moved more than 50 meters away from its original location! New coordinates will be sent momentarily.</string>
-    
+    <string name="sms_nonotifpolicy">The notification policy for SMSLocator has been revoked, thus Do-Not-Disturb mode was not changed.</string>
+
     <!-- SMS generic replies -->
     <string name="sms_locked">Phone locked!</string>
-    <string name="sms_audio">Audio enabled. Use [Keyword] [pin] ring to hear a noise</string>
-    <string name="sms_ringing">Phone ringing</string>
+    <string name="sms_audio">Audio enabled. Send "[Keyword] [pin] ring" to hear a noise.</string>
+    <string name="sms_ringing">Phone ringing.</string>
     <string name="sms_alert">You will now receive an alert when the device moves more than 50 meters from its previous location.</string>
     <string name="sms_nullloc">An error occurred while trying to get your phone\'s location!</string>
     <string name="sms_noalert">You will no longer receive movement alerts.</string>
     <string name="sms_lostOn">Lost mode is now on. Location and battery alerts will be sent to this number.</string>
     <string name="sms_lostOff">Lost mode is now off.</string>
+    <string name="sms_undnd">Do-not-disturb was also disabled.</string>
     
     <!-- SMS reply templates -->
     <string name="smstemp_passchange">Password changed to </string>

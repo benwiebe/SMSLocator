@@ -74,4 +74,22 @@
         android:layout_centerHorizontal="true"
         android:text="@string/ls_setnums" />
 
+    <Switch
+        android:id="@+id/toggleDnd"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/gotoRestrictNumbers"
+        android:layout_alignRight="@+id/toggleRestriction"
+        android:layout_alignEnd="@+id/toggleRestriction" />
+
+    <TextView
+        android:id="@+id/toggledndtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ls_dnd"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignTop="@+id/toggleDnd"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

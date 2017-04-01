@@ -20,6 +20,7 @@ import org.json.JSONException;
 
 import com.android.vending.billing.IInAppBillingService;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -36,6 +38,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.text.Html;
@@ -350,5 +353,20 @@ public class Utils {
             return false;
     	
     }
-    
+
+	public static Bundle checkPermissionsGranted(Context context)
+	{
+		Bundle b = new Bundle();
+		b.putInt(Manifest.permission.ACCESS_FINE_LOCATION, ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION));
+        b.putInt(Manifest.permission.ACCESS_COARSE_LOCATION, ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+        b.putInt(Manifest.permission.RECEIVE_SMS, ActivityCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS));
+        b.putInt(Manifest.permission.SEND_SMS, ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS));
+        b.putInt(Manifest.permission.MODIFY_AUDIO_SETTINGS, ActivityCompat.checkSelfPermission(context, Manifest.permission.MODIFY_AUDIO_SETTINGS));
+        b.putInt(Manifest.permission.READ_PHONE_STATE, ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE));
+
+        b.putBoolean("allGranted", b.getInt(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+
+        return b;
+    }
+
 }

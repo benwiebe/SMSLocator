@@ -5,6 +5,7 @@
     <string name="ls_restrict">Limiter les Numéros</string>
     <string name="ls_changepass">Changer le NIP de l\'appareil par SMS</string>
     <string name="ls_setnums">Régler les Numéros</string>
+    <string name="ls_dnd">Contrôler le mode "ne-pas-déranger"</string>
     
     <string name="ls_rntext">Voici une liste de tous les numéros de téléphone qui sont autorisés à interagir avec SMSLocator sur votre téléphone lorsque la restriction est activé​​. Les numéros doivent utiliser le format: +12345678910</string>
     <string name="ls_addnum">Ajouter un Numéro</string>
