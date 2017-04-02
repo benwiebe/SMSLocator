@@ -83,6 +83,7 @@
     <string name="message_swipe">Swipe left and right to navigate between messages.</string>
     <string name="message_restored">Premium purchase has been restored. All features unlocked!</string>
     <string name="message_interactionsCleared">Interactions Cleared!</string>
+    <string name="message_activatedndaccess">Enable "SMSLocator" on this page to allow Do-Not-Disturb control. When done, press back.</string>
 
     <!-- Error Messages -->
     <string name="error_badpin">Incorrect Pin!</string>

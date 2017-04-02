@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
@@ -23,9 +24,18 @@ public class NumberAdapter extends BaseAdapter{
 	private Context context;
 	private SharedPreferences prefs;
 	private List<String> numbers = new ArrayList<String>();
+	private int vid1, vid2;
 	
 	public NumberAdapter(Context c){
 		context = c;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			vid1 = View.generateViewId();
+			vid2 = View.generateViewId();
+		}else{
+			vid1 = 1;
+			vid2 = 2;
+		}
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(c);
 		loadData();
 	}
@@ -54,14 +64,14 @@ public class NumberAdapter extends BaseAdapter{
 		ImageView iv;
 		if(convertView != null){
 			v = convertView;
-			tv = (TextView) v.findViewById(1);
-			iv = (ImageView) v.findViewById(2);
+			tv = (TextView) v.findViewById(vid1);
+			iv = (ImageView) v.findViewById(vid2);
 		}else{
 			v = new View(context);
 			tv = new TextView(context);
-			tv.setId(1);
+			tv.setId(vid1);
 			iv = new ImageView(context);
-			iv.setId(2);
+			iv.setId(vid2);
 		}
 		
 		tv.setText(numbers.get(position));

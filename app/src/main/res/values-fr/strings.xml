@@ -83,6 +83,7 @@
     <string name="message_swipe">Glissez vers la gauche et la droite pour naviguer entre les messages.</string>
     <string name="message_restored">Niveau deluxe restauré. Tous les fonctionnalités sont disponibles!</string>
     <string name="message_interactionsCleared">Interactions effacés!</string>
+    <string name="message_activatedndaccess">Activez "SMSLocator" sur cette page pour autoriser le contrôle du mode "ne pas déranger". Une fois terminé, appuyez le bouton de retour.</string>
     
     <!-- Error Messages -->
     <string name="error_badpin">Mauvaise NIP!</string>

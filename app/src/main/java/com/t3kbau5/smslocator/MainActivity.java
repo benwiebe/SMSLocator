@@ -69,6 +69,7 @@ public class MainActivity extends ActionBarActivity {
 	CompoundButton toggleRestriction;
 	DevicePolicyManager DPM;
 	CompoundButton toggleDnd;
+	Boolean dndPending = false;
 	
 	BillingUtil bu;
 	
@@ -268,7 +269,8 @@ public class MainActivity extends ActionBarActivity {
                         if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
                             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                             startActivity(intent);
-                            //TODO: enable control once activity closes
+                            CustomToast.makeText(_this, getStr(R.string.message_activatedndaccess), Toast.LENGTH_LONG, 0).show();
+                            dndPending = true; //this is used in updateStates to check if the permission was granted
                         } else {
                             prefs.edit().putBoolean("dndcontrol", true).apply();
                         }
@@ -690,7 +692,8 @@ public class MainActivity extends ActionBarActivity {
 		// Check if we're at a high enough API to control DND
         //LG Phones are broken currently, see http://mobile.developer.lge.com/support/forums/general/?pageMode=Detail&tID=10000362
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Build.BRAND.toLowerCase().equals("lg")) {
-            if(prefs.getBoolean("dndcontrol", false)){
+            if(prefs.getBoolean("dndcontrol", false) || dndPending){
+				dndPending = false;
                 NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 // Check if the notification policy access has been granted for the app.
