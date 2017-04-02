@@ -488,7 +488,7 @@ public class MainActivity extends ActionBarActivity {
 		mAdView.setAdSize(AdSize.SMART_BANNER);
 		mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
 
-		AdRequest adreq = new AdRequest.Builder().addTestDevice("5A657592A4887B85F24939FB23F721D4").build();
+		AdRequest adreq = new AdRequest.Builder().addTestDevice("DDE74346487E0E27819B486242F21C95").build();
 		
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);

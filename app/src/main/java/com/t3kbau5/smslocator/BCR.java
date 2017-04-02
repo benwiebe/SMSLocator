@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,176 +34,178 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
 import android.text.format.Time;
 import android.util.Log;
 
 import com.t3kbau5.smslocator.Utils;
 
-public class BCR extends BroadcastReceiver{
-	
-	Context context;
-	SharedPreferences prefs;
-	String keyPhrase;
-	String savedPin;
-	
-	Runnable rn;
-	
-	Boolean hasPremium = false;
-	
-	private DataHandler dh;
-	
-	public void onReceive(Context context, Intent intent) {
-		this.context = context;
-		
-		dh = new DataHandler(context, null, null, 1);
-		
-		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		if(!prefs.getBoolean("smsenabled", false)) return; //if we have the service disabled
-		
-		String action = intent.getAction();
-		
-		if(action.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED")){
-			Log.d("BCR", "sms rec");
-			keyPhrase = prefs.getString("keyPhrase", "TMWMPI");
-			savedPin = prefs.getString("pin", "1234");
-			
-	        Bundle pdusBundle = intent.getExtras();
-	        Object[] pdus = (Object[]) pdusBundle.get("pdus");
-	        SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);    
-	        
-	        
-	        String msgBody = message.getMessageBody();
-	        String sender = message.getOriginatingAddress();
-	        String[] words = msgBody.split(" ");
-	        
-	        if(msgBody == null || msgBody.equals("") || msgBody.equals(null) || words.length < 1) return; //error prevention
-	        
-	        String pass = words[0];
-	        String cmd;
-	        String pin;
-	        
-	        if(pass.equals(keyPhrase)) {
-				abortBroadcast();
+public class BCR extends BroadcastReceiver {
 
-				if (prefs.getBoolean("enableRestriction", false)) {
-					String serialized = prefs.getString("pnumbers", "");
-					String[] nums = serialized.split(",");
-					List<String> numbers = new ArrayList<String>(Arrays.asList(nums));
-					Boolean isOK = false;
-					for (int i = 0; i < numbers.size(); i++) {
-						if (numbers.get(i).equals(sender)) {
-							isOK = true;
-							break;
-						}
-					}
+    Context context;
+    SharedPreferences prefs;
+    String keyPhrase;
+    String savedPin;
 
-					if (!isOK) {
-						addInteraction(sender, msgBody, getStr(R.string.comment_unauthorized_restriction));
-						//reply(getStr(R.string.sms_notauthed), sender);
-						return;
-					}
-				}
+    Runnable rn;
+
+    Boolean hasPremium = false;
+
+    private DataHandler dh;
+
+    public void onReceive(Context context, Intent intent) {
+        this.context = context;
+
+        dh = new DataHandler(context, null, null, 1);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getBoolean("smsenabled", false)) return; //if we have the service disabled
+
+        String action = intent.getAction();
+
+        if (action.equalsIgnoreCase("android.provider.Telephony.SMS_RECEIVED")) {
+            Log.d("BCR", "sms rec");
+            keyPhrase = prefs.getString("keyPhrase", "TMWMPI");
+            savedPin = prefs.getString("pin", "1234");
+
+            Bundle pdusBundle = intent.getExtras();
+            Object[] pdus = (Object[]) pdusBundle.get("pdus");
+            SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
 
 
-				try {
-					cmd = words[2].toLowerCase(Locale.getDefault());
-				} catch (ArrayIndexOutOfBoundsException e) {
-					e.printStackTrace();
-					cmd = "";
-				}
+            String msgBody = message.getMessageBody();
+            String sender = message.getOriginatingAddress();
+            String[] words = msgBody.split(" ");
 
-				try {
-					pin = words[1];
-				} catch (ArrayIndexOutOfBoundsException e) {
-					e.printStackTrace();
-					pin = "";
-				}
+            if (msgBody == null || msgBody.equals("") || msgBody.equals(null) || words.length < 1)
+                return; //error prevention
+
+            String pass = words[0];
+            String cmd;
+            String pin;
+
+            if (pass.equals(keyPhrase)) {
+                abortBroadcast();
+
+                if (prefs.getBoolean("enableRestriction", false)) {
+                    String serialized = prefs.getString("pnumbers", "");
+                    String[] nums = serialized.split(",");
+                    List<String> numbers = new ArrayList<String>(Arrays.asList(nums));
+                    Boolean isOK = false;
+                    for (int i = 0; i < numbers.size(); i++) {
+                        if (numbers.get(i).equals(sender)) {
+                            isOK = true;
+                            break;
+                        }
+                    }
+
+                    if (!isOK) {
+                        addInteraction(sender, msgBody, getStr(R.string.comment_unauthorized_restriction));
+                        //reply(getStr(R.string.sms_notauthed), sender);
+                        return;
+                    }
+                }
+
+
+                try {
+                    cmd = words[2].toLowerCase(Locale.getDefault());
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    cmd = "";
+                }
+
+                try {
+                    pin = words[1];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    pin = "";
+                }
 	            
 	            /*if(pin.equals("") || pin.equals(null)){
 	            	pin = cmd;
 	            	cmd = "";
 	            }*/
 
-				Boolean isCorrectPin = false;
-				try {
-					isCorrectPin = Utils.compareToSHA1(pin, savedPin);
-				} catch (NoSuchAlgorithmException e) {
-					reply(getStr(R.string.sms_pinerror), sender);
-					addInteraction(sender, cmd, getStr(R.string.sms_pinerror));
-					e.printStackTrace();
-					return;
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					reply(getStr(R.string.sms_pinerror), sender);
-					return;
-				}
+                Boolean isCorrectPin = false;
+                try {
+                    isCorrectPin = Utils.compareToSHA1(pin, savedPin);
+                } catch (NoSuchAlgorithmException e) {
+                    reply(getStr(R.string.sms_pinerror), sender);
+                    addInteraction(sender, cmd, getStr(R.string.sms_pinerror));
+                    e.printStackTrace();
+                    return;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    reply(getStr(R.string.sms_pinerror), sender);
+                    return;
+                }
 
-				if (!isCorrectPin) {
-					addInteraction(sender, cmd, getStr(R.string.sms_badpin));
-					reply(getStr(R.string.sms_badpin), sender);
-					return;
-				}
+                if (!isCorrectPin) {
+                    addInteraction(sender, cmd, getStr(R.string.sms_badpin));
+                    reply(getStr(R.string.sms_badpin), sender);
+                    return;
+                }
 
-				hasPremium = prefs.getBoolean("premium", false);
+                hasPremium = prefs.getBoolean("premium", false);
 
-				if (cmd != null && cmd != "" && !hasPremium) {
-					addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
-					reply(getStr(R.string.sms_nopremium), sender);
-					return;
-				}
+                if (cmd != null && cmd != "" && !hasPremium) {
+                    addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
+                    reply(getStr(R.string.sms_nopremium), sender);
+                    return;
+                }
 
-				DevicePolicyManager DPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-				String resp = "";
-				if (cmd.equals(null) || cmd.equals("")) {
-					resp = sendLocation(sender);
-				} else if (cmd.equals(getStr(R.string.command_lock)) && isCorrectPin) {
-					DPM.lockNow();
-					reply(getStr(R.string.sms_locked), sender);
-					resp = getStr(R.string.sms_locked);
-				} else if (cmd.equals(getStr(R.string.command_reset)) && isCorrectPin) {
-					if (!prefs.getBoolean("passChange", false)) {
-						addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
-						reply(getStr(R.string.sms_nopasschange), sender);
-						addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
-						return;
-					}
-					if (words.length != 4) return;
-					if (words[3].equals(getStr(R.string.command_reset_random))) {
-						int random1 = (int) (Math.random() * 9);
-						int random2 = (int) (Math.random() * 9);
-						int random3 = (int) (Math.random() * 9);
-						int random4 = (int) (Math.random() * 9);
-						String newCode = "" + random1 + random2 + random3 + random4;
-						DPM.resetPassword(newCode, 0);
-						reply(getStr(R.string.smstemp_passchange) + newCode, sender);
-						resp = getStr(R.string.smstemp_passchange) + newCode;
-					} else {
-						DPM.resetPassword(words[3], 0);
-						reply(getStr(R.string.smstemp_passchange) + words[3], sender);
-						resp = getStr(R.string.smstemp_passchange) + words[3];
-					}
-				} else if (cmd.equals(getStr(R.string.command_sound)) && isCorrectPin) {
-					AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-					am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                DevicePolicyManager DPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                String resp = "";
+                if (cmd.equals(null) || cmd.equals("")) {
+                    resp = sendLocation(sender);
+                } else if (cmd.equals(getStr(R.string.command_lock)) && isCorrectPin) {
+                    DPM.lockNow();
+                    reply(getStr(R.string.sms_locked), sender);
+                    resp = getStr(R.string.sms_locked);
+                } else if (cmd.equals(getStr(R.string.command_reset)) && isCorrectPin) {
+                    if (!prefs.getBoolean("passChange", false)) {
+                        addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
+                        reply(getStr(R.string.sms_nopasschange), sender);
+                        addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
+                        return;
+                    }
+                    if (words.length != 4) return;
+                    if (words[3].equals(getStr(R.string.command_reset_random))) {
+                        int random1 = (int) (Math.random() * 9);
+                        int random2 = (int) (Math.random() * 9);
+                        int random3 = (int) (Math.random() * 9);
+                        int random4 = (int) (Math.random() * 9);
+                        String newCode = "" + random1 + random2 + random3 + random4;
+                        DPM.resetPassword(newCode, 0);
+                        reply(getStr(R.string.smstemp_passchange) + newCode, sender);
+                        resp = getStr(R.string.smstemp_passchange) + newCode;
+                    } else {
+                        DPM.resetPassword(words[3], 0);
+                        reply(getStr(R.string.smstemp_passchange) + words[3], sender);
+                        resp = getStr(R.string.smstemp_passchange) + words[3];
+                    }
+                } else if (cmd.equals(getStr(R.string.command_sound)) && isCorrectPin) {
+                    AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                     resp = getStr(R.string.sms_audio);
 
                     if (prefs.getBoolean("dndcontrol", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        if(!mNotificationManager.isNotificationPolicyAccessGranted()){
+                        if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
                             resp += " " + getStr(R.string.sms_nonotifpolicy);
-                        }else{
+                        } else {
                             resp += " " + getStr(R.string.sms_undnd);
                             unDnd(mNotificationManager);
                         }
                     }
 
-					reply(resp, sender);
-				} else if (cmd.equals(getStr(R.string.command_ring)) && isCorrectPin) {
-					playSound();
-					reply(getStr(R.string.sms_ringing), sender);
-					resp = getStr(R.string.sms_ringing);
-				}/*else if(cmd.equals(getStr(R.string.command_lost)) && isCorrectPin){
+                    reply(resp, sender);
+                } else if (cmd.equals(getStr(R.string.command_ring)) && isCorrectPin) {
+                    playSound();
+                    reply(getStr(R.string.sms_ringing), sender);
+                    resp = getStr(R.string.sms_ringing);
+                }/*else if(cmd.equals(getStr(R.string.command_lost)) && isCorrectPin){
 	            	
 	            	if(prefs.getBoolean("lostMode", false)){
 	            		exitLostMode(sender);
@@ -209,65 +213,70 @@ public class BCR extends BroadcastReceiver{
 	            		enterLostMode(sender);
 	            	}
 	            	
-	            }*/
-				else{
-	            	addInteraction(sender, cmd, getStr(R.string.sms_invalidcommand));
-	            	reply(getStr(R.string.sms_invalidcommand), sender);
-	            	return;
-	            }
-	            addInteraction(sender, cmd, resp);
-	        }
-		}else if(action.equalsIgnoreCase("android.intent.action.ACTION_BATTERY_LOW")){
-			if(prefs.getBoolean("lostMode", false)){
-				
-				String dest = prefs.getString("lostNumber", "");
-				
-				if(dest.equals("") || dest.equals(null)) return;
-				
-				int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-				int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-				int pct = level/scale;
-				reply(getStr(R.string.smstemp_lowbat) + pct, dest);
-			}else{
-				return;
-			}
-		}
-		
-		
-	}
-	
-	private String sendLocation(String destinationAddress){
-		if(destinationAddress.equals(null)) return ""; //if we didn't get a valid address, return
-		LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		
-		Location loc;
-		Boolean notAccurate;
-		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-			loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			notAccurate = false;
-		}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-			loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-			notAccurate = true;
+	            }*/ else {
+                    addInteraction(sender, cmd, getStr(R.string.sms_invalidcommand));
+                    reply(getStr(R.string.sms_invalidcommand), sender);
+                    return;
+                }
+                addInteraction(sender, cmd, resp);
+            }
+        } else if (action.equalsIgnoreCase("android.intent.action.ACTION_BATTERY_LOW")) {
+            if (prefs.getBoolean("lostMode", false)) {
+
+                String dest = prefs.getString("lostNumber", "");
+
+                if (dest.equals("") || dest.equals(null)) return;
+
+                int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                int pct = level / scale;
+                reply(getStr(R.string.smstemp_lowbat) + pct, dest);
+            } else {
+                return;
+            }
+        }
+
+
+    }
+
+    private String sendLocation(String destinationAddress) {
+        if (destinationAddress.equals(null)) return ""; //if we didn't get a valid address, return
+
+        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
+            return getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc);
+        }
+
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        Location loc;
+        Boolean notAccurate;
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            notAccurate = false;
+        } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            notAccurate = true;
 		}else{
 			reply(getStr(R.string.sms_noprovider) + " "+ getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial), destinationAddress);
 			return getStr(R.string.sms_noprovider) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial);
 		}
-		
+
 		if(loc == null){
 			//reply(getStr(R.string.sms_nullloc), destinationAddress);
 			sendUpdatedLocation(destinationAddress);
 			return "[Sent updated location]";
 		}
-		
+
 		final int refreshTime = Integer.parseInt(prefs.getString("refresh_time", "300000"));
-		
+
 		if(System.currentTimeMillis() - loc.getTime() > refreshTime){
 			sendUpdatedLocation(destinationAddress);
 			return "[Sent updated location]";
 		}
-		
+
 		String resp;
-		
+
 		double lat = loc.getLatitude();
 		double lon = loc.getLongitude();
 		double acc = loc.getAccuracy();
@@ -284,20 +293,20 @@ public class BCR extends BroadcastReceiver{
 		}
 		return resp;
 	}
-	
+
 	public void sendUpdatedLocation(final String destinationAddress){
-		
+
 		Log.d("BCR", "sendUpdatedLocation");
-		
+
 		final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		
+
 		final Handler handler = new Handler();
-		
-		
+
+
     	final LocationListener ll = new LocationListener(){
-    		
+
     		int i=0;
-    		
+
 			@Override
 			public void onLocationChanged(Location loc) {
 
@@ -318,9 +327,13 @@ public class BCR extends BroadcastReceiver{
 				if(hasPremium){
 					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
 				}
-				
-				lm.removeUpdates(this);
-				
+
+                try {
+                    lm.removeUpdates(this);
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
+
 			}
 
 			@Override
@@ -347,6 +360,11 @@ public class BCR extends BroadcastReceiver{
     	rn = new Runnable() {
 			  @Override
 			  public void run() {
+
+              if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                  reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
+                  return;
+              }
 			    lm.removeUpdates(ll);
 			    Location loc;
 			    Boolean notAccurate;

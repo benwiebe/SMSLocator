@@ -21,6 +21,7 @@
     <string name="sms_lostOn">Appareil est maintenant dans le mode perdu. L\'emplacement et le niveau de la batterie seront envoyés à ce numéro.</string>
     <string name="sms_lostOff">Appareil n\'est plus dans le mode perdu.</string>
     <string name="sms_undnd">Le mode "ne-pas-déranger" a aussi été désactivé.</string>
+    <string name="sms_permissionmissing">Votre demande ne pourrait pas être complétée car des permissions ont été révoquées!</string>
 
     <!-- SMS reply templates -->
     <string name="smstemp_passchange">Mot de passe changé à </string>

@@ -3,4 +3,5 @@
     <string name="code_noprovider_initial">NLP1</string>
     <string name="code_noprovider_update">NLP2</string>
     <string name="code_oldlocationnull">OLN</string>
+    <string name="code_missingloc">MLP</string>
 </resources>
