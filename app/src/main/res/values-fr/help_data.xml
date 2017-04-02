@@ -35,7 +35,7 @@
         <item>Verrouille l\'appareil (*)</item>
         <item>Change le mot de passe de l\'appareil à un généré aléatoirement (*)</item>
         <item>Change le mot de passe de l\'appareil à la valeur de [mot de passe] (*)</item>
-        <item>Met l\'appareil au mode sonore (*)</item>
+        <item>Met l\'appareil au mode sonore et désactive le mode "ne pas déranger" mode sur les appareils avec Android M ou plus nouveau (*)</item>
         <item>Fait que l\'appareil sonne (*)</item>
     </string-array>
 </resources>

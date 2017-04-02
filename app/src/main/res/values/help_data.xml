@@ -35,7 +35,7 @@
         <item>Locks the device (*)</item>
         <item>Sets the device\'s password to a randomly-generated one (*)</item>
         <item>Sets the device\'s password to the value of [password] (*)</item>
-        <item>Sets the device\'s sound mode to ringer (sound on) (*)</item>
+        <item>Sets the device\'s sound mode to ringer (sound on) and disables "Do not disturb" mode on devices running Android M or above (*)</item>
         <item>Makes the device ring (*)</item>
     </string-array>
 </resources>
