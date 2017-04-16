@@ -11,8 +11,9 @@
             backward-compatibility can go here.
         -->
         
-        <item name="android:windowNoTitle">true</item>
+        <!--<item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>-->
     </style>
 
     <!-- Application theme. -->
