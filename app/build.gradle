@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.t3kbau5.smslocator"
         minSdkVersion 9
         targetSdkVersion 24
-        versionCode 15
-        versionName "BETA 2.5.1"
+        versionCode 16
+        versionName "BETA 2.5.2"
     }
 
     buildTypes {

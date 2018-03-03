@@ -720,7 +720,7 @@ public class MainActivity extends ActionBarActivity {
 	private void showTermsDialog(){
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getStr(R.string.dialog_terms))
-			.setMessage(Utils.formatAndSpan(getStr(R.string.app_terms)))
+			.setMessage(Utils.formatAndSpan(getStr(R.string.app_terms) + "[br][br]" + getStr(R.string.admin_details)))
 			.setPositiveButton(getStr(R.string.dialog_agree), new DialogInterface.OnClickListener() {
 				
 				@Override
