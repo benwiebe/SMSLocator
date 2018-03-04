@@ -16,21 +16,21 @@ public class LostService extends IntentService{
 	LocationManager lm;
 	SharedPreferences prefs;
 	Context context;
-	
+
 	boolean hasPremium = false;
-	
-	
+
+
 	LocationListener lostModeListener;
-	
-	
+
+
 	public LostService() {
 		super("LostService");
 		Log.d("LS", "LostService()");
-		
+
 		lostModeListener = new LocationListener(){
-			
+
 			boolean firstChange = true;
-			
+
 			@Override
 			public void onLocationChanged(Location loc) {
 				String destinationAddress = prefs.getString("lostNumber", "");
@@ -40,17 +40,17 @@ public class LostService extends IntentService{
 				double acc = loc.getAccuracy();
 				if(firstChange){
 					firstChange = false;
-					prefs.edit().putFloat("lost_lat", ((float) lat)).putFloat("lost_lon", ((float) lon)).commit();
+					prefs.edit().putFloat("lost_lat", ((float) lat)).putFloat("lost_lon", ((float) lon)).apply();
 					return;
 				}
-				
+
 				Location dest = new Location(LocationManager.PASSIVE_PROVIDER);
 				dest.setLatitude(((double) prefs.getFloat("lost_lat", 0)));
 				dest.setLongitude(((double) prefs.getFloat("lost_lon", 0)));
 				if(loc.distanceTo(dest) < 50) return;
-				
-				prefs.edit().putFloat("lost_lat", ((float) lat)).putFloat("lost_lon", ((float) lon)).commit();
-				
+
+				prefs.edit().putFloat("lost_lat", ((float) lat)).putFloat("lost_lon", ((float) lon)).apply();
+
 				reply(getStr(R.string.sms_movementalert), destinationAddress);
 				if(loc.getProvider().equals(LocationManager.NETWORK_PROVIDER)){
 					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
@@ -60,7 +60,7 @@ public class LostService extends IntentService{
 				if(hasPremium){
 					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
 				}
-				
+
 			}
 
 			@Override
@@ -77,11 +77,11 @@ public class LostService extends IntentService{
 			public void onStatusChanged(String provider, int status,
 					Bundle extras) {
 				Log.d("OLC:LOST", "status changed");
-				
+
 			}
-			
+
 		};
-		
+
 	}
 
 	@Override
@@ -89,11 +89,11 @@ public class LostService extends IntentService{
 		Log.d("LS", "onHandleIntent");
 		context = getApplicationContext();
 		hasPremium = intent.getExtras().getBoolean("hasPremium");
-		
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		
+
 		lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		lm.requestLocationUpdates(getProvider(lm), 0, 0, lostModeListener);
+		lm.requestLocationUpdates(getProvider(lm), 0, 0, lostModeListener); //TODO: look into this before implementing full service
 	}
 	
 	@Override

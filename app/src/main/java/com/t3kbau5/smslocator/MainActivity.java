@@ -1,58 +1,47 @@
 package com.t3kbau5.smslocator;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdRequest.Builder;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-
 import android.Manifest;
-import android.app.NotificationManager;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.provider.Settings;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -88,7 +77,7 @@ public class MainActivity extends ActionBarActivity {
 		bu = new BillingUtil2(this);
 		
 		enableSMS = (ToggleButton) findViewById(R.id.enableSMS);
-		//enableSMS.setChecked(smsenabled);
+
 		enableSMS.setOnClickListener(new ToggleButton.OnClickListener(){
 
 			@Override
@@ -107,12 +96,7 @@ public class MainActivity extends ActionBarActivity {
 							Boolean isCorrectPin = false;
 							try {
 								isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-							} catch (NoSuchAlgorithmException e) {
-								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-								enableSMS.setChecked(true);
-								e.printStackTrace();
-								return;
-							} catch (UnsupportedEncodingException e) {
+							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
 								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
 								enableSMS.setChecked(true);
 								e.printStackTrace();
@@ -121,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
 							if(isCorrectPin){
 								ComponentName cm = new ComponentName(_this, DevAdmin.class);
 								DPM.removeActiveAdmin(cm);
-								prefs.edit().putBoolean("smsenabled", false).commit();
+								prefs.edit().putBoolean("smsenabled", false).apply();
 								updateStates();
 							}else{
 								enableSMS.setChecked(true);
@@ -171,12 +155,7 @@ public class MainActivity extends ActionBarActivity {
 						Boolean isCorrectPin = false;
 						try {
 							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-						} catch (NoSuchAlgorithmException e) {
-							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-							enableSMS.setChecked(!isChecked);
-							e.printStackTrace();
-							return;
-						} catch (UnsupportedEncodingException e) {
+						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
 							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
 							enableSMS.setChecked(!isChecked);
 							e.printStackTrace();
@@ -184,7 +163,7 @@ public class MainActivity extends ActionBarActivity {
 						}
 						
 						if(isCorrectPin){
-							prefs.edit().putBoolean("passChange", isChecked).commit();
+							prefs.edit().putBoolean("passChange", isChecked).apply();
 						}else{
 							passSMS.setChecked(!isChecked);
 							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
@@ -215,12 +194,7 @@ public class MainActivity extends ActionBarActivity {
 						Boolean isCorrectPin = false;
 						try {
 							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-						} catch (NoSuchAlgorithmException e) {
-							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-							toggleRestriction.setChecked(!isChecked);
-							e.printStackTrace();
-							return;
-						} catch (UnsupportedEncodingException e) {
+						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
 							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
 							toggleRestriction.setChecked(!isChecked);
 							e.printStackTrace();
@@ -228,7 +202,7 @@ public class MainActivity extends ActionBarActivity {
 						}
 						
 						if(isCorrectPin){
-							prefs.edit().putBoolean("enableRestriction", isChecked).commit();
+							prefs.edit().putBoolean("enableRestriction", isChecked).apply();
 						}else{
 							toggleRestriction.setChecked(!isChecked);
 							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
@@ -278,13 +252,11 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
         }
-
-		if(bu.hasPremium() && bu.isConnected()) prefs.edit().putBoolean("premium", true);
 		
 		updateStates();
 		
 		if(prefs.getBoolean("firstRun", true)){
-			prefs.edit().putBoolean("firstRun", false).commit();
+			prefs.edit().putBoolean("firstRun", false).apply();
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
 			adb.setTitle(getStr(R.string.dialog_welcome));
 			adb.setMessage(getStr(R.string.dialog_firstrun));
@@ -348,9 +320,7 @@ public class MainActivity extends ActionBarActivity {
             	startActivity(intent);
             	return true;
             case R.id.menu_unlock:
-            	final Activity _act = this;
-            	
-            	AlertDialog.Builder adb = new AlertDialog.Builder(this);
+				AlertDialog.Builder adb = new AlertDialog.Builder(this);
     			adb.setTitle(getStr(R.string.dialog_premium));
     			adb.setMessage(getStr(R.string.dialog_upgrade));
     			adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
@@ -432,7 +402,7 @@ public class MainActivity extends ActionBarActivity {
 			//disable the services
 			ComponentName cm = new ComponentName(_this, DevAdmin.class);
 			DPM.removeActiveAdmin(cm);
-			prefs.edit().putBoolean("smsenabled", false).commit();
+			prefs.edit().putBoolean("smsenabled", false).apply();
 			updateStates();
 			
 			//show adblock warning dialog
@@ -522,10 +492,10 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				final String pin1 = adb.getPin();
 				
-				if(pin1 == "" || pin1 == null || pin1.length() < 4){
+				if(pin1.equals("") || pin1 == null || pin1.length() < 4){
 					ComponentName cm = new ComponentName(_this, DevAdmin.class);
 					DPM.removeActiveAdmin(cm);
-					prefs.edit().putBoolean("admin", true).commit();
+					prefs.edit().putBoolean("admin", true).apply();
 					enableSMS.setChecked(false);
 					CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
 					return;
@@ -537,17 +507,11 @@ public class MainActivity extends ActionBarActivity {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						if(pin1.equals(adbc.getPin()) && adbc.getPin() != ""){
+						if(pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")){
 							String pin = "";
 							try {
 								pin = Utils.SHA1(adbc.getPin());
-							} catch (NoSuchAlgorithmException e) {
-								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-								enableSMS.setChecked(false);
-								updateStates();
-								e.printStackTrace();
-								return;
-							} catch (UnsupportedEncodingException e) {
+							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
 								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
 								enableSMS.setChecked(false);
 								updateStates();
@@ -555,17 +519,14 @@ public class MainActivity extends ActionBarActivity {
 								return;
 							}
 							
-							prefs.edit()
-							.putBoolean("smsenabled", true)
-							.putString("pin", pin)
-							.commit();
+							prefs.edit().putBoolean("smsenabled", true).putString("pin", pin).apply();
 							updateStates();
 							CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
 							showPostSetup();
 						}else{
 							ComponentName cm = new ComponentName(_this, DevAdmin.class);
 							DPM.removeActiveAdmin(cm);
-							prefs.edit().putBoolean("admin", true).commit();
+							prefs.edit().putBoolean("admin", true).apply();
 				        	enableSMS.setChecked(false);
 							CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
 							updateStates();
@@ -593,7 +554,7 @@ public class MainActivity extends ActionBarActivity {
 	        // Make sure the request was successful
 	        if (resultCode == RESULT_OK) {
 	        	
-				prefs.edit().putBoolean("admin", true).commit();
+				prefs.edit().putBoolean("admin", true).apply();
 				setPin();
 	        }else{
 	        	enableSMS.setChecked(false);
@@ -604,20 +565,20 @@ public class MainActivity extends ActionBarActivity {
 	}
 
     @Override
-    public void onRequestPermissionsResult(int resultCode, String permissions[], int[] grantResults){
+    public void onRequestPermissionsResult(int resultCode, @NonNull String permissions[], @NonNull int[] grantResults){
         if(resultCode == REQUEST_CODE_PERMISSIONS){
 
             boolean permissionsGranted = true;
-            for(int i=0; i<grantResults.length; i++){
-                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                    permissionsGranted = false;
-                }
-            }
+			for (int grantResult : grantResults) {
+				if (grantResult != PackageManager.PERMISSION_GRANTED) {
+					permissionsGranted = false;
+				}
+			}
 
             if(permissionsGranted){
                 //show something here? unsure as of yet
             }else{
-                Toast.makeText(this, getStr(R.string.error_permissions), Toast.LENGTH_LONG).show();
+                CustomToast.makeText(this, getStr(R.string.error_permissions), Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -663,7 +624,7 @@ public class MainActivity extends ActionBarActivity {
                 toggleDnd.setChecked(false);
             }
 
-            toggleRestriction.setEnabled(smsenabled);
+            toggleDnd.setEnabled(smsenabled);
 		}else{
             //device doesn't support DND control, so hide the option if it exists
             if(toggleDnd != null) {

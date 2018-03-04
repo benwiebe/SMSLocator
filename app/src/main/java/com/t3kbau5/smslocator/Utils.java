@@ -1,41 +1,18 @@
 package com.t3kbau5.smslocator;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import com.android.vending.billing.IInAppBillingService;
-
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -45,6 +22,18 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Base64;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class Utils {
     public static String convertToHex(byte[] data) {
@@ -149,7 +138,7 @@ public class Utils {
     	
     	int displayNum = prefs.getInt("notifDisplayNum", 0);
     	displayNum++;
-    	prefs.edit().putInt("notifDisplayNum", displayNum);
+    	prefs.edit().putInt("notifDisplayNum", displayNum).apply();
 
     	Intent intent = new Intent(context, Interactions.class);
     	
@@ -297,7 +286,7 @@ public class Utils {
                 exitSu = false;
                 Log.d("ROOT", "Can't get root access or denied by user");
              }
-             else if (true == currUid.contains("uid=0"))
+             else if (currUid.contains("uid=0"))
              {
                 retval = true;
                 exitSu = true;
@@ -343,12 +332,9 @@ public class Utils {
 	                    return true;
 	                }
 	            }
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-           
 
             return false;
     	

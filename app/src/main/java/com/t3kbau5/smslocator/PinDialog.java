@@ -17,12 +17,12 @@ import com.t3kbau5.smslocator.Utils;
 public class PinDialog{
 
 	Context context;
-	AlertDialog.Builder adb;
+	private AlertDialog.Builder adb;
 	
-	String message;
-	Boolean hidden = false;
+	private String message;
+	private Boolean hidden = false;
 	
-	String input = "";
+	private String input = "";
 	
 	public PinDialog(Context context, String message) {
 		this.context = context;
@@ -78,8 +78,7 @@ public class PinDialog{
 		return input;
 	}
 	public String getEncryptedPin() throws NoSuchAlgorithmException, UnsupportedEncodingException{
-		String hash = Utils.SHA1(input);
-		return hash;
+		return Utils.SHA1(input);
 	}
 	
 	public Dialog show(){

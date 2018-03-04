@@ -71,6 +71,8 @@ public class BCR extends BroadcastReceiver {
 
             Bundle pdusBundle = intent.getExtras();
             Object[] pdus = (Object[]) pdusBundle.get("pdus");
+            if(pdus == null)
+                return;
             SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
 
 
@@ -149,7 +151,7 @@ public class BCR extends BroadcastReceiver {
 
                 hasPremium = prefs.getBoolean("premium", false);
 
-                if (cmd != null && cmd != "" && !hasPremium) {
+                if (cmd != null && !cmd.equals("") && !hasPremium) {
                     addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
                     reply(getStr(R.string.sms_nopremium), sender);
                     return;
@@ -159,11 +161,11 @@ public class BCR extends BroadcastReceiver {
                 String resp = "";
                 if (cmd.equals(null) || cmd.equals("")) {
                     resp = sendLocation(sender);
-                } else if (cmd.equals(getStr(R.string.command_lock)) && isCorrectPin) {
+                } else if (cmd.equals(getStr(R.string.command_lock))) {
                     DPM.lockNow();
                     reply(getStr(R.string.sms_locked), sender);
                     resp = getStr(R.string.sms_locked);
-                } else if (cmd.equals(getStr(R.string.command_reset)) && isCorrectPin) {
+                } else if (cmd.equals(getStr(R.string.command_reset))) {
                     if (!prefs.getBoolean("passChange", false)) {
                         addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
                         reply(getStr(R.string.sms_nopasschange), sender);
@@ -185,7 +187,7 @@ public class BCR extends BroadcastReceiver {
                         reply(getStr(R.string.smstemp_passchange) + words[3], sender);
                         resp = getStr(R.string.smstemp_passchange) + words[3];
                     }
-                } else if (cmd.equals(getStr(R.string.command_sound)) && isCorrectPin) {
+                } else if (cmd.equals(getStr(R.string.command_sound))) {
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                     resp = getStr(R.string.sms_audio);
@@ -201,7 +203,7 @@ public class BCR extends BroadcastReceiver {
                     }
 
                     reply(resp, sender);
-                } else if (cmd.equals(getStr(R.string.command_ring)) && isCorrectPin) {
+                } else if (cmd.equals(getStr(R.string.command_ring))) {
                     playSound();
                     reply(getStr(R.string.sms_ringing), sender);
                     resp = getStr(R.string.sms_ringing);
@@ -240,7 +242,7 @@ public class BCR extends BroadcastReceiver {
     }
 
     private String sendLocation(String destinationAddress) {
-        if (destinationAddress.equals(null)) return ""; //if we didn't get a valid address, return
+        if (destinationAddress.equals("") || destinationAddress == null) return ""; //if we didn't get a valid address, return
 
         if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
@@ -414,7 +416,7 @@ public class BCR extends BroadcastReceiver {
 		intent.putExtra("hasPremium", hasPremium);
 		context.startService(intent);
 		
-		prefs.edit().putBoolean("lostMode", true).putString("lostNumber", destination).commit();
+		prefs.edit().putBoolean("lostMode", true).putString("lostNumber", destination).apply();
 		reply(getStr(R.string.sms_lostOn), destination);
 		return getStr(R.string.sms_lostOn);
 	}
@@ -424,7 +426,7 @@ public class BCR extends BroadcastReceiver {
 		//lm.removeUpdates(lostModeListener);  
 		Intent intent = new Intent(context, LostService.class);
 		context.stopService(intent);
-		prefs.edit().putBoolean("lostMode", false).putString("lostNumber", "").commit();
+		prefs.edit().putBoolean("lostMode", false).putString("lostNumber", "").apply();
 		reply(getStr(R.string.sms_lostOff), sender);
 		return getStr(R.string.sms_lostOff);
 	}

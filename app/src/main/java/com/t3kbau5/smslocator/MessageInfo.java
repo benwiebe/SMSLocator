@@ -1,22 +1,19 @@
 package com.t3kbau5.smslocator;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import android.annotation.TargetApi;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.preference.PreferenceManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class MessageInfo extends ActionBarActivity {
 
@@ -40,7 +37,7 @@ public class MessageInfo extends ActionBarActivity {
 		
 		Utils.cancelNotif(this, 0);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		prefs.edit().putString("alertUri", "").commit();
+		prefs.edit().putString("alertUri", "").apply();
 		
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rl_mi);
 		
@@ -78,7 +75,7 @@ public class MessageInfo extends ActionBarActivity {
 			e.printStackTrace();
 		}
 		
-		prefs.edit().putString("msgArr", "[]").putString("destArr", "[]").commit();
+		prefs.edit().putString("msgArr", "[]").putString("destArr", "[]").apply();
 		
 		if(jsonerror){
 			msgView.setText(getStr(R.string.error_msgjson));

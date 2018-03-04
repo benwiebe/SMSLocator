@@ -157,7 +157,7 @@ public class NumberAdapter extends BaseAdapter{
 			fs = fs + numbers.get(numbers.size()-1);
 		}
 		Log.d("NumberAdapter", fs);
-		prefs.edit().putString("pnumbers", fs).commit();
+		prefs.edit().putString("pnumbers", fs).apply();
 	}
 	
 	public void updateData(){

@@ -1,13 +1,12 @@
 package com.t3kbau5.smslocator;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
-import android.annotation.TargetApi;
-import android.os.Build;
 
 public class AppHelp extends ActionBarActivity {
 

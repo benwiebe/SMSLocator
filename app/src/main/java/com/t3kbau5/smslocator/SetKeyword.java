@@ -63,18 +63,14 @@ public class SetKeyword extends ActionBarActivity {
 							
 							try {
 								isCorrectPin = Utils.compareToSHA1(pin, prefs.getString("pin", ""));
-							} catch (NoSuchAlgorithmException e) {
-								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-								e.printStackTrace();
-								return;
-							} catch (UnsupportedEncodingException e) {
+							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
 								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
 								e.printStackTrace();
 								return;
 							}
 							
 							if(isCorrectPin){
-								prefs.edit().putString("keyPhrase", p1).commit();
+								prefs.edit().putString("keyPhrase", p1).apply();
 								CustomToast.makeText(_this, getStr(R.string.message_passchanged), Toast.LENGTH_SHORT, 2).show();
 								((Activity) _this).finish();
 							}else{

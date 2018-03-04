@@ -1,30 +1,27 @@
 package com.t3kbau5.smslocator;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import android.os.Bundle;
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.view.Gravity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
-import android.text.format.DateFormat;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Build;
-import android.preference.PreferenceManager;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class Interactions extends ActionBarActivity {
 
@@ -42,7 +39,7 @@ public class Interactions extends ActionBarActivity {
 		
 		Utils.cancelNotif(this, 0);
 		
-		PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("notifDisplayNum", 0); //reset the notification display
+		PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("notifDisplayNum", 0).apply(); //reset the notification display
 		
 		dh = new DataHandler(this, null, null, 1);
 		
@@ -100,11 +97,11 @@ public class Interactions extends ActionBarActivity {
 					final TextView tv2 = new TextView(_this);
 					final TextView tv3 = new TextView(_this);
 					final TextView tv4 = new TextView(_this);
-					
-					tv1.setBackgroundDrawable(getResources().getDrawable(R.drawable.cellshape));
-					tv2.setBackgroundDrawable(getResources().getDrawable(R.drawable.cellshape));
-					tv3.setBackgroundDrawable(getResources().getDrawable(R.drawable.cellshape));
-					tv4.setBackgroundDrawable(getResources().getDrawable(R.drawable.cellshape));
+
+					tv1.setBackgroundResource(R.drawable.cellshape);
+					tv2.setBackgroundResource(R.drawable.cellshape);
+					tv3.setBackgroundResource(R.drawable.cellshape);
+					tv4.setBackgroundResource(R.drawable.cellshape);
 					
 					tv1.setSingleLine(false);
 					tv2.setSingleLine(false);
@@ -214,7 +211,7 @@ public class Interactions extends ActionBarActivity {
 				public void onClick(DialogInterface dialog, int which) {
 					UPTAPS++;
 					if(UPTAPS >= 10){
-						PreferenceManager.getDefaultSharedPreferences(_this).edit().putBoolean("premium", true).commit();
+						PreferenceManager.getDefaultSharedPreferences(_this).edit().putBoolean("premium", true).apply();
 						CustomToast.makeText(_this, "Premium unlocked!", CustomToast.LENGTH_LONG).show();
 					}
 					dialog.cancel();
