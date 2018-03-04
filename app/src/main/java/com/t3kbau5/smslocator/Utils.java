@@ -1,6 +1,7 @@
 package com.t3kbau5.smslocator;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
@@ -55,16 +57,16 @@ public class Utils {
         byte[] sha1hash = md.digest();
         return convertToHex(sha1hash);
     }
-    
+
     public static boolean compareToSHA1(String text, String hash) throws NoSuchAlgorithmException, UnsupportedEncodingException{
     	String tHash = SHA1(text);
     	return tHash.equals(hash);
     }
-    
+
     public static Notification createNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int priority){
-    	
+
     	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-    	
+
     	NotificationCompat.Builder mBuilder =
     	        new NotificationCompat.Builder(context)
     	        .setSmallIcon(smallIcon)
@@ -73,21 +75,21 @@ public class Utils {
     	        .setLargeIcon(largeIconB)
     	        .setNumber(number)
     	        .setPriority(priority);
-    	        
 
-    	
+
+
     	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
     	return mBuilder.build();
     }
-    
+
     public static int showNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int id, int priority){
     	int mId = 0;
     	if(id != -1){
     		mId = id;
     	}
-    	
+
     	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-    	
+
     	NotificationCompat.Builder mBuilder =
     	        new NotificationCompat.Builder(context)
     	        .setSmallIcon(smallIcon)
@@ -97,7 +99,7 @@ public class Utils {
     	        .setNumber(number)
     	        .setPriority(priority);
 
-    	
+
     	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
     	NotificationManager mNotificationManager =
     	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -105,15 +107,15 @@ public class Utils {
     	mNotificationManager.notify(mId, mBuilder.build());
     	return mId;
     }
-    
+
     public static int showPersistantNofif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int id, int priority){
     	int mId = 0;
     	if(id != -1){
     		mId = id;
     	}
-    	
+
     	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-    	
+
     	NotificationCompat.Builder mBuilder =
     	        new NotificationCompat.Builder(context)
     	        .setSmallIcon(smallIcon)
@@ -122,42 +124,42 @@ public class Utils {
     	        .setLargeIcon(largeIconB)
     	        .setPriority(priority);
 
-    	
+
     	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT))
     			.setOngoing(true);
     	NotificationManager mNotificationManager =
     	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     	// mId allows you to update the notification later on.
     	mNotificationManager.notify(mId, mBuilder.build());
-    	
+
     	return mId;
     }
-    
+
     public static void showMessageNotif(Context context, String destination, String contents){
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	
+
     	int displayNum = prefs.getInt("notifDisplayNum", 0);
     	displayNum++;
     	prefs.edit().putInt("notifDisplayNum", displayNum).apply();
 
     	Intent intent = new Intent(context, Interactions.class);
-    	
+
     	Notification notif = createNotif(context, getStr(context, R.string.notif_sent_title), getStr(context, R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, displayNum, Integer.parseInt(prefs.getString("notif_priority", "0")));
 
     	NotificationManager mNotificationManager =
         	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         	// mId allows you to update the notification later on.
         	mNotificationManager.notify(0, notif);
-    	
+
     }
-    
+
     public static void cancelNotif(Context context, int id){
     	NotificationManager mNotificationManager =
         	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     	mNotificationManager.cancel(id);
     }
-    
-    
+
+
     public static String formatHtml(String coded){
 		coded = coded.replace("[b]", "<b>");
 		coded = coded.replace("[/b]", "</b>");
@@ -169,7 +171,7 @@ public class Utils {
 		coded = coded.replace("\n", "<br />");
 		return coded;
 	}
-    
+
     public static Spanned formatAndSpan(String coded){
     	return Html.fromHtml(formatHtml(coded));
     }
@@ -179,59 +181,59 @@ public class Utils {
 		SmsManager sm = SmsManager.getDefault();
 		sm.sendTextMessage(destination, null, message, null, null);
     }
-    
+
     public static String getProvider(Context context){
     	LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     	if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) return LocationManager.GPS_PROVIDER;
     	else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return LocationManager.NETWORK_PROVIDER;
     	else return null;
     }
-    
+
     public static String getProvider(LocationManager lm){
     	if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) return LocationManager.GPS_PROVIDER;
     	else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return LocationManager.NETWORK_PROVIDER;
     	else return null;
     }
-    
+
     public static String getStr(Context context, int id){
     	return context.getResources().getString(id);
     }
-    
+
     public static Location getUpdatedLocation(final Context context){
-    	
+
     	final LocationListener ll = new LocationListener(){
 
     		int i=0;
-    		
+
 			@Override
 			public void onLocationChanged(Location location) {
 				if(i >= 5){
-					
+
 				}else{
 					i++;
 				}
-				
+
 			}
 
 			@Override
 			public void onProviderDisabled(String provider) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onProviderEnabled(String provider) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onStatusChanged(String provider, int status,
 					Bundle extras) {
 				// TODO Auto-generated method stub
-				
+
 			}
-    		
+
     	};
 
 		LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -243,8 +245,8 @@ public class Utils {
 		}else{
 			return null;
 		}
-		
-		lm.requestLocationUpdates(provider, 5, 1000, ll);
+
+		//lm.requestLocationUpdates(provider, 5, 1000, ll); //TODO: this
 
     	
     	return null;
@@ -354,5 +356,10 @@ public class Utils {
 
         return b;
     }
+
+	public static boolean isTestDevice(Activity act) {
+		String testLabSetting = Settings.System.getString(act.getContentResolver(), "firebase.test.lab");
+		return "true".equals(testLabSetting);
+	}
 
 }

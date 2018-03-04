@@ -59,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
 	DevicePolicyManager DPM;
 	CompoundButton toggleDnd;
 	Boolean dndPending = false;
+    Boolean permissionsDuringEnable = false;
 	
 	BillingUtil2 bu;
 	
@@ -276,7 +277,8 @@ public class MainActivity extends ActionBarActivity {
 
 
 		//Support for the new permissions system
-		if (!Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
+		if (smsenabled && !Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
+            permissionsDuringEnable = false;
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
 		}
 	}
@@ -396,7 +398,10 @@ public class MainActivity extends ActionBarActivity {
     }
 	
 	private void showAd(){
-		
+
+        if(Utils.isTestDevice(this))
+            return;
+
 		if(Utils.checkAdBlock()){
 			
 			//disable the services
@@ -471,7 +476,7 @@ public class MainActivity extends ActionBarActivity {
 		return adb.show();
 	}
 	
-	private void requestAdmin(){
+	protected void requestAdmin(){
 		
 		if(prefs.getBoolean("admin", false)) return;
 		
@@ -576,10 +581,21 @@ public class MainActivity extends ActionBarActivity {
 			}
 
             if(permissionsGranted){
-                //show something here? unsure as of yet
+                if(permissionsDuringEnable) {
+                    if(!prefs.getBoolean("premium", false) || prefs.getBoolean("admin", false)){
+                        setPin();
+                    }else{
+                        requestAdmin();
+                    }
+                }
             }else{
                 CustomToast.makeText(this, getStr(R.string.error_permissions), Toast.LENGTH_LONG).show();
-                finish();
+                if(permissionsDuringEnable) {
+                    enableSMS.setChecked(false);
+                    updateStates();
+                }else {
+                    finish();
+                }
             }
         }
     }
@@ -635,6 +651,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void showTermsDialog(){
+		final Activity _this = this;
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getStr(R.string.dialog_terms))
 			.setMessage(Utils.formatAndSpan(getStr(R.string.app_terms) + "[br][br]" + getStr(R.string.admin_details)))
@@ -643,11 +660,10 @@ public class MainActivity extends ActionBarActivity {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					dialog.cancel();
-					if(prefs.getBoolean("admin", false)){
-						setPin();
-					}else{
-						requestAdmin();
-					}
+					if (!Utils.checkPermissionsGranted(_this).getBoolean("allGranted")) {
+                        permissionsDuringEnable = true;
+                        ActivityCompat.requestPermissions(_this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
+                    }
 				}
 			})
 			.setNegativeButton(getStr(R.string.dialog_donotagree), new DialogInterface.OnClickListener() {

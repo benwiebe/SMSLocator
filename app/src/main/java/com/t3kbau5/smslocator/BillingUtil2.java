@@ -29,7 +29,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
     private boolean hasPremium;
     private SharedPreferences prefs;
 
-    public BillingUtil2(Activity activity) {
+    public BillingUtil2(MainActivity activity) {
         this.activity = activity;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
@@ -86,6 +86,9 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
                 switch(purchase.getSku()) {
                     case SKU_PREMIUM:
                         hasPremium = true;
+                        if(prefs.getBoolean("smsenabled", false) && prefs.getBoolean("admin", false))
+                            ((MainActivity) activity).requestAdmin();
+
                         ((MainActivity) activity).updateStates();
                         break;
                     default:
@@ -106,7 +109,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
     @Override
     public void onBillingSetupFinished(int responseCode) {
         if (responseCode == BillingClient.BillingResponse.OK) {
-            // The billing client is ready. You can query purchases here.
+            updatePurchases();
         }
     }
 
