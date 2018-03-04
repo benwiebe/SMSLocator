@@ -9,6 +9,8 @@
         <item>Keyword</item>
         <item>Commands</item>
         <item>Number Restriction</item>
+        <item>Uninstalling</item>
+        <item>Contact Support</item>
     </string-array>
     
     <!-- <string name="help_setup">I need to decide what to put here.</string> -->
@@ -20,7 +22,9 @@
     <string name="help_restriction">SMSLocator allows you to limit who can interact with it on your phone. You can enter phone numbers of people whom you trust so that only those numbers are allowed. [br][b]It is [u]extremely[/u] important that you will be able to use the devices that the numbers belong to. If you don\'t, you will not be able to talk to SMSLocator as long as the restriction is enabled. Be sure to keep the list up to date![/b][br]Phone numbers must include a + then the country code (ex. +1 for North America). For example, +12345678910</string>
     
     <string name="help_commands">Below is a list of all the commands you can send SMSLocator. Commands marked with (*) are only available with the premium upgrade.</string>
-    
+
+    <string name="help_uninstall">To uninstall SMSLocator you have a few options. Each version of Android is a little different, so these instructions may differ slightly but the general idea should help you. Your first option is to disable SMSLocator through the app itself. Tap the toggle button labelled “Enable SMSLocator”, you will be prompted for your pin. Once you enter it correctly the app will be disabled. You can then uninstall the app as you would any other app. If that fails for some reason, you will need to go into your settings and find “Security” then “Device Administrators”. Then, find SMSLocator, tap it, then tap “Deactivate”. You can then uninstall SMSLocator as you would any other app.</string>
+
     <string-array name="help_commands">
         <item>[Keyword] [pin]</item>
         <item>[Keyword] [pin] lock</item>
