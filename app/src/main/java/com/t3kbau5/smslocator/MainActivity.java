@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
 	CompoundButton toggleDnd;
 	Boolean dndPending = false;
 	
-	BillingUtil bu;
+	BillingUtil2 bu;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
 
-		bu = new BillingUtil(this, true);
+		bu = new BillingUtil2(this);
 		
 		enableSMS = (ToggleButton) findViewById(R.id.enableSMS);
 		//enableSMS.setChecked(smsenabled);
@@ -318,9 +318,6 @@ public class MainActivity extends ActionBarActivity {
 	
 	@Override
 	public void onResume(){
-		
-		bu.bind();
-		
 		updateStates();
 		
 		super.onResume();
@@ -328,7 +325,6 @@ public class MainActivity extends ActionBarActivity {
 	
 	@Override
 	public void onPause(){
-		bu.unbind();
 		super.onPause();
 	}
 	
@@ -364,19 +360,9 @@ public class MainActivity extends ActionBarActivity {
     					dialog.dismiss();
     					
     					if(bu.hasPremium()){
-							prefs.edit().putBoolean("premium", true).commit();
 							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
 						}else{
-    					
-	    					try {
-	    						bu.buyPremium(_act);
-	    					} catch (RemoteException e) {
-	    						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
-	    						e.printStackTrace();
-	    					} catch (SendIntentException e) {
-	    						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
-	    						e.printStackTrace();
-	    					}
+							bu.buyPremium();
 						}
     				}
     			});
@@ -394,10 +380,8 @@ public class MainActivity extends ActionBarActivity {
 						dialog.dismiss();
 						
 						if(bu.hasPremium()){
-							prefs.edit().putBoolean("premium", true).commit();
 							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
 						}else{
-							prefs.edit().putBoolean("premium", false).commit();
 							CustomToast.makeText(getBaseContext(), getStr(R.string.error_notowned), Toast.LENGTH_LONG, 1).show();
 						}
 						
@@ -460,17 +444,7 @@ public class MainActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					try {
-						bu.buyPremium(_act);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
-						_act.finish();
-					} catch (SendIntentException e) {
-						e.printStackTrace();
-						CustomToast.makeText(getBaseContext(), getStr(R.string.error_purchase), Toast.LENGTH_LONG, 1).show();
-						_act.finish();
-					}
+					bu.buyPremium();
 				}
 			});
 			adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
@@ -490,7 +464,8 @@ public class MainActivity extends ActionBarActivity {
 		mAdView.setAdSize(AdSize.SMART_BANNER);
 		mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
 
-		AdRequest adreq = new AdRequest.Builder().addTestDevice("DDE74346487E0E27819B486242F21C95").build();
+		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
+												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4").build();
 		
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -625,25 +600,6 @@ public class MainActivity extends ActionBarActivity {
 	        	showAdminDialog();
 	        	updateStates();
 	        }
-	    }else if(requestCode == BillingUtil.REQUEST_CODE){
-	    	int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
-	        String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-	        String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
-	          
-	        if (responseCode == RESULT_OK) {
-	           try {
-	        	  prefs.edit().putBoolean("premium", true).commit();
-	              JSONObject jo = new JSONObject(purchaseData);
-	              String sku = jo.getString("productId");
-	              //stuff
-	            }
-	            catch (JSONException e) {
-	               //stuff
-	               e.printStackTrace();
-	            }
-	        }
-
-
 	    }
 	}
 
@@ -667,7 +623,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 	
-	private void updateStates(){
+	protected void updateStates(){
 		Boolean current = smsenabled;
 		smsenabled = prefs.getBoolean("smsenabled", false);
 		if(current!= smsenabled){
