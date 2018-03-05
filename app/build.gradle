@@ -8,8 +8,8 @@ android {
         applicationId "com.t3kbau5.smslocator"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 17
-        versionName "2.6.0"
+        versionCode 18
+        versionName "2.6.1"
     }
 
     buildTypes {
