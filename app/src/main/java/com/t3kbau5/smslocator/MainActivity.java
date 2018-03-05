@@ -14,6 +14,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -42,6 +43,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -624,7 +626,12 @@ public class MainActivity extends ActionBarActivity {
 
 		// Check if we're at a high enough API to control DND
         //LG Phones are broken currently, see http://mobile.developer.lge.com/support/forums/general/?pageMode=Detail&tID=10000362
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Build.BRAND.toLowerCase().equals("lg")) {
+		//add extra check for the required activity
+        Intent dndIntent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+        List<ResolveInfo> dndlist = getPackageManager().queryIntentActivities(dndIntent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && dndlist.size() > 0 && !Build.BRAND.toLowerCase().equals("lg")) {
             if(prefs.getBoolean("dndcontrol", false) || dndPending){
 				dndPending = false;
                 NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
