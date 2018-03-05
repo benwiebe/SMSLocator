@@ -60,12 +60,17 @@
     <string name="dialog_adblock_title">Ad Blocker Detected</string>
     <string name="dialog_adblock_msg">It seems that you\'re using an ad blocker on this device. To use SMSLocator, please disable it or purchase premium. If you believe this message is in error, please contact support.</string>
     <string name="dialog_purchase">Purchase</string>
+    <string name="dialog_watchad">Watch Ad</string>
 
     <string name="dialog_pleaseWait">Please wait&#8230;</string>
     <string name="dialog_interactionLoad">Interactions are currently loading.</string>
     <string name="dialog_clearInteractions">Clear Interactions?</string>
     <string name="dialog_clearInteractionsMessage">Would you like to clear the list of interactions? This can\'t be undone.</string>
     <string name="dialog_clear">Clear</string>
+
+    <string name="dialog_freemium_success">Success! You have unlocked premium for 7 days. Expiry:</string>
+    <string name="dialog_fremium_expired">Your free week of premium has expired. Please purchase or watch another video if you would like to continue using premium features!</string>
+    <string name="dialog_premium_offline">Uh-oh! We\'re having trouble accessing the Google Play store. Please double-check your internet connection then try again.</string>
     
     <!-- Messages -->
     <string name="message_confirmpin">Please confirm your pin to change this setting.</string>

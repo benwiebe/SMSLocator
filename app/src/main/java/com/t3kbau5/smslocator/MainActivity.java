@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -36,12 +37,17 @@ import android.widget.ToggleButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -322,45 +328,115 @@ public class MainActivity extends ActionBarActivity {
             	startActivity(intent);
             	return true;
             case R.id.menu_unlock:
-				AlertDialog.Builder adb = new AlertDialog.Builder(this);
-    			adb.setTitle(getStr(R.string.dialog_premium));
-    			adb.setMessage(getStr(R.string.dialog_upgrade));
-    			adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
-    				
-    				@Override
-    				public void onClick(DialogInterface dialog, int which) {
-    					dialog.dismiss();
-    					
-    					if(bu.hasPremium()){
-							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
-						}else{
-							bu.buyPremium();
-						}
-    				}
-    			});
-    			adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-    			adb.setNeutralButton(getStr(R.string.dialog_restore), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						
-						if(bu.hasPremium()){
-							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
-						}else{
-							CustomToast.makeText(getBaseContext(), getStr(R.string.error_notowned), Toast.LENGTH_LONG, 1).show();
-						}
-						
-					}
-				});
-    			adb.show();
-            	
+                final Activity _act = this;
+
+                if(bu.isConnected()) {
+
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle(getStr(R.string.dialog_premium));
+                    adb.setMessage(getStr(R.string.dialog_upgrade));
+                    adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                            if (bu.hasPremium()) {
+                                CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+                            } else {
+                                bu.buyPremium();
+                            }
+                        }
+                    });
+                    adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    adb.setNeutralButton(getStr(R.string.dialog_watchad), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                            final ProgressDialog pd = ProgressDialog.show(_act, Utils.getStr(_act, R.string.dialog_pleaseWait), "");
+                            final RewardedVideoAd mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(_act);
+                            mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                                @Override
+                                public void onRewardedVideoAdLoaded() {
+                                    pd.dismiss();
+                                    mRewardedVideoAd.show();
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdOpened() {
+
+                                }
+
+                                @Override
+                                public void onRewardedVideoStarted() {
+
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdClosed() {
+
+                                }
+
+                                @Override
+                                public void onRewarded(RewardItem rewardItem) {
+                                    Calendar expiry = Calendar.getInstance();
+                                    expiry.add(Calendar.DAY_OF_MONTH, 7);
+                                    String expiryString = expiry.get(Calendar.DAY_OF_MONTH) + "-" + (expiry.get(Calendar.MONTH) + 1) + "-" + expiry.get(Calendar.YEAR);
+
+                                    prefs.edit().putLong("freemium_expiry", expiry.getTimeInMillis()).putBoolean("premium", true).apply();
+                                    updateStates();
+                                    AlertDialog.Builder adb = new AlertDialog.Builder(_this)
+                                            .setTitle(Utils.getStr(_this, R.string.dialog_premium))
+                                            .setMessage(Utils.getStr(_this, R.string.dialog_freemium_success) + " " + expiryString)
+                                            .setPositiveButton(Utils.getStr(_this, R.string.dialog_continue), new DialogInterface.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    adb.show();
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdLeftApplication() {
+
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdFailedToLoad(int i) {
+
+                                }
+                            });
+                            AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
+                                    .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4").build();
+
+                            mRewardedVideoAd.loadAd("ca-app-pub-3534916998867938/5345514381", adreq);
+                            //mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917", adreq);
+                        }
+                    });
+                    adb.show();
+                }else{ //billing not connected, device likely offline
+                    AlertDialog.Builder adb = new AlertDialog.Builder(_this)
+                                            .setTitle(Utils.getStr(_this, R.string.dialog_tryagain))
+                                            .setMessage(Utils.getStr(_this, R.string.dialog_premium_offline))
+                                            .setNegativeButton(Utils.getStr(_this, R.string.dialog_close), new DialogInterface.OnClickListener(){
+
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                    adb.show();
+                }
 			
             	return true;
             case R.id.menu_interactions:

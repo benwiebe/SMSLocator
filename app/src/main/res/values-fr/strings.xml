@@ -66,6 +66,7 @@
     <string name="dialog_adblock_title">Blockeur de Publicité</string>
     <string name="dialog_adblock_msg">Il semble que vous utilisez une blockeur de publicité sur cet appareil. Pour utiliser SMSLocator, s\'il vous plaît désactivez-le, ou achetez deluxe. Si vous pensez que ce message est en erreur, s\'il vous plaît contactez-nous.</string>
     <string name="dialog_purchase">Acheter</string>
+    <string name="dialog_watchad">Regarder un publicité</string>
     
     <!-- Messages -->
     <string name="message_confirmpin">S\'il vous plaît confirmer votre NIP pour modifier ce paramètre.</string>
@@ -115,4 +116,7 @@
     <string name="prefs_notif_priority_desc">Définit l\'importance des notifications. Notifications "heads-up" seront montrés quand "élevé" ou plus haut est sélectionné (Lollipop seulement)</string>
     <string name="prefs_gpswait">Temps d\'attente pour GPS</string>
     <string name="prefs_gpswait_desc">Définit combien de temps l\'appareil essaiera d\'obtenir un nouvel emplacement avant d\'envoyer un ancien emplacement</string>
+    <string name="dialog_freemium_success">Succès! Vous avez activé la version deluxe pour 7 jours. Expiration:</string>
+    <string name="dialog_fremium_expired">Votre semaine de deluxe gratuite a expiré. S\'il vous plaît acheter ou regarder une autre vidéo si vous souhaitez continuer à utiliser des fonctionnalités deluxe!</string>
+    <string name="dialog_premium_offline">Nous avons des difficultés à accéder Google Play. Veuillez vérifier votre connexion Internet, puis réessayer.</string>
 </resources>

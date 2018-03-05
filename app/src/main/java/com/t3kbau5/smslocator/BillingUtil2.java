@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -21,12 +24,14 @@ import java.util.List;
 
 public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListener, PurchaseHistoryResponseListener {
 
+    private static final boolean TEST_MODE = false && BuildConfig.DEBUG; //use test mode if this is a debug build and I'm not doing other fancy stuff
+
     private static final String SKU_PREMIUM = "premium";
 
 
     private Activity activity;
     private BillingClient mBillingClient;
-    private boolean hasPremium;
+    private boolean hasPremium = false;
     private SharedPreferences prefs;
 
     public BillingUtil2(MainActivity activity) {
@@ -96,6 +101,10 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
                 }
             }
 
+            // Support Freemium Stuff
+            if(prefs.getLong("freemium_expiry", 0L) > Calendar.getInstance().getTimeInMillis())
+                hasPremium = true;
+
             prefs.edit().putBoolean("premium", hasPremium).apply();
         } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
@@ -121,6 +130,21 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
 
     @Override
     public void onPurchaseHistoryResponse(int responseCode, List<Purchase> purchasesList) {
-        onPurchasesUpdated(responseCode, purchasesList);
+        if(!TEST_MODE)
+            onPurchasesUpdated(responseCode, purchasesList);
+        else if(responseCode == BillingClient.BillingResponse.OK && purchasesList != null){
+            for(Purchase purchase : purchasesList) {
+                if(purchase.getSku().equals(SKU_PREMIUM)) {
+                    mBillingClient.consumeAsync(purchase.getPurchaseToken(), new ConsumeResponseListener() {
+                        @Override
+                        public void onConsumeResponse(int responseCode, String purchaseToken) {
+                            if(responseCode == BillingClient.BillingResponse.OK) {
+                                CustomToast.makeText(activity, "Premium consumed", Toast.LENGTH_LONG, 2).show();
+                            }
+                        }
+                    });
+                }
+            }
+        }
     }
 }
