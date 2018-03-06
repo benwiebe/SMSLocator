@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 		//Support for the new permissions system
 		if (smsenabled && !Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
             permissionsDuringEnable = false;
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS}, REQUEST_CODE_PERMISSIONS);
 		}
 	}
 
@@ -745,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
 					dialog.cancel();
 					if (!Utils.checkPermissionsGranted(_this).getBoolean("allGranted")) {
                         permissionsDuringEnable = true;
-                        ActivityCompat.requestPermissions(_this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_PERMISSIONS);
+                        ActivityCompat.requestPermissions(_this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS}, REQUEST_CODE_PERMISSIONS);
                     }
 				}
 			})

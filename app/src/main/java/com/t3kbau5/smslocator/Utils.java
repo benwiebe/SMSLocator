@@ -352,9 +352,9 @@ public class Utils {
         b.putInt(Manifest.permission.RECEIVE_SMS, ActivityCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS));
         b.putInt(Manifest.permission.SEND_SMS, ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS));
         b.putInt(Manifest.permission.MODIFY_AUDIO_SETTINGS, ActivityCompat.checkSelfPermission(context, Manifest.permission.MODIFY_AUDIO_SETTINGS));
-        b.putInt(Manifest.permission.READ_PHONE_STATE, ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE));
+        //b.putInt(Manifest.permission.READ_PHONE_STATE, ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE));
 
-        b.putBoolean("allGranted", b.getInt(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+        b.putBoolean("allGranted", b.getInt(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED && b.getInt(Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED);
 
         return b;
     }
