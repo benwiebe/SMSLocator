@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -51,7 +51,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
 	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
     private int REQUEST_CODE_PERMISSIONS = 1703;
@@ -332,7 +332,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.menu_unlock:
                 final Activity _act = this;
 
-                if(bu.isConnected()) {
+                if(Utils.internetConnected(this) && bu.isConnected()) {
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
                     adb.setTitle(getStr(R.string.dialog_premium));

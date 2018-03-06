@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class MessageInfo extends ActionBarActivity {
+public class MessageInfo extends AppCompatActivity {
 
 	JSONArray messages;
 	JSONArray destinations;

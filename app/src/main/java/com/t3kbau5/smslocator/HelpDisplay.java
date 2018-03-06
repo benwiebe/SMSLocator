@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class HelpDisplay extends ActionBarActivity {
+public class HelpDisplay extends AppCompatActivity {
 
 	String topic;
 	TextView tv;
