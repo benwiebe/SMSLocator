@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -360,6 +362,13 @@ public class Utils {
 	public static boolean isTestDevice(Activity act) {
 		String testLabSetting = Settings.System.getString(act.getContentResolver(), "firebase.test.lab");
 		return "true".equals(testLabSetting);
+	}
+
+	public static boolean internetConnected(Context ctx) {
+		ConnectivityManager cm =
+				(ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		return netInfo != null && netInfo.isConnectedOrConnecting();
 	}
 
 }

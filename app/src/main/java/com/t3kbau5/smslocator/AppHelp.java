@@ -3,12 +3,12 @@ package com.t3kbau5.smslocator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
-public class AppHelp extends ActionBarActivity {
+public class AppHelp extends AppCompatActivity {
 
 	GridView topicGrid;
 	
