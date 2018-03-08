@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,7 @@ public class BCR extends BroadcastReceiver {
     Runnable rn;
 
     Boolean hasPremium = false;
+    Boolean freemiumExpired = false;
 
     private DataHandler dh;
 
@@ -151,9 +153,19 @@ public class BCR extends BroadcastReceiver {
 
                 hasPremium = prefs.getBoolean("premium", false);
 
+                if(hasPremium && prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) < Calendar.getInstance().getTimeInMillis()) {
+                    prefs.edit().putBoolean("premium", false).apply();
+                    freemiumExpired = true;
+                }
+
                 if (cmd != null && !cmd.equals("") && !hasPremium) {
-                    addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
-                    reply(getStr(R.string.sms_nopremium), sender);
+                    if(freemiumExpired) {
+                        addInteraction(sender, cmd, getStr(R.string.sms_freemium_expired));
+                        reply(getStr(R.string.sms_freemium_expired), sender);
+                    }else{
+                        addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
+                        reply(getStr(R.string.sms_nopremium), sender);
+                    }
                     return;
                 }
 

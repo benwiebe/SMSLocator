@@ -32,6 +32,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
     private Activity activity;
     private BillingClient mBillingClient;
     private boolean hasPremium = false;
+    private boolean buyingPremium = false;
     private SharedPreferences prefs;
 
     public BillingUtil2(MainActivity activity) {
@@ -64,6 +65,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
     }
 
     public void buyPremium() {
+        buyingPremium = true;
         BillingFlowParams flowParams = BillingFlowParams.newBuilder()
                 .setSku(SKU_PREMIUM)
                 .setType(BillingClient.SkuType.INAPP)
@@ -94,7 +96,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
                         if(prefs.getBoolean("smsenabled", false) && prefs.getBoolean("admin", false))
                             ((MainActivity) activity).requestAdmin();
 
-                        ((MainActivity) activity).updateStates();
+                        //((MainActivity) activity).updateStates();
                         break;
                     default:
                         // do nothing, for now
@@ -102,10 +104,17 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
             }
 
             // Support Freemium Stuff
-            if(prefs.getLong("freemium_expiry", 0L) > Calendar.getInstance().getTimeInMillis())
+            if(prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) > Calendar.getInstance().getTimeInMillis()) {
                 hasPremium = true;
-
+            }else{
+                prefs.edit().putBoolean("premium_is_freemium", false).apply();
+            }
             prefs.edit().putBoolean("premium", hasPremium).apply();
+            if(buyingPremium && hasPremium){
+                ((MainActivity) activity).finish();
+                ((MainActivity) activity).startActivity(((MainActivity) activity).getIntent());
+            }
+            buyingPremium = false;
         } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
             CustomToast.makeText(activity, Utils.getStr(activity, R.string.error_purchase), CustomToast.LENGTH_LONG, 1);

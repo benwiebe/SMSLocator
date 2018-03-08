@@ -100,7 +100,8 @@
     <string name="error_purchase">Une erreur s\'est produite lors de l\'achat.</string>
     <string name="error_notowned">Vous n\'avez pas acheté la version deluxe sur ce compte!</string>
     <string name="error_permissions">Droit(s) d\'accès non-accordés! Ceux-ci sont nécessaires pour que l\'appli fonctionne.</string>
-    
+    <string name="error_novideo">Erreur lors du chargement de la vidéo!</string>
+
     <!-- Notifications -->
     <string name="notif_sent_title">Message envoyé</string>
     <string name="notif_sent_body">Un message a été envoyé à\u0020</string>

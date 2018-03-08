@@ -281,7 +281,8 @@ public class MainActivity extends AppCompatActivity {
 		
 		if(!prefs.getBoolean("premium", false)){
 			showAd(); //if the user isn't premium, show an ad
-		}
+		}else if(prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) < Calendar.getInstance().getTimeInMillis())
+			prefs.edit().putBoolean("premium", false).apply();
 
 
 		//Support for the new permissions system
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
                                     expiry.add(Calendar.DAY_OF_MONTH, 7);
                                     String expiryString = expiry.get(Calendar.DAY_OF_MONTH) + "-" + (expiry.get(Calendar.MONTH) + 1) + "-" + expiry.get(Calendar.YEAR);
 
-                                    prefs.edit().putLong("freemium_expiry", expiry.getTimeInMillis()).putBoolean("premium", true).apply();
+                                    prefs.edit().putLong("freemium_expiry", expiry.getTimeInMillis()).putBoolean("premium", true).putBoolean("premium_is_freemium", true).apply();
                                     updateStates();
                                     AlertDialog.Builder adb = new AlertDialog.Builder(_this)
                                             .setTitle(Utils.getStr(_this, R.string.dialog_premium))
@@ -403,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     dialog.dismiss();
+                                                    finish();
+                                                    startActivity(getIntent());
                                                 }
                                             });
                                     adb.show();
@@ -415,7 +418,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onRewardedVideoAdFailedToLoad(int i) {
-
+                                    pd.dismiss();
+                                    CustomToast.makeText(_this, getStr(R.string.error_novideo), Toast.LENGTH_LONG, 1).show();
                                 }
                             });
                             AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")

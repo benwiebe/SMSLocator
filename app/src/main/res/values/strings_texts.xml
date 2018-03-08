@@ -10,6 +10,7 @@
     <string name="sms_nopremium">This device does not have premium features enabled. To do so, purchase the upgrade through the app.</string>
     <string name="sms_movementalert">[SMSLocator] The device moved more than 50 meters away from its original location! New coordinates will be sent momentarily.</string>
     <string name="sms_nonotifpolicy">The notification policy for SMSLocator has been revoked, thus Do-Not-Disturb mode was not changed.</string>
+    <string name="sms_freemium_expired">Your free premium has expired. Either watch another video or purchase premium to use this command. Normal location requests are still available.</string>
 
     <!-- SMS generic replies -->
     <string name="sms_locked">Phone locked!</string>
@@ -22,7 +23,7 @@
     <string name="sms_lostOff">Lost mode is now off.</string>
     <string name="sms_undnd">Do-not-disturb was also disabled.</string>
     <string name="sms_permissionmissing">Your request could not be completed as app permissions have been revoked!</string>
-    
+
     <!-- SMS reply templates -->
     <string name="smstemp_passchange">Password changed to </string>
     <string name="smstemp_pos1">Last known phone position:</string>

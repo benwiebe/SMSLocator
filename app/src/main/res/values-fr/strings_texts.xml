@@ -10,6 +10,7 @@
     <string name="sms_nopremium">Cet appareil n\'a pas le version deluxe, qui permet cette commande. Pour obtenir les fonctions deluxe, achète-le dans l\'application.</string>
     <string name="sms_movementalert">[SMSLocator] L\'appareil a été dépacé plus de 50 mètres de son emplacement originale. Les nouveau coordonnés seront envoyés.</string>
     <string name="sms_nonotifpolicy">La permission de contrôl de notification pour SMSLocator a été révoquée, alors le mode "ne-pas-déranger" n\'a pas été modifié.</string>
+    <string name="sms_freemium_expired">Votre deluxe gratuite a expiré. Regardez une autre vidéo ou achetez la version deluxe pour utiliser cette commande. Les demandes d\'emplacement normales sont toujours disponibles.</string>
 
     <!-- SMS generic replies -->
     <string name="sms_locked">Téléphone verrouillé!</string>
