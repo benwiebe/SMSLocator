@@ -3,6 +3,7 @@ package com.t3kbau5.smslocator;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -81,6 +82,13 @@ public class HelpDisplay extends AppCompatActivity {
 			finalText = formatHtml(res.getString(R.string.help_keyword));
 		}else if(topic.equals(topics[3])){
 			finalText = formatHtml(res.getString(R.string.help_restriction));
+		}else if(topic.equals(topics[4])){
+			finalText = formatHtml(res.getString(R.string.help_uninstall));
+		}else if(topic.equals(topics[5])) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse("https://t3kbau5.com/support/"));
+            startActivity(i);
+            finish();
 		}
 		
 		return finalText;

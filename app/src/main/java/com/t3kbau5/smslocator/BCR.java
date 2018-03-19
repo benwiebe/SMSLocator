@@ -52,7 +52,6 @@ public class BCR extends BroadcastReceiver {
     Runnable rn;
 
     Boolean hasPremium = false;
-    Boolean freemiumExpired = false;
 
     private DataHandler dh;
 
@@ -152,10 +151,11 @@ public class BCR extends BroadcastReceiver {
                 }
 
                 hasPremium = prefs.getBoolean("premium", false);
-
+                boolean freemiumExpired = false;
                 if(hasPremium && prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) < Calendar.getInstance().getTimeInMillis()) {
                     prefs.edit().putBoolean("premium", false).apply();
                     freemiumExpired = true;
+                    hasPremium = false;
                 }
 
                 if (cmd != null && !cmd.equals("") && !hasPremium) {

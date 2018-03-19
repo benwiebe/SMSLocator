@@ -23,7 +23,7 @@
     
     <string name="help_commands">Voici une liste de toutes les commandes que vous pouvez envoyer à SMSLocator. Les commandes marquées d\'un (*) sont uniquement disponibles avec la mise à niveau deluxe.</string>
 
-    <string name="help_uninstall"></string>
+    <string name="help_uninstall">Pour désinstaller SMSLocator vous avez quelques options. Chaque version d\'Android est un peu différente, donc ces instructions peuvent différer légèrement, mais l\'idée générale devrait vous aider. Votre première option consiste à désactiver SMSLocator via l\'application elle-même. Appuyez sur le bouton à bascule intitulé "Activer SMSLocator", vous serez invité à votre broche. Une fois que vous l\'entrez correctement, l\'application sera désactivée. Vous pouvez ensuite désinstaller l\'application comme vous le feriez pour n\'importe quelle autre application. Si cela échoue pour une raison quelconque, vous devrez aller dans vos paramètres et trouver "Sécurité" puis "Administrateurs de périphériques". Ensuite, trouvez SMSLocator, appuyez dessus, puis appuyez sur "Désactiver". Vous pouvez ensuite désinstaller SMSLocator comme vous le feriez pour n\'importe quelle autre application.</string>
 
     <string-array name="help_commands">
         <item>[Mot-clé] [NIP]</item>
