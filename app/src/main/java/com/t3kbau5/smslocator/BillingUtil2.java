@@ -14,6 +14,7 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Calendar;
 import java.util.List;
@@ -34,10 +35,12 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
     private boolean hasPremium = false;
     private boolean buyingPremium = false;
     private SharedPreferences prefs;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
-    public BillingUtil2(MainActivity activity) {
+    public BillingUtil2(MainActivity activity, FirebaseAnalytics fa) {
         this.activity = activity;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        mFirebaseAnalytics = fa;
 
         mBillingClient = BillingClient.newBuilder(activity).setListener(this).build();
         mBillingClient.startConnection(this);
@@ -118,6 +121,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
         } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
             CustomToast.makeText(activity, Utils.getStr(activity, R.string.error_purchase), CustomToast.LENGTH_LONG, 1);
+            mFirebaseAnalytics.logEvent("cancel_purchase", null);
         } else {
             // Handle any other error codes.
         }

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "103667898869",
+    "firebase_url": "https://smslocator2018.firebaseio.com",
+    "project_id": "smslocator2018",
+    "storage_bucket": "smslocator2018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103667898869:android:66214df68b2556e4",
+        "android_client_info": {
+          "package_name": "com.t3kbau5.smslocator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103667898869-6jubbi46548fpaag05d3c61j8ftsb9li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.t3kbau5.smslocator",
+            "certificate_hash": "b919671c30a0244f074aa9b5e9a91a5aa5d09365"
+          }
+        },
+        {
+          "client_id": "103667898869-nnjqhoo04f1m4kpjsokjkcr3niptal5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ-HYneLbs6c4qINPiPLST94Z6lcPSIkU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "103667898869-nnjqhoo04f1m4kpjsokjkcr3niptal5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

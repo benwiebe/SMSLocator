@@ -42,6 +42,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     Boolean permissionsDuringEnable = false;
 	
 	BillingUtil2 bu;
+
+	private FirebaseAnalytics mFirebaseAnalytics;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -82,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+		bu = new BillingUtil2(this, mFirebaseAnalytics);
 
-		bu = new BillingUtil2(this);
-		
 		enableSMS = (ToggleButton) findViewById(R.id.enableSMS);
 
 		enableSMS.setOnClickListener(new ToggleButton.OnClickListener(){
@@ -332,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
             	return true;
             case R.id.menu_unlock:
                 final Activity _act = this;
-
+				mFirebaseAnalytics.logEvent("open_premium_dialog", null);
                 if(Utils.internetConnected(this) && bu.isConnected()) {
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -347,6 +350,9 @@ public class MainActivity extends AppCompatActivity {
                             if (bu.hasPremium()) {
                                 CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
                             } else {
+                            	Bundle event = new Bundle();
+                            	event.putString(FirebaseAnalytics.Param.ITEM_ID, "premium");
+                            	mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, event);
                                 bu.buyPremium();
                             }
                         }
@@ -355,6 +361,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            mFirebaseAnalytics.logEvent("cancel_premium_dialog", null);
                             dialog.dismiss();
                         }
                     });
@@ -363,12 +370,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            mFirebaseAnalytics.logEvent("freemium_ad_request", null);
 
                             final ProgressDialog pd = ProgressDialog.show(_act, Utils.getStr(_act, R.string.dialog_pleaseWait), "");
                             final RewardedVideoAd mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(_act);
                             mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
                                 @Override
                                 public void onRewardedVideoAdLoaded() {
+                                    mFirebaseAnalytics.logEvent("freemium_ad_start", null);
                                     pd.dismiss();
                                     mRewardedVideoAd.show();
                                 }
@@ -390,6 +399,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onRewarded(RewardItem rewardItem) {
+                                    mFirebaseAnalytics.logEvent("freemium_ad_complete", null);
                                     Calendar expiry = Calendar.getInstance();
                                     expiry.add(Calendar.DAY_OF_MONTH, 7);
                                     String expiryString = expiry.get(Calendar.DAY_OF_MONTH) + "-" + (expiry.get(Calendar.MONTH) + 1) + "-" + expiry.get(Calendar.YEAR);
@@ -418,6 +428,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onRewardedVideoAdFailedToLoad(int i) {
+                                    mFirebaseAnalytics.logEvent("freemium_ad_load_fail", null);
                                     pd.dismiss();
                                     CustomToast.makeText(_this, getStr(R.string.error_novideo), Toast.LENGTH_LONG, 1).show();
                                 }
