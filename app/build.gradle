@@ -15,9 +15,13 @@ android {
 
     buildTypes {
         release {
+            manifestPlaceholders = [analytics_deactivated: "false"]
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+        debug {
+            manifestPlaceholders = [analytics_deactivated: "true"]
         }
     }
 
@@ -28,6 +32,7 @@ android {
         compile 'com.android.support:support-v4:27.1.0'
         compile 'com.google.android.gms:play-services-ads:11.8.0'
         compile 'com.google.android.gms:play-services-base:11.8.0'
+        compile 'com.google.android.gms:play-services-location:11.8.0'
         compile 'com.android.billingclient:billing:1.0'
 
         compile 'com.google.firebase:firebase-core:11.8.0'

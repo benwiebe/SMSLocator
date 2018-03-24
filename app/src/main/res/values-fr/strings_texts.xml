@@ -21,6 +21,7 @@
     <string name="sms_nullloc">Un erreur s\'est produit lors de trouver l\'emplacement de votre appareil!</string>
     <string name="sms_lostOn">Appareil est maintenant dans le mode perdu. L\'emplacement et le niveau de la batterie seront envoyés à ce numéro.</string>
     <string name="sms_lostOff">Appareil n\'est plus dans le mode perdu.</string>
+    <string name="sms_lostNoPerm">Le mode perdu n\'a pas pu être activé car l\'autorisation de localisation a été révoquée.</string>
     <string name="sms_undnd">Le mode "ne-pas-déranger" a aussi été désactivé.</string>
     <string name="sms_permissionmissing">Votre demande ne pourrait pas être complétée car des permissions ont été révoquées!</string>
 

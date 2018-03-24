@@ -21,6 +21,7 @@
     <string name="sms_noalert">You will no longer receive movement alerts.</string>
     <string name="sms_lostOn">Lost mode is now on. Location and battery alerts will be sent to this number.</string>
     <string name="sms_lostOff">Lost mode is now off.</string>
+    <string name="sms_lostNoPerm">Lost mode could not be turned on as the location permission has been revoked.</string>
     <string name="sms_undnd">Do-not-disturb was also disabled.</string>
     <string name="sms_permissionmissing">Your request could not be completed as app permissions have been revoked!</string>
 

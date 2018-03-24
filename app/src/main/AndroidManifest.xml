@@ -53,6 +53,7 @@
             <intent-filter android:priority="999" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="com.t3kbau5.smslocator.DEVICE_MOVED" />
             </intent-filter>
         </receiver>
         <receiver
@@ -133,6 +134,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="firebase_analytics_collection_deactivated"
+            android:value="${analytics_deactivated}" />
  
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
