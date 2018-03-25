@@ -1,28 +1,12 @@
 package com.t3kbau5.smslocator;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -39,18 +23,17 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
-import android.text.format.Time;
 import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingEvent;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.t3kbau5.smslocator.Utils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class BCR extends BroadcastReceiver {
 
@@ -64,11 +47,6 @@ public class BCR extends BroadcastReceiver {
     Boolean hasPremium = false;
 
     private DataHandler dh;
-
-    private static String FENCE_ID = "03232018";
-    private static int FENCE_RAD = 50;
-    private static int FENCE_CAST_ID = 158926; //random lol
-    private static String FENCE_CAST_NAME = "com.t3kbau5.smslocator.DEVICE_MOVED";
 
     public void onReceive(Context context, Intent intent) {
         this.context = context;
@@ -235,11 +213,10 @@ public class BCR extends BroadcastReceiver {
                     reply(getStr(R.string.sms_ringing), sender);
                     resp = getStr(R.string.sms_ringing);
                 }else if(cmd.equals(getStr(R.string.command_lost)) && isCorrectPin){
-
 	            	if(prefs.getBoolean("lostMode", false)){
-	            		exitLostMode(sender, cmd);
+	            		LostMode.exitLostMode(context, sender, cmd);
 	            	}else{
-	            		enterLostMode(sender, cmd);
+	            		LostMode.enterLostMode(context, sender, cmd);
 	            	}
 
 	            } else {
@@ -248,44 +225,6 @@ public class BCR extends BroadcastReceiver {
                     return;
                 }
                 addInteraction(sender, cmd, resp);
-            }
-        } else if (action.equalsIgnoreCase("android.intent.action.ACTION_BATTERY_LOW")) {
-            if (prefs.getBoolean("lostMode", false)) {
-
-                String dest = prefs.getString("lostNumber", "");
-
-                if (dest.equals("") || dest.equals(null)) return;
-
-                int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                int pct = level / scale;
-                reply(getStr(R.string.smstemp_lowbat) + pct, dest);
-                addInteraction(dest, "[EVENT]", getStr(R.string.smstemp_lowbat) + pct);
-            } else {
-                return;
-            }
-        }else if (action.equalsIgnoreCase(FENCE_CAST_NAME)) {
-            GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-            Location loc = geofencingEvent.getTriggeringLocation();
-            double lat = loc.getLatitude();
-            double lon = loc.getLongitude();
-
-            String destinationAddress = prefs.getString("lostNumber", "");
-            reply(getStr(R.string.sms_movementalert), destinationAddress);
-            addInteraction(destinationAddress, "[EVENT]", getStr(R.string.sms_movementalert));
-            String locmsg = getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + loc.getAccuracy();
-            reply(locmsg, destinationAddress);
-            addInteraction(destinationAddress, "[EVENT]", locmsg);
-
-            if(hasPremium){
-                reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
-            }
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                String resp = getStr(R.string.sms_lostNoPerm);
-                addInteraction(destinationAddress, "[EVENT]", resp);
-                reply(resp, destinationAddress);
-            }else {
-                setupGeofence(loc);
             }
         }
 
@@ -460,41 +399,6 @@ public class BCR extends BroadcastReceiver {
         lm.requestLocationUpdates(provider, 0, 0, ll);
     }
 
-    private void enterLostMode(final String destination, final String req) {
-        FusedLocationProviderClient flc = LocationServices.getFusedLocationProviderClient(context);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            String resp = getStr(R.string.sms_lostNoPerm);
-            addInteraction(destination, req, resp);
-            reply(resp, destination);
-        }else{
-            IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_LOW);
-            filter.addAction(FENCE_CAST_NAME);
-            context.getApplicationContext().registerReceiver(this, filter);
-            flc.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @SuppressLint("MissingPermission")
-                @Override
-                public void onSuccess(Location location) {
-                    setupGeofence(location);
-                    reply(getStr(R.string.sms_lostOn), destination);
-                    addInteraction(destination, req, getStr(R.string.sms_lostOn));
-                    prefs.edit().putBoolean("lostMode", true).putString("lostNumber", destination).apply();
-                }
-            });
-        }
-	}
-
-	private void exitLostMode(String sender, String req){
-        final GeofencingClient gc = LocationServices.getGeofencingClient(context);
-        ArrayList<String> reqs = new ArrayList<>();
-        reqs.add(FENCE_ID);
-        gc.removeGeofences(reqs);
-        context.getApplicationContext().unregisterReceiver(this);
-
-        prefs.edit().putBoolean("lostMode", false).putString("lostNumber", "").apply();
-        reply(getStr(R.string.sms_lostOff), sender);
-        addInteraction(sender, req, getStr(R.string.sms_lostOff));
-	}
-
 	private void reply(String message, String destination){
 		Utils.sendSMS(message, destination);
 		if(prefs.getBoolean("preference_notify", true)){
@@ -539,22 +443,6 @@ public class BCR extends BroadcastReceiver {
 
 	public String getStr(int id){
     	return context.getResources().getString(id);
-    }
-
-    private void setupGeofence(Location location) throws SecurityException{
-        final GeofencingClient gc = LocationServices.getGeofencingClient(context);
-        Geofence geofence = new Geofence.Builder()
-                .setCircularRegion(location.getLatitude(), location.getLongitude(), FENCE_RAD)
-                .setRequestId(FENCE_ID)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build();
-        GeofencingRequest gr = new GeofencingRequest.Builder().addGeofence(geofence).build();
-        Intent intent = new Intent();
-        intent.setAction(FENCE_CAST_NAME);
-
-        PendingIntent pi = PendingIntent.getBroadcast(context, FENCE_CAST_ID, intent, PendingIntent.FLAG_ONE_SHOT);
-        gc.addGeofences(gr, pi);
     }
 	        
 }

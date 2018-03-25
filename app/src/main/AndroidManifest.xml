@@ -52,8 +52,6 @@
             android:exported="true" >
             <intent-filter android:priority="999" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
-                <action android:name="com.t3kbau5.smslocator.DEVICE_MOVED" />
             </intent-filter>
         </receiver>
         <receiver
@@ -114,12 +112,6 @@
             android:label="@string/title_activity_message_info"
             android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
         </activity>
-
-        <service
-            android:name="com.t3kbau5.smslocator.LostService"
-            android:enabled="true" 
-            android:exported="false">
-        </service>
 
         <activity
             android:name="com.t3kbau5.smslocator.Interactions"
