@@ -18,7 +18,7 @@ public class AppHelp extends AppCompatActivity {
 		setContentView(R.layout.activity_app_help);
 		// Show the Up button in the action bar.
 		
-		topicGrid = (GridView) findViewById(R.id.helpTopicGrid);
+		topicGrid = findViewById(R.id.helpTopicGrid);
 		topicGrid.setAdapter(new HelpGridAdapter(this));
 		//setupActionBar();
 	}

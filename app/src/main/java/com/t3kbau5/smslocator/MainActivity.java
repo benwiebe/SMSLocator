@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 		bu = new BillingUtil2(this, mFirebaseAnalytics);
 
-		enableSMS = (ToggleButton) findViewById(R.id.enableSMS);
+		enableSMS = findViewById(R.id.enableSMS);
 
 		enableSMS.setOnClickListener(new ToggleButton.OnClickListener(){
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 			
 		});
-		gotoSetKeyword = (Button) findViewById(R.id.gotoSetPass);
+		gotoSetKeyword = findViewById(R.id.gotoSetPass);
 		gotoSetKeyword.setEnabled(smsenabled);
 		/*if(!prefs.getString("keyPhrase", "TMWMPI").equals("TMWMPI")){
 			gotoSetKeyword.setBackgroundResource(R.drawable.complete_button);
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 		
-		passSMS = (CompoundButton) findViewById(R.id.togglePassChange);
+		passSMS = findViewById(R.id.togglePassChange);
 		passSMS.setOnClickListener(new CompoundButton.OnClickListener(){
 
 			@Override
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 			
 		});
 		
-		toggleRestriction = (CompoundButton) findViewById(R.id.toggleRestriction);
+		toggleRestriction = findViewById(R.id.toggleRestriction);
 		toggleRestriction.setOnClickListener(new CompoundButton.OnClickListener(){
 
 			@Override
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 			
 		});
 		
-		gotoRestriction = (Button) findViewById(R.id.gotoRestrictNumbers);
+		gotoRestriction = findViewById(R.id.gotoRestrictNumbers);
 		gotoRestriction.setOnClickListener(new Button.OnClickListener(){
 
 			@Override
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 			
 		});
 
-        toggleDnd = (CompoundButton) findViewById(R.id.toggleDnd);
+        toggleDnd = findViewById(R.id.toggleDnd);
         if(toggleDnd != null) {
             toggleDnd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity {
 		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
 												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4").build();
 		
-		RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
+		RelativeLayout layout = findViewById(R.id.mainLayout);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		lp.addRule(RelativeLayout.CENTER_HORIZONTAL);

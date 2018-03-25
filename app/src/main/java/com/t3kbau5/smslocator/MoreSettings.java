@@ -91,7 +91,7 @@ public class MoreSettings extends PreferenceActivity{
 	        bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
 	        root.addView(bar, 0); // insert at top
 	    } else {
-	        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+	        ViewGroup root = findViewById(android.R.id.content);
 	        ListView content = (ListView) root.getChildAt(0);
 
 	        root.removeAllViews();

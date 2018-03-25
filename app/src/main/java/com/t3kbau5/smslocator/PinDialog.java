@@ -1,8 +1,5 @@
 package com.t3kbau5.smslocator;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -12,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.t3kbau5.smslocator.Utils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 public class PinDialog{
 
@@ -84,25 +83,25 @@ public class PinDialog{
 	public Dialog show(){
 		Dialog d = adb.show();
 		
-		TextView tv = (TextView) d.findViewById(R.id.pinLayoutMessage);
+		TextView tv = d.findViewById(R.id.pinLayoutMessage);
 		tv.setText(message);
 		
-		final TextView output = (TextView) d.findViewById(R.id.pinLayoutOutput);
+		final TextView output = d.findViewById(R.id.pinLayoutOutput);
 		
 		
 		Button keys[] = new Button[11];
 		
-		keys[0] = (Button) d.findViewById(R.id.keypad_0);
-		keys[1] = (Button) d.findViewById(R.id.keypad_1);
-		keys[2] = (Button) d.findViewById(R.id.keypad_2);
-		keys[3] = (Button) d.findViewById(R.id.keypad_3);
-		keys[4] = (Button) d.findViewById(R.id.keypad_4);
-		keys[5] = (Button) d.findViewById(R.id.keypad_5);
-		keys[6] = (Button) d.findViewById(R.id.keypad_6);
-		keys[7] = (Button) d.findViewById(R.id.keypad_7);
-		keys[8] = (Button) d.findViewById(R.id.keypad_8);
-		keys[9] = (Button) d.findViewById(R.id.keypad_9);
-		keys[10] = (Button) d.findViewById(R.id.keypad_back);
+		keys[0] = d.findViewById(R.id.keypad_0);
+		keys[1] = d.findViewById(R.id.keypad_1);
+		keys[2] = d.findViewById(R.id.keypad_2);
+		keys[3] = d.findViewById(R.id.keypad_3);
+		keys[4] = d.findViewById(R.id.keypad_4);
+		keys[5] = d.findViewById(R.id.keypad_5);
+		keys[6] = d.findViewById(R.id.keypad_6);
+		keys[7] = d.findViewById(R.id.keypad_7);
+		keys[8] = d.findViewById(R.id.keypad_8);
+		keys[9] = d.findViewById(R.id.keypad_9);
+		keys[10] = d.findViewById(R.id.keypad_back);
 		
 		for(int i=0; i<=9; i++){
 			keys[i].setOnClickListener(new Button.OnClickListener(){

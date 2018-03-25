@@ -1,15 +1,15 @@
 package com.t3kbau5.smslocator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class HelpGridAdapter extends BaseAdapter{
 

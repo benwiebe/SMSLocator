@@ -39,7 +39,7 @@ public class MessageInfo extends AppCompatActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.edit().putString("alertUri", "").apply();
 		
-		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rl_mi);
+		RelativeLayout rl = findViewById(R.id.rl_mi);
 		
 		rl.setOnTouchListener(new OnSwipeTouchListener(this){
 			public void onSwipeRight() {
@@ -61,9 +61,9 @@ public class MessageInfo extends AppCompatActivity {
 		});
 		
 		//Intent intent = getIntent();
-		numView = (TextView) findViewById(R.id.numView);
-		msgView = (TextView) findViewById(R.id.msgView);
-		senderView = (TextView) findViewById(R.id.senderView);
+		numView = findViewById(R.id.numView);
+		msgView = findViewById(R.id.msgView);
+		senderView = findViewById(R.id.senderView);
 		
 		try {
 			messages = new JSONArray(prefs.getString("msgArr", "[]"));

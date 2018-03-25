@@ -37,8 +37,8 @@ public class RestrictNumbers extends AppCompatActivity {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		add = (Button) findViewById(R.id.addNumber);
-		lv  = (ListView) findViewById(R.id.numberList);
+		add = findViewById(R.id.addNumber);
+		lv  = findViewById(R.id.numberList);
 		na = new NumberAdapter(this);
 		
 		lv.setAdapter(na);

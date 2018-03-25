@@ -27,7 +27,7 @@ public class HelpDisplay extends AppCompatActivity {
 		
 		this.setTitle(getStr(R.string.title_activity_help_display) + " " + topic);
 		
-		tv = (TextView) findViewById(R.id.helpDisplayTV);
+		tv = findViewById(R.id.helpDisplayTV);
 		tv.setText(Html.fromHtml(getDisplayText(topic)));
 		
 		//setupActionBar();

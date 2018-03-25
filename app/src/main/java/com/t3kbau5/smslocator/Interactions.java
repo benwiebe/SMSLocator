@@ -43,7 +43,7 @@ public class Interactions extends AppCompatActivity {
 		
 		dh = new DataHandler(this, null, null, 1);
 		
-		tl = (TableLayout) findViewById(R.id.interactionsTable);
+		tl = findViewById(R.id.interactionsTable);
 		
 		final ProgressDialog pd = new ProgressDialog(_this);
 		pd.setTitle(Utils.getStr(this, R.string.dialog_pleaseWait));

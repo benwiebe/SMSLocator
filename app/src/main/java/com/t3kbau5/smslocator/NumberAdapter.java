@@ -1,9 +1,5 @@
 package com.t3kbau5.smslocator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +14,10 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class NumberAdapter extends BaseAdapter{
 
@@ -64,8 +64,8 @@ public class NumberAdapter extends BaseAdapter{
 		ImageView iv;
 		if(convertView != null){
 			v = convertView;
-			tv = (TextView) v.findViewById(vid1);
-			iv = (ImageView) v.findViewById(vid2);
+			tv = v.findViewById(vid1);
+			iv = v.findViewById(vid2);
 		}else{
 			v = new View(context);
 			tv = new TextView(context);

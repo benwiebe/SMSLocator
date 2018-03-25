@@ -32,7 +32,7 @@ public class CustomToast extends Toast{
 	
 	public static CustomToast makeText(Context context, String text, int duration){
 		CustomToast ct = new CustomToast(context);
-		TextView tv = ((TextView) ct.getView().findViewById(R.id.text));
+		TextView tv = ct.getView().findViewById(R.id.text);
 		tv.setText(text);
 		tv.setGravity(Gravity.CENTER_HORIZONTAL);
 		ct.setDuration(duration);
@@ -42,7 +42,7 @@ public class CustomToast extends Toast{
 	
 	public static CustomToast makeText(Context context, String text, int duration, int type){
 		CustomToast ct = new CustomToast(context, type);
-		TextView tv = ((TextView) ct.getView().findViewById(R.id.text));
+		TextView tv = ct.getView().findViewById(R.id.text);
 		tv.setText(text);
 		tv.setGravity(Gravity.CENTER_HORIZONTAL);
 		ct.setDuration(duration);

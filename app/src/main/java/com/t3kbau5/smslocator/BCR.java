@@ -1,22 +1,8 @@
 package com.t3kbau5.smslocator;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,10 +23,15 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
-import android.text.format.Time;
 import android.util.Log;
 
-import com.t3kbau5.smslocator.Utils;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class BCR extends BroadcastReceiver {
 
@@ -418,29 +409,6 @@ public class BCR extends BroadcastReceiver {
 		String provider = getProvider(lm);
 		handler.postDelayed(rn, waitTime); //if we can't get a new location after waitTime ms, just send the old one
 		lm.requestLocationUpdates(provider, 0, 0, ll);
-	}
-	
-	private String enterLostMode(String destination){
-		//final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		//lm.requestLocationUpdates(getProvider(lm), 0, 50, lostModeListener);
-		
-		Intent intent = new Intent(context, LostService.class);
-		intent.putExtra("hasPremium", hasPremium);
-		context.startService(intent);
-		
-		prefs.edit().putBoolean("lostMode", true).putString("lostNumber", destination).apply();
-		reply(getStr(R.string.sms_lostOn), destination);
-		return getStr(R.string.sms_lostOn);
-	}
-	
-	private String exitLostMode(String sender){
-		//final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		//lm.removeUpdates(lostModeListener);  
-		Intent intent = new Intent(context, LostService.class);
-		context.stopService(intent);
-		prefs.edit().putBoolean("lostMode", false).putString("lostNumber", "").apply();
-		reply(getStr(R.string.sms_lostOff), sender);
-		return getStr(R.string.sms_lostOff);
 	}
 	
 	private void reply(String message, String destination){

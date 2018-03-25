@@ -1,10 +1,14 @@
 package com.t3kbau5.smslocator;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
-import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,13 +16,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.preference.PreferenceManager;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 public class SetKeyword extends AppCompatActivity {
 
@@ -39,9 +39,9 @@ public class SetKeyword extends AppCompatActivity {
 		_this = this;
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		passIn = (EditText) findViewById(R.id.passwordInput);
-		passConf = (EditText) findViewById(R.id.passwordConfirm);
-		setPass = (Button) findViewById(R.id.setPassword);
+		passIn = findViewById(R.id.passwordInput);
+		passConf = findViewById(R.id.passwordConfirm);
+		setPass = findViewById(R.id.setPassword);
 		
 		setPass.setOnClickListener(new Button.OnClickListener(){
 

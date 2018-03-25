@@ -1,7 +1,5 @@
 package com.t3kbau5.smslocator;
 
-import java.util.Date;
-
 public class Interaction {
 	private int id;
 	private String number;

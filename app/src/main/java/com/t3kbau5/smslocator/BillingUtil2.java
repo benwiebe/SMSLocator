@@ -1,7 +1,6 @@
 package com.t3kbau5.smslocator;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -114,8 +113,8 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
             }
             prefs.edit().putBoolean("premium", hasPremium).apply();
             if(buyingPremium && hasPremium){
-                ((MainActivity) activity).finish();
-                ((MainActivity) activity).startActivity(((MainActivity) activity).getIntent());
+                activity.finish();
+                activity.startActivity(activity.getIntent());
             }
             buyingPremium = false;
         } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
