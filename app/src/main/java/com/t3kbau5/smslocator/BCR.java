@@ -193,6 +193,7 @@ public class BCR extends BroadcastReceiver {
                 } else if (cmd.equals(getStr(R.string.command_sound))) {
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    am.setStreamVolume(AudioManager.STREAM_RING, am.getStreamMaxVolume(AudioManager.STREAM_RING), AudioManager.FLAG_PLAY_SOUND);
                     resp = getStr(R.string.sms_audio);
 
                     if (prefs.getBoolean("dndcontrol", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -284,7 +285,7 @@ public class BCR extends BroadcastReceiver {
 
 		double lat = loc.getLatitude();
 		double lon = loc.getLongitude();
-		double acc = loc.getAccuracy();
+		double acc = Math.round(loc.getAccuracy()*10d)/10d;
 		if(notAccurate){
 			resp = getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc);
 			reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
@@ -323,7 +324,7 @@ public class BCR extends BroadcastReceiver {
 				Log.d("OLC", String.valueOf(loc.getAccuracy()));
 				double lat = loc.getLatitude();
 				double lon = loc.getLongitude();
-				double acc = loc.getAccuracy();
+				double acc = Math.round(loc.getAccuracy()*10d)/10d;
 				if(loc.getProvider().equals(LocationManager.NETWORK_PROVIDER)){
 					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
 				}else{

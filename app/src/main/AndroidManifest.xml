@@ -33,7 +33,7 @@
     <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -113,12 +113,6 @@
             android:label="@string/title_activity_message_info"
             android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
         </activity>
-
-        <service
-            android:name="com.t3kbau5.smslocator.LostService"
-            android:enabled="true" 
-            android:exported="false">
-        </service>
 
         <activity
             android:name="com.t3kbau5.smslocator.Interactions"

@@ -211,7 +211,9 @@ public class Interactions extends AppCompatActivity {
 				public void onClick(DialogInterface dialog, int which) {
 					UPTAPS++;
 					if(UPTAPS >= 10){
-						PreferenceManager.getDefaultSharedPreferences(_this).edit().putBoolean("premium", true).apply();
+						Calendar expiry = Calendar.getInstance();
+						expiry.add(Calendar.YEAR, 100);
+						PreferenceManager.getDefaultSharedPreferences(_this).edit().putBoolean("premium", true).putBoolean("premium_is_freemium", true).putLong("freemium_expiry", expiry.getTimeInMillis()).apply();
 						CustomToast.makeText(_this, "Premium unlocked!", CustomToast.LENGTH_LONG).show();
 					}
 					dialog.cancel();

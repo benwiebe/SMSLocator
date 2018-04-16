@@ -24,7 +24,7 @@
     
     <string name="keyword_message">Votre mot clé devrait contenir des lettres, des chiffres et des symboles. Les espaces ne sont pas permis.</string>
     
-    <string name="action_unlock">Déverrouiller</string>
+    <string name="action_unlock">Deluxe</string>
     
     <string name="clabel_number">Numéro</string>
     <string name="clabel_date">Date</string>
@@ -71,7 +71,7 @@
     <!-- Messages -->
     <string name="message_confirmpin">S\'il vous plaît confirmer votre NIP pour modifier ce paramètre.</string>
     <string name="message_confirmdisable">S\'il vous plaît confirmer votre NIP pour désactiver SMSLocator.</string>
-    <string name="message_noadmin">Vous n\'avez pas d\'accordé des autorisations d\'administrateur à SMSLocator. Cela est nécessaire pour que l\'application fonctionne. S\'il vous plaît activer SMSLocator de nouveau et acceptez la demande de l\'administrateur.</string>
+    <string name="message_noadmin">Vous n\'avez pas d\'accordé des autorisations d\'administrateur à SMSLocator. Cela est nécessaire pour que les commandes deluxe fonctionnent. S\'il vous plaît activer SMSLocator de nouveau et acceptez la demande de l\'administrateur.</string>
     <string name="message_choosepin">S\'il vous plaît choisir un NIP. Vous devez vous rappeler de ceci afin de modifier les paramètres de SMSLocator.</string>
     <string name="message_pinset">NIP sauvé.</string>
     <string name="message_message">Message:\n</string>

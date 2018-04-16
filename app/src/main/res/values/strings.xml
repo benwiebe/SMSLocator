@@ -23,7 +23,7 @@
     <string name="app_terms">By using SMSLocator, you agree that you have read and understand the following:[br][br]SMSLocator may send text messages.[br][br]These messages are ONLY sent in response to messages that are addressed to SMSLocator using your keyword.[br][br]Due to the nature of SMSLocator, it is [i]not[/i] possible to review these message before sending. They can be seen after, however.[br][br]SMSLocator may send your device\'s location over text message when requested and when user authentication occurs.[br][br]SMSLocator does not store or send your personal information.</string>
     <string name="admin_details">SMSLocator requires admin privileges in order to function. Having these privileges prevents uninstalling of the app, which means you will need to disable SMSLocator before uninstalling the app. SMSLocator requests permission to lock your phone, so that the \'lock\' command can be run. In addition, the password reset permission is used to change your device PIN on your request.</string>
     <string name="keyword_message">Your keyword should contain letters, numbers, and symbols. Spaces are not allowed.</string>
-    <string name="action_unlock">Unlock</string>
+    <string name="action_unlock">Premium</string>
     
     <string name="clabel_number">Number</string>
     <string name="clabel_date">Date</string>
@@ -75,7 +75,7 @@
     <!-- Messages -->
     <string name="message_confirmpin">Please confirm your pin to change this setting.</string>
     <string name="message_confirmdisable">Please confirm your pin to disable SMSLocator.</string>
-    <string name="message_noadmin">You did not grant SMSLocator admin permissions. This is required in order for the app to function. Please enable SMSLocator again and accept the admin request.</string>
+    <string name="message_noadmin">You did not grant SMSLocator admin permissions. This is required in order to use premium features. Please enable SMSLocator again and accept the admin request.</string>
     <string name="message_choosepin">Please choose a pin. You MUST remember this in order to change SMSLocator settings</string>
     <string name="message_pinset">Pin set!</string>
     <string name="message_message">Message:\n</string>
