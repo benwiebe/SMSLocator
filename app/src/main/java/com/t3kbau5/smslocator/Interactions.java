@@ -37,7 +37,7 @@ public class Interactions extends AppCompatActivity {
 		// Show the Up button in the action bar.
 		//setupActionBar();
 		
-		Utils.cancelNotif(this, 0);
+		NotificationHelper.clearMessageNotif(this);
 		
 		PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("notifDisplayNum", 0).apply(); //reset the notification display
 		

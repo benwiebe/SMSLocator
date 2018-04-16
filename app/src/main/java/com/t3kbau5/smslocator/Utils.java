@@ -2,25 +2,16 @@ package com.t3kbau5.smslocator;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -62,102 +53,6 @@ public class Utils {
     public static boolean compareToSHA1(String text, String hash) throws NoSuchAlgorithmException, UnsupportedEncodingException{
     	String tHash = SHA1(text);
     	return tHash.equals(hash);
-    }
-
-    public static Notification createNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int priority){
-
-    	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-
-    	NotificationCompat.Builder mBuilder =
-    	        new NotificationCompat.Builder(context)
-    	        .setSmallIcon(smallIcon)
-    	        .setContentTitle(title)
-    	        .setContentText(message)
-    	        .setLargeIcon(largeIconB)
-    	        .setNumber(number)
-    	        .setPriority(priority);
-
-
-
-    	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
-    	return mBuilder.build();
-    }
-
-    public static int showNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int id, int priority){
-    	int mId = 0;
-    	if(id != -1){
-    		mId = id;
-    	}
-
-    	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-
-    	NotificationCompat.Builder mBuilder =
-    	        new NotificationCompat.Builder(context)
-    	        .setSmallIcon(smallIcon)
-    	        .setContentTitle(title)
-    	        .setContentText(message)
-    	        .setLargeIcon(largeIconB)
-    	        .setNumber(number)
-    	        .setPriority(priority);
-
-
-    	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
-    	NotificationManager mNotificationManager =
-    	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    	// mId allows you to update the notification later on.
-    	mNotificationManager.notify(mId, mBuilder.build());
-    	return mId;
-    }
-
-    public static int showPersistantNofif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int id, int priority){
-    	int mId = 0;
-    	if(id != -1){
-    		mId = id;
-    	}
-
-    	Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
-
-    	NotificationCompat.Builder mBuilder =
-    	        new NotificationCompat.Builder(context)
-    	        .setSmallIcon(smallIcon)
-    	        .setContentTitle(title)
-    	        .setContentText(message)
-    	        .setLargeIcon(largeIconB)
-    	        .setPriority(priority);
-
-
-    	mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT))
-    			.setOngoing(true);
-    	NotificationManager mNotificationManager =
-    	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    	// mId allows you to update the notification later on.
-    	mNotificationManager.notify(mId, mBuilder.build());
-
-    	return mId;
-    }
-
-    public static void showMessageNotif(Context context, String destination, String contents){
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-    	int displayNum = prefs.getInt("notifDisplayNum", 0);
-    	displayNum++;
-    	prefs.edit().putInt("notifDisplayNum", displayNum).apply();
-
-    	Intent intent = new Intent(context, Interactions.class);
-
-    	Notification notif = createNotif(context, getStr(context, R.string.notif_sent_title), getStr(context, R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, displayNum, Integer.parseInt(prefs.getString("notif_priority", "0")));
-
-    	NotificationManager mNotificationManager =
-        	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        	// mId allows you to update the notification later on.
-        	mNotificationManager.notify(0, notif);
-
-    }
-
-    public static void cancelNotif(Context context, int id){
-    	NotificationManager mNotificationManager =
-        	    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    	mNotificationManager.cancel(id);
     }
 
 

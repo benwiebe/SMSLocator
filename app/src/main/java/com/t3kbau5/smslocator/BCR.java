@@ -2,6 +2,7 @@ package com.t3kbau5.smslocator;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -172,7 +173,6 @@ public class BCR extends BroadcastReceiver {
                     if (!prefs.getBoolean("passChange", false)) {
                         addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
                         reply(getStr(R.string.sms_nopasschange), sender);
-                        addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
                         return;
                     }
                     if (words.length != 4) return;
@@ -418,8 +418,9 @@ public class BCR extends BroadcastReceiver {
 			/*Intent intent = new Intent(context, MessageInfo.class);
 			intent.putExtra("message", message);
 			intent.putExtra("destination", destination);
-			Utils.showNotif(context, getStr(R.string.notif_sent_title), getStr(R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, 0);*/
-			Utils.showMessageNotif(context, destination, message); //TODO update this to work with interactions
+			Utils.showNotif(context, getStr(R.string.notif_sent_title), getStr(R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, 0, -1, Integer.valueOf(prefs.getString("notif_priority", "0")));
+			*/
+			NotificationHelper.showMessageNotif(context, destination, message);
 		}
 		
 	}

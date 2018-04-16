@@ -111,6 +111,7 @@
     <string name="notif_sent_body">A message has been sent to\u0020</string>
     <string name="notif_alert_title">Location Alerts On</string>
     <string name="notif_alert_body">Location alerts are being sent to\u0020</string>
+    <string name="notif_channel_name_sms">SMS Alerts</string>
 
     <!-- Preferences -->
     <string name="prefs_notif">Notify on Request</string>

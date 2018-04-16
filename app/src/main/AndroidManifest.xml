@@ -108,11 +108,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.t3kbau5.smslocator.MainActivity" />
         </activity>
-        <activity
-            android:name="com.t3kbau5.smslocator.MessageInfo"
-            android:label="@string/title_activity_message_info"
-            android:parentActivityName="com.t3kbau5.smslocator.MainActivity" >
-        </activity>
 
         <activity
             android:name="com.t3kbau5.smslocator.Interactions"

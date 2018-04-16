@@ -107,6 +107,7 @@
     <string name="notif_sent_body">Un message a été envoyé à\u0020</string>
     <string name="notif_alert_title">Alertes d\'Emplacement Activés</string>
     <string name="notif_alert_body">Alertes d\'Emplacement vont être envoyés à </string>
+    <string name="notif_channel_name_sms">Avis de texte envoyée</string>
     
     <!-- Preferences -->
     <string name="prefs_notif">Avertissez sur demande</string>
