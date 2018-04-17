@@ -98,11 +98,8 @@ public class Interactions extends AppCompatActivity {
 					final TextView tv3 = new TextView(_this);
 					final TextView tv4 = new TextView(_this);
 
-					tv1.setBackgroundResource(R.drawable.cellshape);
-					tv2.setBackgroundResource(R.drawable.cellshape);
-					tv3.setBackgroundResource(R.drawable.cellshape);
-					tv4.setBackgroundResource(R.drawable.cellshape);
-					
+					tr.setBackgroundResource(R.drawable.interaction_row_shape);
+
 					tv1.setSingleLine(false);
 					tv2.setSingleLine(false);
 					tv3.setSingleLine(false);

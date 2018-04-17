@@ -68,7 +68,7 @@ public class DataHandler extends SQLiteOpenHelper{
     	Interaction iaction;
     	int i = 0;
     	while(cursor.moveToNext()){
-    		iaction = new Interaction(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getLong(4));
+    		iaction = new Interaction(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getLong(4));
     		interactions.add(iaction);
     		
     		i++;

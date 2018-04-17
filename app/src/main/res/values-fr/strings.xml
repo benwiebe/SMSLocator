@@ -6,8 +6,7 @@
     <string name="app_name">SMSLocator</string>
     
     <string name="placeholder">Le contenu est censé être ici. Si vous voyez ceci, s\'il vous plaît y retourner et essayer à nouveau.</string>
-    
-    <string name="menu_settings">Paramètres</string>
+
     <string name="dev_admin">Administration de l\'Appareil</string>
     <string name="title_activity_set_keyword">Choisir Mot-Clé</string>
     <string name="action_settings">Paramètres</string>
@@ -15,7 +14,6 @@
     <string name="title_activity_app_help">Aide</string>
     <string name="title_activity_help_display">Aide > </string>
     <string name="title_activity_restrict_numbers">Limiter Numéros</string>
-    <string name="title_activity_message_info">Contenu du Message</string>
     <string name="title_activity_interactions">Interactions</string>
 
     <!-- Custom Strings -->
@@ -54,7 +52,6 @@
     <string name="dialog_continue">Continue</string>
     <string name="dialog_upgrade">En mettant SMSLocator au niveau premium, vous aurez l\'accès à toutes les commandes, les liens Google Maps seront envoyés avec les coordonnées de l\'appareil, et les publicités seront enlevés. Merci de soutenir l\'application et moi-même!</string>
     <string name="dialog_premium">Deluxe</string>
-    <string name="dialog_restore">Restaurer</string>
     <string name="dialog_finishSetupTitle">Finir l\'installation</string>
     <string name="dialog_finishSetupMessage">Vous avez prèsque fini! La seule chose qui reste à faire est de choisir votre mot-clé. Après faire cela, vous pouvez commencer à utiliser l\'application! Pour voir les commandes que vous pouvez envoyez à SMSLocator, veuillez visiter la page de Commandes dans la section d\'Aide.</string>
     <string name="dialog_gotoKeyword">Changer Mot-Clé</string>
@@ -74,14 +71,10 @@
     <string name="message_noadmin">Vous n\'avez pas d\'accordé des autorisations d\'administrateur à SMSLocator. Cela est nécessaire pour que les commandes deluxe fonctionnent. S\'il vous plaît activer SMSLocator de nouveau et acceptez la demande de l\'administrateur.</string>
     <string name="message_choosepin">S\'il vous plaît choisir un NIP. Vous devez vous rappeler de ceci afin de modifier les paramètres de SMSLocator.</string>
     <string name="message_pinset">NIP sauvé.</string>
-    <string name="message_message">Message:\n</string>
-    <string name="message_to">À:\u0020</string>
     <string name="message_admindisable">Révoquer les autorisations d\'administrateur va désactiver SMSLocator. Continuer?</string>
     <string name="message_smslocatordisabled">SMSLocator a été désactivé!</string>
     <string name="message_confirmpasschange">Entrez votre NIP pour confirmer le changement du mot-clé.</string>
     <string name="message_passchanged">Mot-clé changé!</string>
-    <string name="message_of">de</string>
-    <string name="message_swipe">Glissez vers la gauche et la droite pour naviguer entre les messages.</string>
     <string name="message_restored">Niveau deluxe restauré. Tous les fonctionnalités sont disponibles!</string>
     <string name="message_interactionsCleared">Interactions effacés!</string>
     <string name="message_activatedndaccess">Activez "SMSLocator" sur cette page pour autoriser le contrôle du mode "ne pas déranger". Une fois terminé, appuyez le bouton de retour.</string>
@@ -95,18 +88,13 @@
     <string name="error_keymatch">Les mots-clés ne correspondent pas!</string>
     <string name="error_keyblank">Mot-clé est vide!</string>
     <string name="error_setpin">NIP est vide ou trop court. S\'il vous plaît essayez de nouveau.</string>
-    <string name="error_msgjson">Une erreur s\'est produite lors du chargement des données du message.</string>
-    <string name="error_premiumcheck">Une erreur s\'est produite lors de verifier le statut prime.</string>
     <string name="error_purchase">Une erreur s\'est produite lors de l\'achat.</string>
-    <string name="error_notowned">Vous n\'avez pas acheté la version deluxe sur ce compte!</string>
     <string name="error_permissions">Droit(s) d\'accès non-accordés! Ceux-ci sont nécessaires pour que l\'appli fonctionne.</string>
     <string name="error_novideo">Erreur lors du chargement de la vidéo!</string>
 
     <!-- Notifications -->
     <string name="notif_sent_title">Message envoyé</string>
     <string name="notif_sent_body">Un message a été envoyé à\u0020</string>
-    <string name="notif_alert_title">Alertes d\'Emplacement Activés</string>
-    <string name="notif_alert_body">Alertes d\'Emplacement vont être envoyés à </string>
     <string name="notif_channel_name_sms">Avis de texte envoyée</string>
     
     <!-- Preferences -->
@@ -119,6 +107,5 @@
     <string name="prefs_gpswait">Temps d\'attente pour GPS</string>
     <string name="prefs_gpswait_desc">Définit combien de temps l\'appareil essaiera d\'obtenir un nouvel emplacement avant d\'envoyer un ancien emplacement</string>
     <string name="dialog_freemium_success">Succès! Vous avez activé la version deluxe pour 7 jours. Expiration:</string>
-    <string name="dialog_fremium_expired">Votre semaine de deluxe gratuite a expiré. S\'il vous plaît acheter ou regarder une autre vidéo si vous souhaitez continuer à utiliser des fonctionnalités deluxe!</string>
     <string name="dialog_premium_offline">Nous avons des difficultés à accéder Google Play. Veuillez vérifier votre connexion Internet, puis réessayer.</string>
 </resources>

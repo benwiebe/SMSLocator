@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- SMS error replies -->
-    <string name="sms_notauthed">Your number is not approved to use SMSLocator on this device.</string>
     <string name="sms_pinerror">Error checking pin!</string>
     <string name="sms_badpin">Incorrect or missing pin!</string>
     <string name="sms_invalidcommand">Invalid command.</string>
     <string name="sms_noprovider">This device has no available location provider, as both GPS and Network locations are unavailable!</string>
     <string name="sms_nopasschange">Password changing is disabled on this phone. Please enable in the SMSLocator app on the phone.</string>
     <string name="sms_nopremium">This device does not have premium features enabled. To do so, purchase the upgrade through the app.</string>
-    <string name="sms_movementalert">[SMSLocator] The device moved more than 50 meters away from its original location! New coordinates will be sent momentarily.</string>
     <string name="sms_nonotifpolicy">The notification policy for SMSLocator has been revoked, thus Do-Not-Disturb mode was not changed.</string>
     <string name="sms_freemium_expired">Your free premium has expired. Either watch another video or purchase premium to use this command. Normal location requests are still available.</string>
 
@@ -16,11 +14,7 @@
     <string name="sms_locked">Phone locked!</string>
     <string name="sms_audio">Audio enabled. Send "[Keyword] [pin] ring" to hear a noise.</string>
     <string name="sms_ringing">Phone ringing.</string>
-    <string name="sms_alert">You will now receive an alert when the device moves more than 50 meters from its previous location.</string>
     <string name="sms_nullloc">An error occurred while trying to get your phone\'s location!</string>
-    <string name="sms_noalert">You will no longer receive movement alerts.</string>
-    <string name="sms_lostOn">Lost mode is now on. Location and battery alerts will be sent to this number.</string>
-    <string name="sms_lostOff">Lost mode is now off.</string>
     <string name="sms_undnd">Do-not-disturb was also disabled.</string>
     <string name="sms_permissionmissing">Your request could not be completed as app permissions have been revoked!</string>
 
@@ -32,7 +26,6 @@
     <string name="smstemp_acc">\nAccuracy:\u0020</string>
     <string name="smstemp_gml">Google Maps link:\u0020</string>
     <string name="smstemp_notacc">\nThis location was NOT retrieved using the GPS!</string>
-    <string name="smstemp_moved">Device moved more than 50 meters. New location:</string>
     <string name="smstemp_lowbat">[SMSLocator] Battery level low! Current percentage is:\u0020</string>
     
     <!-- Error Code Suffix -->

@@ -5,7 +5,4 @@
     <string name="command_reset_random">random</string>
     <string name="command_sound">sound</string>
     <string name="command_ring">ring</string>
-    <string name="command_alert">alert</string>
-    <string name="command_cancel">cancel</string>
-    <string name="command_lost">lost</string>
 </resources>

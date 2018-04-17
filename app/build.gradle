@@ -8,16 +8,19 @@ android {
         applicationId "com.t3kbau5.smslocator"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 17
-        versionName "2.6.0"
+        versionCode 18
+        versionName "2.6.1"
         //resConfigs "en", "fr"
     }
 
     buildTypes {
+        debug{
+            ext.enableCrashlytics = false
+        }
         release {
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
     }
 

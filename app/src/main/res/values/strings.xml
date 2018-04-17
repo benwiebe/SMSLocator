@@ -8,7 +8,6 @@
 
     <string name="app_name">SMSLocator</string>
     <string name="placeholder">Content is supposed to be here. If you are seeing this, please go back and try again.</string>
-    <string name="menu_settings">Settings</string>
     <string name="dev_admin">Device Administration</string>
     <string name="title_activity_set_keyword">Set Keyword</string>
     <string name="action_settings">Settings</string>
@@ -16,7 +15,6 @@
     <string name="title_activity_app_help">Help</string>
     <string name="title_activity_help_display">Help > </string>
     <string name="title_activity_restrict_numbers">Restrict Numbers</string>
-    <string name="title_activity_message_info">Message Info</string>
     <string name="title_activity_interactions">Interactions</string>
 
     <!-- Custom Strings -->
@@ -53,7 +51,6 @@
     <string name="dialog_continue">Continue</string>
     <string name="dialog_upgrade">By upgrading SMSLocator to the premium version, you will get access to all the commands, Google Maps links will be sent along with device coordinates, and ads will be removed. Thank you for supporting the app and myself!</string>
     <string name="dialog_premium">Premium</string>
-    <string name="dialog_restore">Restore</string>
     <string name="dialog_finishSetupTitle">Finish Setup</string>
     <string name="dialog_finishSetupMessage">You\'re almost done! Now, all that\'s left for you to do is set your keyword. Once you do that, you\'re all set! To see what commands are available, and how to format them, check out the Commands help section.</string>
     <string name="dialog_gotoKeyword">Set Keyword</string>
@@ -69,7 +66,6 @@
     <string name="dialog_clear">Clear</string>
 
     <string name="dialog_freemium_success">Success! You have unlocked premium for 7 days. Expiry:</string>
-    <string name="dialog_fremium_expired">Your free week of premium has expired. Please purchase or watch another video if you would like to continue using premium features!</string>
     <string name="dialog_premium_offline">Uh-oh! We\'re having trouble accessing the Google Play store. Please double-check your internet connection then try again.</string>
     
     <!-- Messages -->
@@ -78,14 +74,10 @@
     <string name="message_noadmin">You did not grant SMSLocator admin permissions. This is required in order to use premium features. Please enable SMSLocator again and accept the admin request.</string>
     <string name="message_choosepin">Please choose a pin. You MUST remember this in order to change SMSLocator settings</string>
     <string name="message_pinset">Pin set!</string>
-    <string name="message_message">Message:\n</string>
-    <string name="message_to">To:\u0020</string>
     <string name="message_admindisable">Revoking admin permissions will disable SMSLocator. Continue?</string>
     <string name="message_smslocatordisabled">SMSLocator has been disabled!</string>
     <string name="message_confirmpasschange">Enter your pin to confirm keyword change.</string>
     <string name="message_passchanged">Keyword changed!</string>
-    <string name="message_of">of</string>
-    <string name="message_swipe">Swipe left and right to navigate between messages.</string>
     <string name="message_restored">Premium purchase has been restored. All features unlocked!</string>
     <string name="message_interactionsCleared">Interactions Cleared!</string>
     <string name="message_activatedndaccess">Enable "SMSLocator" on this page to allow Do-Not-Disturb control. When done, press back.</string>
@@ -99,18 +91,13 @@
     <string name="error_keymatch">Keywords don\'t match!</string>
     <string name="error_keyblank">Keyword is blank!</string>
     <string name="error_setpin">PIN is either empty or too short. Please try again.</string>
-    <string name="error_msgjson">An error occurred while loading the message data.</string>
-    <string name="error_premiumcheck">An error occurred while checking premium status.</string>
     <string name="error_purchase">An error occurred while attempting purchase.</string>
-    <string name="error_notowned">You haven\'t purchased premium on this account!</string>
     <string name="error_permissions">Permission(s) not granted! These are required for the app to work.</string>
     <string name="error_novideo">Failed to load video!</string>
 
     <!-- Notifications -->
     <string name="notif_sent_title">Message Sent</string>
     <string name="notif_sent_body">A message has been sent to\u0020</string>
-    <string name="notif_alert_title">Location Alerts On</string>
-    <string name="notif_alert_body">Location alerts are being sent to\u0020</string>
     <string name="notif_channel_name_sms">SMS Alerts</string>
 
     <!-- Preferences -->

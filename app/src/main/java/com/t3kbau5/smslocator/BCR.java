@@ -36,10 +36,11 @@ import java.util.Locale;
 
 public class BCR extends BroadcastReceiver {
 
-    Context context;
-    SharedPreferences prefs;
-    String keyPhrase;
-    String savedPin;
+    private Context context;
+    private SharedPreferences prefs;
+    private String keyPhrase;
+    private String savedPin;
+    private String cmd;
 
     Runnable rn;
 
@@ -77,7 +78,6 @@ public class BCR extends BroadcastReceiver {
                 return; //error prevention
 
             String pass = words[0];
-            String cmd;
             String pin;
 
             if (pass.equals(keyPhrase)) {
@@ -96,7 +96,8 @@ public class BCR extends BroadcastReceiver {
                     }
 
                     if (!isOK) {
-                        addInteraction(sender, msgBody, getStr(R.string.comment_unauthorized_restriction));
+                        //todo: anything here??
+                        //addInteraction(sender, msgBody, getStr(R.string.comment_unauthorized_restriction));
                         //reply(getStr(R.string.sms_notauthed), sender);
                         return;
                     }
@@ -127,7 +128,6 @@ public class BCR extends BroadcastReceiver {
                     isCorrectPin = Utils.compareToSHA1(pin, savedPin);
                 } catch (NoSuchAlgorithmException e) {
                     reply(getStr(R.string.sms_pinerror), sender);
-                    addInteraction(sender, cmd, getStr(R.string.sms_pinerror));
                     e.printStackTrace();
                     return;
                 } catch (UnsupportedEncodingException e) {
@@ -137,7 +137,6 @@ public class BCR extends BroadcastReceiver {
                 }
 
                 if (!isCorrectPin) {
-                    addInteraction(sender, cmd, getStr(R.string.sms_badpin));
                     reply(getStr(R.string.sms_badpin), sender);
                     return;
                 }
@@ -152,10 +151,8 @@ public class BCR extends BroadcastReceiver {
 
                 if (cmd != null && !cmd.equals("") && !hasPremium) {
                     if(freemiumExpired) {
-                        addInteraction(sender, cmd, getStr(R.string.sms_freemium_expired));
                         reply(getStr(R.string.sms_freemium_expired), sender);
                     }else{
-                        addInteraction(sender, cmd, getStr(R.string.sms_nopremium));
                         reply(getStr(R.string.sms_nopremium), sender);
                     }
                     return;
@@ -171,7 +168,6 @@ public class BCR extends BroadcastReceiver {
                     resp = getStr(R.string.sms_locked);
                 } else if (cmd.equals(getStr(R.string.command_reset))) {
                     if (!prefs.getBoolean("passChange", false)) {
-                        addInteraction(sender, cmd, getStr(R.string.sms_nopasschange));
                         reply(getStr(R.string.sms_nopasschange), sender);
                         return;
                     }
@@ -220,11 +216,9 @@ public class BCR extends BroadcastReceiver {
 	            	}
 	            	
 	            }*/ else {
-                    addInteraction(sender, cmd, getStr(R.string.sms_invalidcommand));
                     reply(getStr(R.string.sms_invalidcommand), sender);
                     return;
                 }
-                addInteraction(sender, cmd, resp);
             }
         } else if (action.equalsIgnoreCase("android.intent.action.ACTION_BATTERY_LOW")) {
             if (prefs.getBoolean("lostMode", false)) {
@@ -414,12 +408,8 @@ public class BCR extends BroadcastReceiver {
 	
 	private void reply(String message, String destination){
 		Utils.sendSMS(message, destination);
+		addInteraction(destination, cmd, message);
 		if(prefs.getBoolean("preference_notify", true)){
-			/*Intent intent = new Intent(context, MessageInfo.class);
-			intent.putExtra("message", message);
-			intent.putExtra("destination", destination);
-			Utils.showNotif(context, getStr(R.string.notif_sent_title), getStr(R.string.notif_sent_body) + destination, R.drawable.icon_notif, R.drawable.ic_launcher, intent, 0, -1, Integer.valueOf(prefs.getString("notif_priority", "0")));
-			*/
 			NotificationHelper.showMessageNotif(context, destination, message);
 		}
 		
@@ -450,7 +440,7 @@ public class BCR extends BroadcastReceiver {
 	
 	private void addInteraction(String number, String request, String response){
 		
-		Interaction iaction = new Interaction(-1, number, request, response, System.currentTimeMillis());
+		Interaction iaction = new Interaction(number, request, response, System.currentTimeMillis());
 		
 		dh.addInteraction(iaction);
 	}
