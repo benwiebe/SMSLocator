@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -52,6 +53,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.List;
 
+import io.github.tonnyl.whatsnew.WhatsNew;
+import io.github.tonnyl.whatsnew.item.WhatsNewItem;
+import io.github.tonnyl.whatsnew.util.PresentationOption;
+
 public class MainActivity extends AppCompatActivity {
 
 	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
@@ -87,6 +92,22 @@ public class MainActivity extends AppCompatActivity {
 		DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 		bu = new BillingUtil2(this, mFirebaseAnalytics);
+
+		/*
+		 * todo: update XML for each release
+		 */
+
+		TypedArray wndrawables = getResources().obtainTypedArray(R.array.whatsnew_drawables);
+		String wntitles[] = getResources().getStringArray(R.array.whatsnew_titles);
+		String wncontents[] = getResources().getStringArray(R.array.whatsnew_contents);
+		WhatsNewItem[] wnitems = new WhatsNewItem[wndrawables.length()];
+		for(int i=0; i<wndrawables.length(); i++) {
+			wnitems[i] = new WhatsNewItem(wntitles[i], wncontents[i], wndrawables.getResourceId(i, -1));
+		}
+		wndrawables.recycle();
+        WhatsNew wn = WhatsNew.newInstance(wnitems);
+		wn.setPresentationOption(PresentationOption.DEBUG);
+		wn.presentAutomatically(this);
 
 		enableSMS = findViewById(R.id.enableSMS);
 

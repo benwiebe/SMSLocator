@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.t3kbau5.smslocator"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 18
         versionName "2.6.1"
@@ -15,9 +15,10 @@ android {
 
     buildTypes {
         debug{
-            ext.enableCrashlytics = false
+            resValue("bool", "FIREBASE_CRASH_ENABLED", "false")
         }
         release {
+            resValue("bool", "FIREBASE_CRASH_ENABLED", "true")
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
@@ -40,4 +41,5 @@ android {
 apply plugin: 'com.google.gms.google-services'
 dependencies {
     implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'io.github.tonnyl:whatsnew:0.1.1'
 }

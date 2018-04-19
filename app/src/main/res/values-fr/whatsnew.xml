@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="whatsnew_titles">
+        <item>Regardez des vidéos pour le deluxe gratuit</item>
+    </string-array>
+    <string-array name="whatsnew_contents">
+        <item>Vous pouvez maintenant regardez des publicités pour recevoir 7 jours de deluxe gratuit!</item>
+    </string-array>
+</resources>

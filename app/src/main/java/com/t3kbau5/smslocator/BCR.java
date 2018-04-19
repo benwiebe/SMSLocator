@@ -159,13 +159,11 @@ public class BCR extends BroadcastReceiver {
                 }
 
                 DevicePolicyManager DPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-                String resp = "";
                 if (cmd.equals(null) || cmd.equals("")) {
-                    resp = sendLocation(sender);
+                    sendLocation(sender);
                 } else if (cmd.equals(getStr(R.string.command_lock))) {
                     DPM.lockNow();
                     reply(getStr(R.string.sms_locked), sender);
-                    resp = getStr(R.string.sms_locked);
                 } else if (cmd.equals(getStr(R.string.command_reset))) {
                     if (!prefs.getBoolean("passChange", false)) {
                         reply(getStr(R.string.sms_nopasschange), sender);
@@ -180,13 +178,12 @@ public class BCR extends BroadcastReceiver {
                         String newCode = "" + random1 + random2 + random3 + random4;
                         DPM.resetPassword(newCode, 0);
                         reply(getStr(R.string.smstemp_passchange) + newCode, sender);
-                        resp = getStr(R.string.smstemp_passchange) + newCode;
                     } else {
                         DPM.resetPassword(words[3], 0);
                         reply(getStr(R.string.smstemp_passchange) + words[3], sender);
-                        resp = getStr(R.string.smstemp_passchange) + words[3];
                     }
                 } else if (cmd.equals(getStr(R.string.command_sound))) {
+                    String resp;
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                     am.setStreamVolume(AudioManager.STREAM_RING, am.getStreamMaxVolume(AudioManager.STREAM_RING), AudioManager.FLAG_PLAY_SOUND);
@@ -206,7 +203,6 @@ public class BCR extends BroadcastReceiver {
                 } else if (cmd.equals(getStr(R.string.command_ring))) {
                     playSound();
                     reply(getStr(R.string.sms_ringing), sender);
-                    resp = getStr(R.string.sms_ringing);
                 }/*else if(cmd.equals(getStr(R.string.command_lost)) && isCorrectPin){
 	            	
 	            	if(prefs.getBoolean("lostMode", false)){
