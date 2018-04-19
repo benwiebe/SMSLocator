@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="whatsnew_title">Quoi de neuf</string>
+    <string name="whatsnew_button">Allons-y!</string>
+
+    <!-- Update everything below for each new release! -->
     <string-array name="whatsnew_titles">
         <item>Regardez des vidéos pour le deluxe gratuit</item>
+        <item>Correction de plusieurs bugs</item>
+        <item>Améliorations dans les coulisses</item>
     </string-array>
     <string-array name="whatsnew_contents">
         <item>Vous pouvez maintenant regardez des publicités pour recevoir 7 jours de deluxe gratuit!</item>
+        <item>Les correctifs incluent les notifications manquantes, les pannes liés au contrôle du mode Ne pas déranger, le contrôle du volume de la sonnerie, etc.</item>
+        <item>Le code de l\'application a été amélioré pour être plus robuste et pour construire une application plus petite.</item>
     </string-array>
 </resources>

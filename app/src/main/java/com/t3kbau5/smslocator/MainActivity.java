@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 		bu = new BillingUtil2(this, mFirebaseAnalytics);
 
 		/*
+		 * Code for showing WhatsNew dialog for each new release
 		 * todo: update XML for each release
 		 */
 
@@ -105,9 +106,19 @@ public class MainActivity extends AppCompatActivity {
 			wnitems[i] = new WhatsNewItem(wntitles[i], wncontents[i], wndrawables.getResourceId(i, -1));
 		}
 		wndrawables.recycle();
+
         WhatsNew wn = WhatsNew.newInstance(wnitems);
-		wn.setPresentationOption(PresentationOption.DEBUG);
+        wn.setButtonBackground(getResources().getColor(R.color.primary_dark));
+        wn.setButtonTextColor(getResources().getColor(android.R.color.white));
+        wn.setTitleColor(getResources().getColor(R.color.primary));
+        wn.setButtonText(getStr(R.string.whatsnew_button));
+        wn.setTitleText(getStr(R.string.whatsnew_title));
+
+        if(BuildConfig.DEBUG)
+            wn.setPresentationOption(PresentationOption.DEBUG); //always show for debug builds
 		wn.presentAutomatically(this);
+
+		/* end WhatsNew code */
 
 		enableSMS = findViewById(R.id.enableSMS);
 

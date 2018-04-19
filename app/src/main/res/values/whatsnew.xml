@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="whatsnew_title">What\'s New</string>
+    <string name="whatsnew_button">Let\'s Go!</string>
+
+    <!-- Update everything below for each new release! -->
     <string-array name="whatsnew_titles">
         <item>Watch Videos for Free Premium</item>
+        <item>Multiple Bugfixes</item>
+        <item>Behind-the-Scenes Improvements</item>
     </string-array>
     <string-array name="whatsnew_contents">
         <item>You can now watch rewarded videos to get 7 days of premium for free!</item>
+        <item>Fixes include missing notifications, crashes related to Do Not Disturb control, ringer volume control, and more.</item>
+        <item>The application code has been improved to be more robust and build a smaller application.</item>
     </string-array>
+
+    <!-- These apply to both English & French dialogs -->
     <integer-array name="whatsnew_drawables" translatable="false">
-        <item>@android:drawable/ic_menu_week</item>
+        <item>@drawable/ic_ondemand_video_black_24dp</item>
+        <item>@drawable/ic_bug_report_black_24dp</item>
+        <item>@drawable/ic_code_black_24dp</item>
     </integer-array>
 </resources>
