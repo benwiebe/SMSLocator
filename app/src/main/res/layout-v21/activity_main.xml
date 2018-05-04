@@ -12,7 +12,8 @@
         android:layout_below="@+id/enableSMS"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:text="@string/ls_setkey" />
+        android:text="@string/ls_setkey"
+        android:elevation="2dp"/>
 
     <TextView
         android:id="@+id/textView1"
@@ -29,7 +30,7 @@
         android:layout_height="90dp"
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
-        />
+        android:elevation="2dp" />
 
     <Switch
         android:id="@+id/togglePassChange"
@@ -37,7 +38,8 @@
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/gotoRestrictNumbers" />
+        android:layout_toRightOf="@+id/gotoRestrictNumbers"
+        android:elevation="1dp"/>
 
     <Switch
         android:id="@+id/toggleRestriction"
@@ -45,7 +47,8 @@
         android:layout_height="45dp"
         android:layout_alignLeft="@+id/togglePassChange"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/togglePassChange" />
+        android:layout_below="@+id/togglePassChange"
+        android:elevation="1dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,7 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toggleRestriction"
         android:layout_centerHorizontal="true"
-        android:text="@string/ls_setnums" />
+        android:text="@string/ls_setnums"
+        android:elevation="2dp"/>
 
     <Switch
         android:id="@+id/toggleDnd"
@@ -79,7 +83,8 @@
         android:layout_height="45dp"
         android:layout_below="@+id/gotoRestrictNumbers"
         android:layout_alignRight="@+id/toggleRestriction"
-        android:layout_alignEnd="@+id/toggleRestriction" />
+        android:layout_alignEnd="@+id/toggleRestriction"
+        android:elevation="1dp"/>
 
     <TextView
         android:id="@+id/toggledndtext"

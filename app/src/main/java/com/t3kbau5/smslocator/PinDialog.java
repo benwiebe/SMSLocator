@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,60 +14,40 @@ import android.widget.TextView;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-public class PinDialog{
+public class PinDialog extends AlertDialog.Builder{
 
 	Context context;
-	private AlertDialog.Builder adb;
 	
 	private String message;
-	private Boolean hidden = false;
+	private Boolean hidden = true;
 	
 	private String input = "";
-	
+
+	public PinDialog(Context context) {
+		this(context, "");
+	}
+
 	public PinDialog(Context context, String message) {
-		this.context = context;
-		this.message = message;
-		
-		adb = new AlertDialog.Builder(context);
-		adb.setTitle(getStr(R.string.dialog_enterpin));
-		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		adb.setView(inflater.inflate(R.layout.pin_layout, null));
-		
+		this(context, message, context.getResources().getString(R.string.dialog_enterpin));
 	}
 	
 	public PinDialog(Context context, String message, String title) {
+		super(context);
 		this.context = context;
 		this.message = message;
-		
-		adb = new AlertDialog.Builder(context);
-		adb.setTitle(title);
+
+		this.setTitle(title);
 		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		adb.setView(inflater.inflate(R.layout.pin_layout, null));
+		this.setView(inflater.inflate(R.layout.pin_layout, null));
+
+		super.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				dialogInterface.dismiss();
+			}
+		});
 		
-	}
-	
-	public Builder getBuilder(){
-		return adb;
-	}
-	
-	public void setBuilder(Builder builder){
-		adb = builder;
-	}
-	
-	public void setPositiveButton(String text, OnClickListener listener){
-		adb.setPositiveButton(text, listener);
-	}
-	
-	public void setNeutralButton(String text, OnClickListener listener){
-		adb.setNeutralButton(text, listener);
-	}
-	
-	public void setNegativeButton(String text, OnClickListener listener){
-		adb.setNegativeButton(text, listener);
-	}
-	
-	public void setCancelable(Boolean cancelable){
-		adb.setCancelable(cancelable);
 	}
 	
 	public void setHidden(Boolean hidden){
@@ -76,19 +57,34 @@ public class PinDialog{
 	public String getPin(){
 		return input;
 	}
-	public String getEncryptedPin() throws NoSuchAlgorithmException, UnsupportedEncodingException{
-		return Utils.SHA1(input);
+
+	@Override
+	@Deprecated
+	public AlertDialog.Builder setNegativeButton(CharSequence title, DialogInterface.OnClickListener listener) {
+		return this;
 	}
-	
-	public Dialog show(){
-		Dialog d = adb.show();
+
+	@Override
+	@Deprecated
+	public AlertDialog.Builder setNegativeButton(int resId, DialogInterface.OnClickListener listener) {
+		return this;
+	}
+
+	@Override
+	public AlertDialog.Builder setCancelable(boolean cancelable) {
+		super.setCancelable(cancelable);
+		super.setNegativeButton("", null);
+		return this;
+	}
+
+	public AlertDialog show(){
+		AlertDialog d = super.show();
 		
 		TextView tv = d.findViewById(R.id.pinLayoutMessage);
 		tv.setText(message);
 		
 		final TextView output = d.findViewById(R.id.pinLayoutOutput);
-		
-		
+
 		Button keys[] = new Button[11];
 		
 		keys[0] = d.findViewById(R.id.keypad_0);

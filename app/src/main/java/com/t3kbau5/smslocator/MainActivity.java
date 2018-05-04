@@ -3,6 +3,7 @@ package com.t3kbau5.smslocator;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -29,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
@@ -78,14 +80,16 @@ public class MainActivity extends AppCompatActivity {
 	BillingUtil2 bu;
 
 	private FirebaseAnalytics mFirebaseAnalytics;
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 		setContentView(R.layout.activity_main);
 
-		_this = this;
+        _this = this;
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -837,4 +841,15 @@ public class MainActivity extends AppCompatActivity {
 	public String getStr(int id){
     	return getResources().getString(id);
     }
+
+    /*
+    @Override
+    public final void startActivity(Intent intent) {
+	    if(Build.VERSION.SDK_INT >= 21) {
+	        super.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        }else{
+	        super.startActivity(intent);
+        }
+    }
+    */
 }
