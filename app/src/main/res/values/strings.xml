@@ -22,7 +22,7 @@
     <string name="admin_details">SMSLocator requires admin privileges in order to function. Having these privileges prevents uninstalling of the app, which means you will need to disable SMSLocator before uninstalling the app. SMSLocator requests permission to lock your phone, so that the \'lock\' command can be run. In addition, the password reset permission is used to change your device PIN on your request.</string>
     <string name="keyword_message">Your keyword should contain letters, numbers, and symbols. Spaces are not allowed.</string>
     <string name="action_unlock">Premium</string>
-    
+
     <string name="clabel_number">Number</string>
     <string name="clabel_date">Date</string>
     <string name="clabel_command">Command</string>
@@ -67,7 +67,7 @@
 
     <string name="dialog_freemium_success">Success! You have unlocked premium for 7 days. Expiry:</string>
     <string name="dialog_premium_offline">Uh-oh! We\'re having trouble accessing the Google Play store. Please double-check your internet connection then try again.</string>
-    
+
     <!-- Messages -->
     <string name="message_confirmpin">Please confirm your pin to change this setting.</string>
     <string name="message_confirmdisable">Please confirm your pin to disable SMSLocator.</string>

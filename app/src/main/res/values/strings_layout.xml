@@ -15,4 +15,21 @@
     <string name="ls_setmykey">Set My Keyword</string>
     
     <string name="ls_back">BACK</string>
+
+    <string name="ls_enable_step1">Step 1</string>
+    <string name="ls_enable_step1_desc">Accept Terms of Service</string>
+    <string name="ls_enable_step2">Step 2</string>
+    <string name="ls_enable_step2_desc">Grant Permissions</string>
+    <string name="ls_enable_step2_content">To use SMSLocator, some permissions need to be granted. Tap below to start the permission granting process.</string>
+    <string name="ls_enable_step2_btn">Grant Permissions</string>
+    <string name="ls_enable_step3">Step 3</string>
+    <string name="ls_enable_step3_desc">Add Device Administrator</string>
+    <string name="ls_enable_step3_btn">Add Administrator</string>
+    <string name="ls_enable_step4">Step 4</string>
+    <string name="ls_enable_step4_desc">Set Pin</string>
+    <string name="ls_enable_step5">Step 5</string>
+    <string name="ls_enable_step5_desc">Set Keyword</string>
+    <string name="ls_enable_step6">Step 6</string>
+    <string name="ls_enable_step6_desc">System Test</string>
+
 </resources>

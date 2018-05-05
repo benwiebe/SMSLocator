@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-
 android {
     compileSdkVersion 27
 
@@ -14,7 +13,7 @@ android {
     }
 
     buildTypes {
-        debug{
+        debug {
             resValue("bool", "FIREBASE_CRASH_ENABLED", "false")
         }
         release {
@@ -26,20 +25,27 @@ android {
     }
 
     dependencies {
-        compile fileTree(include: ['*.jar'], dir: 'libs')
-        compile 'com.android.support:appcompat-v7:27.1.0'
-        compile 'com.android.support:design:27.1.0'
-        compile 'com.android.support:support-v4:27.1.0'
-        compile 'com.google.android.gms:play-services-ads:11.8.0'
-        compile 'com.google.android.gms:play-services-base:11.8.0'
-        compile 'com.android.billingclient:billing:1.0'
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+        implementation 'com.android.support:appcompat-v7:27.1.0'
+        implementation 'com.android.support:design:27.1.0'
+        implementation 'com.android.support:support-v4:27.1.0'
+        implementation 'com.google.android.gms:play-services-ads:11.8.0'
+        implementation 'com.google.android.gms:play-services-base:11.8.0'
+        implementation 'com.android.billingclient:billing:1.0'
+        implementation 'com.github.florent37:expansionpanel:1.1.2'
+        implementation 'com.google.firebase:firebase-core:11.8.0'
+        implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
-        compile 'com.google.firebase:firebase-core:11.8.0'
-        compile 'com.crashlytics.sdk.android:crashlytics:2.9.1'
+
+        implementation 'com.google.firebase:firebase-core:11.8.0'
+        implementation 'io.github.tonnyl:whatsnew:0.1.1'
+        implementation 'com.github.florent37:runtime-permission:1.0.1'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 apply plugin: 'com.google.gms.google-services'
 dependencies {
-    implementation 'com.google.firebase:firebase-core:11.8.0'
-    implementation 'io.github.tonnyl:whatsnew:0.1.1'
 }

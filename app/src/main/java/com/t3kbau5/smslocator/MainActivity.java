@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
         wn.setButtonText(getStr(R.string.whatsnew_button));
         wn.setTitleText(getStr(R.string.whatsnew_title));
 
-        if(BuildConfig.DEBUG)
-            wn.setPresentationOption(PresentationOption.DEBUG); //always show for debug builds
+        /*if(BuildConfig.DEBUG)
+            wn.setPresentationOption(PresentationOption.DEBUG); //always show for debug builds*/
 		wn.presentAutomatically(this);
 
 		/* end WhatsNew code */
@@ -133,7 +133,11 @@ public class MainActivity extends AppCompatActivity {
 				Boolean s = enableSMS.isChecked();
 				
 				if(s){
-					showTermsDialog();
+					//showTermsDialog();
+					enableSMS.setChecked(false);
+				    Intent intent = new Intent(_this, EnableActivity.class);
+				    startActivity(intent);
+
 				}else{
 					final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmdisable));
 					adb.setCancelable(false);
@@ -783,37 +787,7 @@ public class MainActivity extends AppCompatActivity {
             }
 		}
 	}
-	
-	private void showTermsDialog(){
-		final Activity _this = this;
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(getStr(R.string.dialog_terms))
-			.setMessage(Utils.formatAndSpan(getStr(R.string.app_terms) + "[br][br]" + getStr(R.string.admin_details)))
-			.setPositiveButton(getStr(R.string.dialog_agree), new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-					if (!Utils.checkPermissionsGranted(_this).getBoolean("allGranted")) {
-                        permissionsDuringEnable = true;
-                        ActivityCompat.requestPermissions(_this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS}, REQUEST_CODE_PERMISSIONS);
-                    }
-				}
-			})
-			.setNegativeButton(getStr(R.string.dialog_donotagree), new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					enableSMS.setChecked(false);
-					updateStates();
-					dialog.cancel();
-				}
-			});
-		
-		Dialog d = adb.show();
-		((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-	}
-	
+
 	public void showPostSetup(){
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getStr(R.string.dialog_finishSetupTitle));

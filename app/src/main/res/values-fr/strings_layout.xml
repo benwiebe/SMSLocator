@@ -15,4 +15,20 @@
     <string name="ls_setmykey">Changer mon mot-clé</string>
     
     <string name="ls_back">EFFACER</string>
+
+    <string name="ls_enable_step1">Étape 1</string>
+    <string name="ls_enable_step1_desc">Accepter les conditions d\'utilisation</string>
+    <string name="ls_enable_step2">Étape 2</string>
+    <string name="ls_enable_step2_desc"></string>
+    <string name="ls_enable_step2_content">To use SMSLocator, some permissions need to be granted. Tap below to start the permission granting process.</string>
+    <string name="ls_enable_step2_btn">Grant Permissions</string>
+    <string name="ls_enable_step3">Étape 3</string>
+    <string name="ls_enable_step3_desc">Set Pin</string>
+    <string name="ls_enable_step3_content">blahblah</string>
+    <string name="ls_enable_step4">Étape 4</string>
+    <string name="ls_enable_step4_desc">Set Pin</string>
+    <string name="ls_enable_step5">Étape 5</string>
+    <string name="ls_enable_step5_desc">Set Keyword</string>
+    <string name="ls_enable_step6">Étape 6</string>
+    <string name="ls_enable_step6_desc">System Test</string>
 </resources>
