@@ -94,6 +94,7 @@
     <string name="error_purchase">An error occurred while attempting purchase.</string>
     <string name="error_permissions">Permission(s) not granted! These are required for the app to work.</string>
     <string name="error_novideo">Failed to load video!</string>
+    <string name="error_nokeyword">Keyword not set. Please try again!</string>
 
     <!-- Notifications -->
     <string name="notif_sent_title">Message Sent</string>

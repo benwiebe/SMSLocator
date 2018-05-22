@@ -38,8 +38,8 @@ public class EnableActivity extends AppCompatActivity {
     private Activity _this = this;
     private DevicePolicyManager DPM;
     private SharedPreferences prefs;
-    private ExpansionLayout el_s1, el_s2, el_s3, el_s4, el_s5;
-    private TextView tv_s1Label, tv_s2Label, tv_s3Label, tv_s4Label, tv_s5Label;
+    private ExpansionLayout el_s1, el_s2, el_s3, el_s4, el_s5, el_s6;
+    private TextView tv_s1Label, tv_s2Label, tv_s3Label, tv_s4Label, tv_s5Label, tv_s6Label;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +63,13 @@ public class EnableActivity extends AppCompatActivity {
         el_s3 = (ExpansionLayout) findViewById(R.id.step3Expansion);
         el_s4 = (ExpansionLayout) findViewById(R.id.step4Expansion);
         el_s5 = (ExpansionLayout) findViewById(R.id.step5Expansion);
+        el_s6 = (ExpansionLayout) findViewById(R.id.step6Expansion);
         tv_s1Label = (TextView) findViewById(R.id.step1Label);
         tv_s2Label = (TextView) findViewById(R.id.step2Label);
         tv_s3Label = (TextView) findViewById(R.id.step3Label);
         tv_s4Label = (TextView) findViewById(R.id.step4Label);
         tv_s5Label = (TextView) findViewById(R.id.step5Label);
+        tv_s6Label = (TextView) findViewById(R.id.step6Label);
 
         /* Setup Expander Contents */
         tv_s1content.setText(Utils.formatAndSpan(getStr(R.string.app_terms)));
@@ -81,6 +83,7 @@ public class EnableActivity extends AppCompatActivity {
         expansionLayoutCollection.add(el_s3);
         expansionLayoutCollection.add(el_s4);
         expansionLayoutCollection.add(el_s5);
+        expansionLayoutCollection.add(el_s6);
 
         expansionLayoutCollection.openOnlyOne(true);
 
@@ -152,7 +155,7 @@ public class EnableActivity extends AppCompatActivity {
         el_s3.setEnabled(false);
         el_s4.setEnabled(false);
         el_s5.setEnabled(false);
-
+        el_s6.setEnabled(false);
     }
 
     @Override
@@ -197,8 +200,22 @@ public class EnableActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume() {
+        super.onResume();
+        if(el_s5.isExpanded()) {
+            if(prefs.getString("keyPhrase", "").equals("")) {
+                CustomToast.makeText(this, getStr(R.string.error_nokeyword), Toast.LENGTH_LONG, 1).show();
+            }else{
+                el_s6.setEnabled(true);
+                el_s6.expand(true);
+                tv_s5Label.setTextColor(getResources().getColor(R.color.primary));
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         if(!prefs.getBoolean("smsenabled", false)) {
             ComponentName cm = new ComponentName(_this, DevAdmin.class);
             DPM.removeActiveAdmin(cm);
@@ -272,8 +289,12 @@ public class EnableActivity extends AppCompatActivity {
                             prefs.edit().putString("pin", pin).apply();
                             tv_s4Label.setTextColor(getResources().getColor(R.color.primary));
                             el_s5.setEnabled(true);
-                            el_s5.expand(true);
-                            //CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
+                            if(prefs.getString("keyPhrase", "").equals("")) {
+                                el_s5.expand(true);
+                            }else{
+                                el_s6.setEnabled(true);
+                                el_s6.expand(true);
+                            }
                         }else{
                             CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
                         }
