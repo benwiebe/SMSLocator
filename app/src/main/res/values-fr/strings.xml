@@ -115,4 +115,7 @@
     <string name="prefs_notif_priority_desc">Définit l\'importance des notifications. Notifications "heads-up" seront montrés quand "élevé" ou plus haut est sélectionné (Lollipop seulement)</string>
     <string name="prefs_gpswait">Temps d\'attente pour GPS</string>
     <string name="prefs_gpswait_desc">Définit combien de temps l\'appareil essaiera d\'obtenir un nouvel emplacement avant d\'envoyer un ancien emplacement</string>
+
+    <!-- Other? -->
+    <string name="menustr_updategdpr">Choix d\'annonces</string>
 </resources>

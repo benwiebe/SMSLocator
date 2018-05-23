@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.t3kbau5.smslocator"
-        minSdkVersion 9
-        targetSdkVersion 25
-        versionCode 18
-        versionName "2.6.1"
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 19
+        versionName "2.6.2"
     }
 
     buildTypes {
@@ -19,13 +19,20 @@ android {
         }
     }
 
+    /* These are required by GDPRDialog Lib */
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     dependencies{
-        compile fileTree(include: ['*.jar'], dir: 'libs')
-        compile 'com.android.support:appcompat-v7:25.3.1'
-        compile 'com.android.support:design:25.3.1'
-        compile 'com.android.support:support-v4:25.3.1'
-        compile 'com.google.android.gms:play-services-ads:10.0.0'
-        compile 'com.google.android.gms:play-services-base:10.0.0'
-        compile 'com.android.billingclient:billing:1.0'
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+        implementation 'com.android.support:appcompat-v7:27.1.1'
+        implementation 'com.android.support:design:27.1.1'
+        implementation 'com.android.support:support-v4:27.1.1'
+        implementation 'com.google.android.gms:play-services-ads:10.0.0'
+        implementation 'com.google.android.gms:play-services-base:10.0.0'
+        implementation 'com.android.billingclient:billing:1.0'
+        implementation 'com.github.MFlisar:GDPRDialog:0.4'
     }
 }

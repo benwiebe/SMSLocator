@@ -28,6 +28,6 @@
         android:enabled="true"
         android:icon="@drawable/ic_action_accounts" android:orderInCategory="100"></item>
     <item android:id="@+id/menu_interactions" android:title="Interactions" app:showAsAction="never" android:checkable="false" android:visible="true" android:enabled="true" android:orderInCategory="99"></item>
-    <item android:id="@+id/menu_makeSystem" app:showAsAction="never" android:titleCondensed="Make System" android:enabled="false" android:title="Make System App" android:visible="false" android:checkable="false"></item>
+    <item android:id="@+id/menu_updateGDPR" app:showAsAction="never" android:titleCondensed="@string/menustr_updategdpr" android:enabled="true" android:title="@string/menustr_updategdpr" android:visible="true" android:checkable="false" />
 
 </menu>

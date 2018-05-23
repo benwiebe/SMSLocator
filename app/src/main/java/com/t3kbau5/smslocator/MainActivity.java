@@ -34,9 +34,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.michaelflisar.gdprdialog.GDPR;
+import com.michaelflisar.gdprdialog.GDPRConsent;
+import com.michaelflisar.gdprdialog.GDPRDefinitions;
+import com.michaelflisar.gdprdialog.GDPRSetup;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -45,7 +50,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallback {
 
 	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
     private int REQUEST_CODE_PERMISSIONS = 1703;
@@ -64,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
     Boolean permissionsDuringEnable = false;
 	
 	BillingUtil2 bu;
-	
+
+	private GDPRSetup gdprSetup;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +126,8 @@ public class MainActivity extends AppCompatActivity {
 					});
 					adb.setHidden(true);
 					adb.show();
-					
-					
 				}
-				
 			}
-			
 		});
 		gotoSetKeyword = (Button) findViewById(R.id.gotoSetPass);
 		gotoSetKeyword.setEnabled(smsenabled);
@@ -272,11 +275,12 @@ public class MainActivity extends AppCompatActivity {
 			});
 			adb.show();
 		}
-		
-		if(!prefs.getBoolean("premium", false)){
-			showAd(); //if the user isn't premium, show an ad
-		}
 
+        GDPR.getInstance().init(this);
+        gdprSetup = new GDPRSetup(GDPRDefinitions.ADMOB); // add all networks you use to the constructor
+        //gdprSetup.withPaidVersion(true);
+        gdprSetup.withExplicitAgeConfirmation(true);
+        GDPR.getInstance().checkIfNeedsToBeShown(this, gdprSetup);
 
 		//Support for the new permissions system
 		if (smsenabled && !Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
@@ -325,75 +329,53 @@ public class MainActivity extends AppCompatActivity {
             	return true;
             case R.id.menu_unlock:
                 if(Utils.internetConnected(this) && bu.isConnected()) {
-				AlertDialog.Builder adb = new AlertDialog.Builder(this);
-    			adb.setTitle(getStr(R.string.dialog_premium));
-    			adb.setMessage(getStr(R.string.dialog_upgrade));
-    			adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
-    				
-    				@Override
-    				public void onClick(DialogInterface dialog, int which) {
-    					dialog.dismiss();
-    					
-    					if(bu.hasPremium()){
-							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
-						}else{
-							bu.buyPremium();
-						}
-    				}
-    			});
-    			adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-    			adb.setNeutralButton(getStr(R.string.dialog_restore), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						
-						if(bu.hasPremium()){
-							CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
-						}else{
-							CustomToast.makeText(getBaseContext(), getStr(R.string.error_notowned), Toast.LENGTH_LONG, 1).show();
-						}
-						
-					}
-				});
-    			adb.show();
-            	
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle(getStr(R.string.dialog_premium));
+                    adb.setMessage(getStr(R.string.dialog_upgrade));
+                    adb.setPositiveButton(getStr(R.string.dialog_continue), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                            if (bu.hasPremium()) {
+                                CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+                            } else {
+                                bu.buyPremium();
+                            }
+                        }
+                    });
+                    adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    adb.setNeutralButton(getStr(R.string.dialog_restore), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                            if (bu.hasPremium()) {
+                                CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+                            } else {
+                                CustomToast.makeText(getBaseContext(), getStr(R.string.error_notowned), Toast.LENGTH_LONG, 1).show();
+                            }
+
+                        }
+                    });
+                    adb.show();
+                }
 			
             	return true;
             case R.id.menu_interactions:
             	intent = new Intent(this, Interactions.class);
             	this.startActivity(intent);
             	return true;
-            case R.id.menu_makeSystem:
-				try {
-					if(!Utils.canRunRootCommands()){
-						Log.e("SMSL", "Can't run root commands!");
-						return true;
-					}
-					Process sup = Runtime.getRuntime().exec("su");
-					 DataOutputStream os = new DataOutputStream(sup.getOutputStream());
-			         DataInputStream osRes = new DataInputStream(sup.getInputStream());
-			         os.writeBytes("mount -o remount,rw /system /system\n");
-			         os.flush();
-			         os.writeBytes("pm path com.t3kbau5.smslocator\n");
-		             os.flush();
-		             
-		             String path = osRes.readLine();
-		             path = path.substring(9);
-		             path = "/" + path;
-		             
-		             os.writeBytes("cp " + path + " /system/app/" + path.substring(9) + "\n");
-		             os.flush();
-		             android.os.Process.killProcess(android.os.Process.myPid());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+            case R.id.menu_updateGDPR:
+                GDPR.getInstance().showDialog(this, gdprSetup);
 				return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -443,7 +425,8 @@ public class MainActivity extends AppCompatActivity {
 		mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
 
 		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
-												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4").build();
+												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4")
+                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().getConsent() == GDPRConsent.PERSONAL_CONSENT)).build();
 		
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.mainLayout);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -714,5 +697,50 @@ public class MainActivity extends AppCompatActivity {
 	
 	public String getStr(int id){
     	return getResources().getString(id);
+    }
+
+    @Override
+    public void onConsentNeedsToBeRequested() {
+        GDPR.getInstance().showDialog(this, gdprSetup);
+    }
+
+    @Override
+    public void onConsentInfoUpdate(GDPRConsent gdprConsent, boolean isNewState) {
+        if (isNewState) {
+            // user just selected this consent, do whatever you want...
+            switch (gdprConsent) {
+                case UNKNOWN:
+                    // never happens!
+                    break;
+                case NO_CONSENT:
+                    if(!bu.hasPremium())
+                        bu.buyPremium();
+                    break;
+                case NON_PERSONAL_CONSENT_ONLY:
+                case PERSONAL_CONSENT:
+                    onConsentKnown(gdprConsent == GDPRConsent.PERSONAL_CONSENT);
+                    break;
+            }
+        } else {
+            switch (gdprConsent) {
+                case UNKNOWN:
+                    // never happens!
+                    break;
+                case NO_CONSENT:
+                    // with the default setup, the dialog will shown in this case again anyways!
+                    break;
+                case NON_PERSONAL_CONSENT_ONLY:
+                case PERSONAL_CONSENT:
+                    // user restarted activity and consent was already given...
+                    onConsentKnown(gdprConsent == GDPRConsent.PERSONAL_CONSENT);
+                    break;
+            }
+        }
+    }
+
+    private void onConsentKnown(boolean personal) {
+        if(!prefs.getBoolean("premium", false)){
+            showAd(); //if the user isn't premium, show an ad
+        }
     }
 }
