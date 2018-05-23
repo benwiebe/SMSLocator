@@ -1,5 +1,6 @@
 package com.t3kbau5.smslocator;
 
+import android.support.v7.app.AppCompatActivity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;

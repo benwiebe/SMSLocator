@@ -264,4 +264,10 @@ public class Utils {
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		return netInfo != null && netInfo.isConnectedOrConnecting();
 	}
+
+	public static Bundle personalAdBundle(boolean personal) {
+		Bundle extras = new Bundle();
+		extras.putString("npa", personal?"0":"1");
+		return extras;
+	}
 }

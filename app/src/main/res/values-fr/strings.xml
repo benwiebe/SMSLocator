@@ -109,4 +109,7 @@
     <string name="prefs_gpswait_desc">Définit combien de temps l\'appareil essaiera d\'obtenir un nouvel emplacement avant d\'envoyer un ancien emplacement</string>
     <string name="dialog_freemium_success">Succès! Vous avez activé la version deluxe pour 7 jours. Expiration:</string>
     <string name="dialog_premium_offline">Nous avons des difficultés à accéder Google Play. Veuillez vérifier votre connexion Internet, puis réessayer.</string>
+
+    <!-- Other? -->
+    <string name="menustr_updategdpr">Choix d\'annonces</string>
 </resources>
