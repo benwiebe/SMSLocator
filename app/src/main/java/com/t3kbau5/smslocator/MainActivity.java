@@ -61,58 +61,55 @@ import io.fabric.sdk.android.Fabric;
 import io.github.tonnyl.whatsnew.WhatsNew;
 import io.github.tonnyl.whatsnew.item.WhatsNewItem;
 
-public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallback{
+public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallback {
 
-	private final int REQUEST_CODE_ENABLE_ADMIN = 1203;
+    private final int REQUEST_CODE_ENABLE_ADMIN = 1203;
     private final int REQUEST_CODE_PERMISSIONS = 1703;
-	private SharedPreferences prefs;
-	
-	private Context _this;
-	private ToggleButton enableSMS;
-	private Boolean smsenabled = false;
-	private Button gotoSetKeyword;
-	private CompoundButton passSMS;
-	private Button gotoRestriction;
-	private CompoundButton toggleRestriction;
-	private DevicePolicyManager DPM;
-	private CompoundButton toggleDnd;
-	private Boolean dndPending = false;
-	private Boolean permissionsDuringEnable = false;
-	
-	BillingUtil2 bu;
+    BillingUtil2 bu;
+    private SharedPreferences prefs;
+    private Context _this;
+    private ToggleButton enableSMS;
+    private Boolean smsenabled = false;
+    private Button gotoSetKeyword;
+    private CompoundButton passSMS;
+    private Button gotoRestriction;
+    private CompoundButton toggleRestriction;
+    private DevicePolicyManager DPM;
+    private CompoundButton toggleDnd;
+    private Boolean dndPending = false;
+    private Boolean permissionsDuringEnable = false;
+    private GDPRSetup gdprSetup;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
-	private GDPRSetup gdprSetup;
-	private FirebaseAnalytics mFirebaseAnalytics;
-
-	@SuppressLint("NewApi")
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @SuppressLint("NewApi")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-		setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         _this = this;
-		
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-		bu = new BillingUtil2(this, mFirebaseAnalytics);
 
-		/*
-		 * Code for showing WhatsNew dialog for each new release
-		 * todo: update XML for each release
-		 */
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		TypedArray wndrawables = getResources().obtainTypedArray(R.array.whatsnew_drawables);
-		String wntitles[] = getResources().getStringArray(R.array.whatsnew_titles);
-		String wncontents[] = getResources().getStringArray(R.array.whatsnew_contents);
-		WhatsNewItem[] wnitems = new WhatsNewItem[wndrawables.length()];
-		for(int i=0; i<wndrawables.length(); i++) {
-			wnitems[i] = new WhatsNewItem(wntitles[i], wncontents[i], wndrawables.getResourceId(i, -1));
-		}
-		wndrawables.recycle();
+        DPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        bu = new BillingUtil2(this, mFirebaseAnalytics);
+
+        /*
+         * Code for showing WhatsNew dialog for each new release
+         * todo: update XML for each release
+         */
+
+        TypedArray wndrawables = getResources().obtainTypedArray(R.array.whatsnew_drawables);
+        String wntitles[] = getResources().getStringArray(R.array.whatsnew_titles);
+        String wncontents[] = getResources().getStringArray(R.array.whatsnew_contents);
+        WhatsNewItem[] wnitems = new WhatsNewItem[wndrawables.length()];
+        for (int i = 0; i < wndrawables.length(); i++) {
+            wnitems[i] = new WhatsNewItem(wntitles[i], wncontents[i], wndrawables.getResourceId(i, -1));
+        }
+        wndrawables.recycle();
 
         WhatsNew wn = WhatsNew.newInstance(wnitems);
         wn.setButtonBackground(getResources().getColor(R.color.primary_dark));
@@ -123,164 +120,164 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 
         /*if(BuildConfig.DEBUG)
             wn.setPresentationOption(PresentationOption.DEBUG); //always show for debug builds*/
-		wn.presentAutomatically(this);
+        wn.presentAutomatically(this);
 
-		/* end WhatsNew code */
+        /* end WhatsNew code */
 
-		enableSMS = findViewById(R.id.enableSMS);
+        enableSMS = findViewById(R.id.enableSMS);
 
-		enableSMS.setOnClickListener(new ToggleButton.OnClickListener(){
+        enableSMS.setOnClickListener(new ToggleButton.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Boolean s = enableSMS.isChecked();
+            @Override
+            public void onClick(View v) {
+                Boolean s = enableSMS.isChecked();
 
-				if(s){
-					//showTermsDialog();
-					enableSMS.setChecked(false);
-				    Intent intent = new Intent(_this, EnableActivity.class);
-				    startActivity(intent);
+                if (s) {
+                    //showTermsDialog();
+                    enableSMS.setChecked(false);
+                    Intent intent = new Intent(_this, EnableActivity.class);
+                    startActivity(intent);
 
-				}else{
-					final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmdisable));
-					adb.setCancelable(false);
-					adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
+                } else {
+                    final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmdisable));
+                    adb.setCancelable(false);
+                    adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Boolean isCorrectPin;
-							try {
-								isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
-								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-								enableSMS.setChecked(true);
-								e.printStackTrace();
-								return;
-							}
-							if(isCorrectPin){
-								ComponentName cm = new ComponentName(_this, DevAdmin.class);
-								DPM.removeActiveAdmin(cm);
-								prefs.edit().putBoolean("smsenabled", false).apply();
-								updateStates();
-							}else{
-								enableSMS.setChecked(true);
-								CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
-							}
-						}
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Boolean isCorrectPin;
+                            try {
+                                isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+                            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                                CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+                                enableSMS.setChecked(true);
+                                e.printStackTrace();
+                                return;
+                            }
+                            if (isCorrectPin) {
+                                ComponentName cm = new ComponentName(_this, DevAdmin.class);
+                                DPM.removeActiveAdmin(cm);
+                                prefs.edit().putBoolean("smsenabled", false).apply();
+                                updateStates();
+                            } else {
+                                enableSMS.setChecked(true);
+                                CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+                            }
+                        }
 
-					});
-					adb.setHidden(true);
-					adb.show();
-				}
-			}
-		});
-		gotoSetKeyword = findViewById(R.id.gotoSetPass);
-		gotoSetKeyword.setEnabled(smsenabled);
+                    });
+                    adb.setHidden(true);
+                    adb.show();
+                }
+            }
+        });
+        gotoSetKeyword = findViewById(R.id.gotoSetPass);
+        gotoSetKeyword.setEnabled(smsenabled);
 		/*if(!prefs.getString("keyPhrase", "TMWMPI").equals("TMWMPI")){
 			gotoSetKeyword.setBackgroundResource(R.drawable.complete_button);
 		}else{
 			gotoSetKeyword.setBackgroundResource(R.drawable.incomplete_button);
 		}*/ //TODO: update this
-		gotoSetKeyword.setOnClickListener(new Button.OnClickListener(){
+        gotoSetKeyword.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(_this, SetKeyword.class);
-				startActivity(intent);
-			}
-		});
-		
-		passSMS = findViewById(R.id.togglePassChange);
-		passSMS.setOnClickListener(new CompoundButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(_this, SetKeyword.class);
+                startActivity(intent);
+            }
+        });
 
-			@Override
-			public void onClick(View v) {
-				final Boolean isChecked = passSMS.isChecked();
-				final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
-				adb.setCancelable(false);
-				adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						Boolean isCorrectPin;
-						try {
-							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
-							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-							enableSMS.setChecked(!isChecked);
-							e.printStackTrace();
-							return;
-						}
-						
-						if(isCorrectPin){
-							prefs.edit().putBoolean("passChange", isChecked).apply();
-						}else{
-							passSMS.setChecked(!isChecked);
-							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
-							
-						}
-					}
-					
-				});
-				adb.setHidden(true);
-				adb.show();
-			}
-			
-		});
-		
-		toggleRestriction = findViewById(R.id.toggleRestriction);
-		toggleRestriction.setOnClickListener(new CompoundButton.OnClickListener(){
+        passSMS = findViewById(R.id.togglePassChange);
+        passSMS.setOnClickListener(new CompoundButton.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				final Boolean isChecked = toggleRestriction.isChecked();
-				final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
-				adb.setCancelable(false);
-				adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						Boolean isCorrectPin;
-						try {
-							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
-						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
-							CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-							toggleRestriction.setChecked(!isChecked);
-							e.printStackTrace();
-							return;
-						}
-						
-						if(isCorrectPin){
-							prefs.edit().putBoolean("enableRestriction", isChecked).apply();
-						}else{
-							toggleRestriction.setChecked(!isChecked);
-							CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
-							
-						}
-					}
-					
-				});
-				adb.setHidden(true);
-				adb.show();
-			}
-			
-		});
-		
-		gotoRestriction = findViewById(R.id.gotoRestrictNumbers);
-		gotoRestriction.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                final Boolean isChecked = passSMS.isChecked();
+                final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
+                adb.setCancelable(false);
+                adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(_this, RestrictNumbers.class);
-            	startActivity(i);
-			}
-			
-		});
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Boolean isCorrectPin;
+                        try {
+                            isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+                        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                            CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+                            enableSMS.setChecked(!isChecked);
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        if (isCorrectPin) {
+                            prefs.edit().putBoolean("passChange", isChecked).apply();
+                        } else {
+                            passSMS.setChecked(!isChecked);
+                            CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+
+                        }
+                    }
+
+                });
+                adb.setHidden(true);
+                adb.show();
+            }
+
+        });
+
+        toggleRestriction = findViewById(R.id.toggleRestriction);
+        toggleRestriction.setOnClickListener(new CompoundButton.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final Boolean isChecked = toggleRestriction.isChecked();
+                final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmpin));
+                adb.setCancelable(false);
+                adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Boolean isCorrectPin;
+                        try {
+                            isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
+                        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                            CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+                            toggleRestriction.setChecked(!isChecked);
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        if (isCorrectPin) {
+                            prefs.edit().putBoolean("enableRestriction", isChecked).apply();
+                        } else {
+                            toggleRestriction.setChecked(!isChecked);
+                            CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
+
+                        }
+                    }
+
+                });
+                adb.setHidden(true);
+                adb.show();
+            }
+
+        });
+
+        gotoRestriction = findViewById(R.id.gotoRestrictNumbers);
+        gotoRestriction.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(_this, RestrictNumbers.class);
+                startActivity(i);
+            }
+
+        });
 
         toggleDnd = findViewById(R.id.toggleDnd);
-        if(toggleDnd != null) {
+        if (toggleDnd != null) {
             toggleDnd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -303,23 +300,23 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                 }
             });
         }
-		
-		updateStates();
-		
-		if(prefs.getBoolean("firstRun", true)){
-			prefs.edit().putBoolean("firstRun", false).apply();
-			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle(getStr(R.string.dialog_welcome));
-			adb.setMessage(getStr(R.string.dialog_firstrun));
-			adb.setPositiveButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			adb.show();
-		}
+
+        updateStates();
+
+        if (prefs.getBoolean("firstRun", true)) {
+            prefs.edit().putBoolean("firstRun", false).apply();
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle(getStr(R.string.dialog_welcome));
+            adb.setMessage(getStr(R.string.dialog_firstrun));
+            adb.setPositiveButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            adb.show();
+        }
 
         GDPR.getInstance().init(this);
         gdprSetup = new GDPRSetup(GDPRDefinitions.ADMOB, GDPRDefinitions.FABRIC_CRASHLYTICS); // add all networks you use to the constructor
@@ -328,55 +325,55 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
         gdprSetup.withPrivacyPolicy("https://t3kbau5.com/app-policy.php?app=SMSLocator");
         GDPR.getInstance().checkIfNeedsToBeShown(this, gdprSetup);
 
-		//Support for the new permissions system
-		if (smsenabled && !Utils.checkPermissionsGranted(this).getBoolean("allGranted")){
+        //Support for the new permissions system
+        if (smsenabled && !Utils.checkPermissionsGranted(this).getBoolean("allGranted")) {
             permissionsDuringEnable = false;
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS}, REQUEST_CODE_PERMISSIONS);
-		}
-	}
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.MODIFY_AUDIO_SETTINGS}, REQUEST_CODE_PERMISSIONS);
+        }
+    }
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu){
-		super.onPrepareOptionsMenu(menu);
-		if(prefs.getBoolean("premium", false)) menu.findItem(R.id.menu_unlock).setVisible(false);
-		return true;
-	}
-	
-	@Override
-	public void onResume(){
-		updateStates();
-		
-		super.onResume();
-	}
-	
-	@Override
-	public void onPause(){
-		super.onPause();
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
-	
-	@Override
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (prefs.getBoolean("premium", false)) menu.findItem(R.id.menu_unlock).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        updateStates();
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.menu_help:
-            	intent = new Intent(this, AppHelp.class);
-            	startActivity(intent);
+                intent = new Intent(this, AppHelp.class);
+                startActivity(intent);
                 return true;
             case R.id.menu_settings:
-            	intent = new Intent(this, MoreSettings.class);
-            	startActivity(intent);
-            	return true;
+                intent = new Intent(this, MoreSettings.class);
+                startActivity(intent);
+                return true;
             case R.id.menu_unlock:
                 final Activity _act = this;
-				mFirebaseAnalytics.logEvent("open_premium_dialog", null);
-                if(Utils.internetConnected(this) && bu.isConnected()) {
+                mFirebaseAnalytics.logEvent("open_premium_dialog", null);
+                if (Utils.internetConnected(this) && bu.isConnected()) {
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
                     adb.setTitle(getStr(R.string.dialog_premium));
@@ -390,9 +387,9 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                             if (bu.hasPremium()) {
                                 CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
                             } else {
-                            	Bundle event = new Bundle();
-                            	event.putString(FirebaseAnalytics.Param.ITEM_ID, "premium");
-                            	mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, event);
+                                Bundle event = new Bundle();
+                                event.putString(FirebaseAnalytics.Param.ITEM_ID, "premium");
+                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, event);
                                 bu.buyPremium();
                             }
                         }
@@ -481,318 +478,318 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                         }
                     });
                     adb.show();
-                }else{ //billing not connected, device likely offline
+                } else { //billing not connected, device likely offline
                     AlertDialog.Builder adb = new AlertDialog.Builder(_this)
-                                            .setTitle(Utils.getStr(_this, R.string.dialog_tryagain))
-                                            .setMessage(Utils.getStr(_this, R.string.dialog_premium_offline))
-                                            .setNegativeButton(Utils.getStr(_this, R.string.dialog_close), new DialogInterface.OnClickListener(){
+                            .setTitle(Utils.getStr(_this, R.string.dialog_tryagain))
+                            .setMessage(Utils.getStr(_this, R.string.dialog_premium_offline))
+                            .setNegativeButton(Utils.getStr(_this, R.string.dialog_close), new DialogInterface.OnClickListener() {
 
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
                     adb.show();
                 }
-			
-            	return true;
+
+                return true;
             case R.id.menu_interactions:
-            	intent = new Intent(this, Interactions.class);
-            	this.startActivity(intent);
-            	return true;
+                intent = new Intent(this, Interactions.class);
+                this.startActivity(intent);
+                return true;
             case R.id.menu_updateGDPR:
                 GDPR.getInstance().showDialog(this, gdprSetup, GDPRLocation.UNDEFINED);
-				return true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-	
-	private void showAd(){
 
-        if(Utils.isTestDevice(this))
+    private void showAd() {
+
+        if (Utils.isTestDevice(this))
             return;
 
-		if(Utils.checkAdBlock()){
-			
-			//disable the services
-			ComponentName cm = new ComponentName(_this, DevAdmin.class);
-			DPM.removeActiveAdmin(cm);
-			prefs.edit().putBoolean("smsenabled", false).apply();
-			updateStates();
-			
-			//show adblock warning dialog
-			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle(getStr(R.string.dialog_adblock_title));
-			adb.setMessage(getStr(R.string.dialog_adblock_msg));
-			adb.setPositiveButton(getStr(R.string.dialog_purchase), new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					bu.buyPremium();
-				}
-			});
-			adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-					
-				}
-			});
-			adb.show();
-			
-		}
-		
-		AdView mAdView = new AdView(this);
-		
-		mAdView.setAdSize(AdSize.SMART_BANNER);
-		mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
+        if (Utils.checkAdBlock()) {
 
-		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
-												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4")
-                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().canCollectPersonalInformation()))
-                                                 .build();
-		
-		RelativeLayout layout = findViewById(R.id.mainLayout);
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		mAdView.setLayoutParams(lp);
-		//layout.setLayoutParams(lp);
-		layout.addView(mAdView);
-		mAdView.loadAd(adreq);
-	}
-	
-	private void showAdminDialog(){
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(getStr(R.string.dialog_notice));
-		adb.setMessage(getStr(R.string.message_noadmin));
-		adb.setNegativeButton(getStr(R.string.dialog_close), new OnClickListener(){
+            //disable the services
+            ComponentName cm = new ComponentName(_this, DevAdmin.class);
+            DPM.removeActiveAdmin(cm);
+            prefs.edit().putBoolean("smsenabled", false).apply();
+            updateStates();
 
-				@Override
-				public void onClick(DialogInterface di, int arg1) {
-					di.dismiss();
-				}
-			   
-		});
-		adb.setPositiveButton(getStr(R.string.dialog_tryagain), new OnClickListener(){
+            //show adblock warning dialog
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle(getStr(R.string.dialog_adblock_title));
+            adb.setMessage(getStr(R.string.dialog_adblock_msg));
+            adb.setPositiveButton(getStr(R.string.dialog_purchase), new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				requestAdmin();
-				
-			}
-			
-		});
-		adb.show();
-	}
-	
-	void requestAdmin(){
-		
-		if(prefs.getBoolean("admin", false)) return;
-		
-		ComponentName comp = new ComponentName(_this, DevAdmin.class);
-		
-		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    bu.buyPremium();
+                }
+            });
+            adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+
+                }
+            });
+            adb.show();
+
+        }
+
+        AdView mAdView = new AdView(this);
+
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+        mAdView.setAdUnitId("ca-app-pub-3534916998867938/8188948008");
+
+        AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
+                .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4")
+                .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().canCollectPersonalInformation()))
+                .build();
+
+        RelativeLayout layout = findViewById(R.id.mainLayout);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        mAdView.setLayoutParams(lp);
+        //layout.setLayoutParams(lp);
+        layout.addView(mAdView);
+        mAdView.loadAd(adreq);
+    }
+
+    private void showAdminDialog() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle(getStr(R.string.dialog_notice));
+        adb.setMessage(getStr(R.string.message_noadmin));
+        adb.setNegativeButton(getStr(R.string.dialog_close), new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface di, int arg1) {
+                di.dismiss();
+            }
+
+        });
+        adb.setPositiveButton(getStr(R.string.dialog_tryagain), new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                requestAdmin();
+
+            }
+
+        });
+        adb.show();
+    }
+
+    void requestAdmin() {
+
+        if (prefs.getBoolean("admin", false)) return;
+
+        ComponentName comp = new ComponentName(_this, DevAdmin.class);
+
+        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, comp);
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_details);
         startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
-	}
-	
-	private void setPin(){
-		final PinDialog adb = new PinDialog(_this, getStr(R.string.message_choosepin), getStr(R.string.dialog_setpin));
-		adb.setCancelable(false);
-		adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				final String pin1 = adb.getPin();
-				
-				if(pin1.equals("") || pin1.length() < 4){
-					ComponentName cm = new ComponentName(_this, DevAdmin.class);
-					DPM.removeActiveAdmin(cm);
-					prefs.edit().putBoolean("admin", true).apply();
-					enableSMS.setChecked(false);
-					CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
-					return;
-				}
-				
-				final PinDialog adbc = new PinDialog(_this, getStr(R.string.message_confirmpin), "Set Pin");
-				adbc.setCancelable(false);
-				adbc.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if(pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")){
-							String pin;
-							try {
-								pin = Utils.SHA1(adbc.getPin());
-							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
-								CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
-								enableSMS.setChecked(false);
-								updateStates();
-								e.printStackTrace();
-								return;
-							}
-							
-							prefs.edit().putBoolean("smsenabled", true).putString("pin", pin).apply();
-							updateStates();
-							CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
-							showPostSetup();
-						}else{
-							ComponentName cm = new ComponentName(_this, DevAdmin.class);
-							DPM.removeActiveAdmin(cm);
-							prefs.edit().putBoolean("admin", true).apply();
-				        	enableSMS.setChecked(false);
-							CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
-							updateStates();
-						}
-						
-					}
-					
-				});
-				adbc.setHidden(true);
-				adbc.show();
-				
-			}
-			
-		});
-		adb.setHidden(true);
-		adb.show();
-		
-		
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    // Check which request we're responding to
-	    if (requestCode == REQUEST_CODE_ENABLE_ADMIN) {
-	        // Make sure the request was successful
-	        if (resultCode == RESULT_OK) {
-	        	
-				prefs.edit().putBoolean("admin", true).apply();
-				setPin();
-	        }else{
-	        	enableSMS.setChecked(false);
-	        	showAdminDialog();
-	        	updateStates();
-	        }
-	    }
-	}
+    }
+
+    private void setPin() {
+        final PinDialog adb = new PinDialog(_this, getStr(R.string.message_choosepin), getStr(R.string.dialog_setpin));
+        adb.setCancelable(false);
+        adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String pin1 = adb.getPin();
+
+                if (pin1.equals("") || pin1.length() < 4) {
+                    ComponentName cm = new ComponentName(_this, DevAdmin.class);
+                    DPM.removeActiveAdmin(cm);
+                    prefs.edit().putBoolean("admin", true).apply();
+                    enableSMS.setChecked(false);
+                    CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
+                    return;
+                }
+
+                final PinDialog adbc = new PinDialog(_this, getStr(R.string.message_confirmpin), "Set Pin");
+                adbc.setCancelable(false);
+                adbc.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")) {
+                            String pin;
+                            try {
+                                pin = Utils.SHA1(adbc.getPin());
+                            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                                CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
+                                enableSMS.setChecked(false);
+                                updateStates();
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            prefs.edit().putBoolean("smsenabled", true).putString("pin", pin).apply();
+                            updateStates();
+                            CustomToast.makeText(getBaseContext(), getStr(R.string.message_pinset), Toast.LENGTH_LONG, 2).show();
+                            showPostSetup();
+                        } else {
+                            ComponentName cm = new ComponentName(_this, DevAdmin.class);
+                            DPM.removeActiveAdmin(cm);
+                            prefs.edit().putBoolean("admin", true).apply();
+                            enableSMS.setChecked(false);
+                            CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
+                            updateStates();
+                        }
+
+                    }
+
+                });
+                adbc.setHidden(true);
+                adbc.show();
+
+            }
+
+        });
+        adb.setHidden(true);
+        adb.show();
+
+
+    }
 
     @Override
-    public void onRequestPermissionsResult(int resultCode, @NonNull String permissions[], @NonNull int[] grantResults){
-        if(resultCode == REQUEST_CODE_PERMISSIONS){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE_ENABLE_ADMIN) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                prefs.edit().putBoolean("admin", true).apply();
+                setPin();
+            } else {
+                enableSMS.setChecked(false);
+                showAdminDialog();
+                updateStates();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int resultCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        if (resultCode == REQUEST_CODE_PERMISSIONS) {
 
             boolean permissionsGranted = true;
-			for (int grantResult : grantResults) {
-				if (grantResult != PackageManager.PERMISSION_GRANTED) {
-					permissionsGranted = false;
-				}
-			}
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    permissionsGranted = false;
+                }
+            }
 
-            if(permissionsGranted){
-                if(permissionsDuringEnable) {
-                    if(!prefs.getBoolean("premium", false) || prefs.getBoolean("admin", false)){
+            if (permissionsGranted) {
+                if (permissionsDuringEnable) {
+                    if (!prefs.getBoolean("premium", false) || prefs.getBoolean("admin", false)) {
                         setPin();
-                    }else{
+                    } else {
                         requestAdmin();
                     }
                 }
-            }else{
+            } else {
                 CustomToast.makeText(this, getStr(R.string.error_permissions), Toast.LENGTH_LONG).show();
-                if(permissionsDuringEnable) {
+                if (permissionsDuringEnable) {
                     enableSMS.setChecked(false);
                     updateStates();
-                }else {
+                } else {
                     finish();
                 }
             }
         }
     }
-	
-	private void updateStates(){
-		Boolean current = smsenabled;
-		smsenabled = prefs.getBoolean("smsenabled", false);
-		if(current!= smsenabled){
-			enableSMS.setChecked(smsenabled);
-			
-		}
-		gotoSetKeyword.setEnabled(smsenabled);
+
+    private void updateStates() {
+        Boolean current = smsenabled;
+        smsenabled = prefs.getBoolean("smsenabled", false);
+        if (current != smsenabled) {
+            enableSMS.setChecked(smsenabled);
+
+        }
+        gotoSetKeyword.setEnabled(smsenabled);
 		/*if(!prefs.getString("keyPhrase", "TMWMPI").equals("TMWMPI")){
 			gotoSetKeyword.setBackgroundResource(R.drawable.complete_button);
 		}else{
 			gotoSetKeyword.setBackgroundResource(R.drawable.incomplete_button);
 		}*///TODO: update this
-		
-		passSMS.setChecked(prefs.getBoolean("passChange", false));
-		passSMS.setEnabled(smsenabled);
-		
-		toggleRestriction.setChecked(prefs.getBoolean("enableRestriction", false));
-		toggleRestriction.setEnabled(smsenabled);
-		
-		gotoRestriction.setEnabled(smsenabled);
 
-		// Check if we're at a high enough API to control DND
+        passSMS.setChecked(prefs.getBoolean("passChange", false));
+        passSMS.setEnabled(smsenabled);
+
+        toggleRestriction.setChecked(prefs.getBoolean("enableRestriction", false));
+        toggleRestriction.setEnabled(smsenabled);
+
+        gotoRestriction.setEnabled(smsenabled);
+
+        // Check if we're at a high enough API to control DND
         //LG Phones are broken currently, see http://mobile.developer.lge.com/support/forums/general/?pageMode=Detail&tID=10000362
-		//add extra check for the required activity
+        //add extra check for the required activity
         Intent dndIntent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         List<ResolveInfo> dndlist = getPackageManager().queryIntentActivities(dndIntent,
                 PackageManager.MATCH_DEFAULT_ONLY);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && dndlist.size() > 0 && !Build.BRAND.toLowerCase().equals("lg")) {
-            if(prefs.getBoolean("dndcontrol", false) || dndPending){
-				dndPending = false;
+            if (prefs.getBoolean("dndcontrol", false) || dndPending) {
+                dndPending = false;
                 NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 // Check if the notification policy access has been granted for the app.
                 if (!Objects.requireNonNull(mNotificationManager).isNotificationPolicyAccessGranted()) {
                     toggleDnd.setChecked(false);
                     prefs.edit().putBoolean("dndcontrol", false).apply();
-                }else{
+                } else {
                     toggleDnd.setChecked(true);
                 }
-            }else{
+            } else {
                 toggleDnd.setChecked(false);
             }
 
             toggleDnd.setEnabled(smsenabled);
-		}else{
+        } else {
             //device doesn't support DND control, so hide the option if it exists
-            if(toggleDnd != null) {
+            if (toggleDnd != null) {
                 toggleDnd.setVisibility(View.GONE);
                 findViewById(R.id.toggledndtext).setVisibility(View.GONE);
             }
-		}
-	}
+        }
+    }
 
-	private void showPostSetup(){
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(getStr(R.string.dialog_finishSetupTitle));
-		adb.setMessage(getStr(R.string.dialog_finishSetupMessage));
-		adb.setPositiveButton(getStr(R.string.dialog_gotoKeyword), new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(_this, SetKeyword.class);
-				_this.startActivity(intent);
-			}
-		});
-		adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		
-		adb.show();
-	}
-	
-	private String getStr(int id){
-    	return getResources().getString(id);
+    private void showPostSetup() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle(getStr(R.string.dialog_finishSetupTitle));
+        adb.setMessage(getStr(R.string.dialog_finishSetupMessage));
+        adb.setPositiveButton(getStr(R.string.dialog_gotoKeyword), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(_this, SetKeyword.class);
+                _this.startActivity(intent);
+            }
+        });
+        adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        adb.show();
+    }
+
+    private String getStr(int id) {
+        return getResources().getString(id);
     }
 
     @Override
@@ -809,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                     // never happens!
                     break;
                 case NO_CONSENT:
-                    if(!bu.hasPremium())
+                    if (!bu.hasPremium())
                         bu.buyPremium();
                     break;
                 case NON_PERSONAL_CONSENT_ONLY:
@@ -835,17 +832,17 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
     }
 
     private void onConsentKnown(boolean personal) {
-        if(!prefs.getBoolean("premium", false)){
+        if (!prefs.getBoolean("premium", false)) {
             showAd(); //if the user isn't premium, show an ad
         }
         setupCrashlytics(personal);
     }
 
     private void setupCrashlytics(boolean gdprConsent) {
-		boolean crashDisabled = !gdprConsent || BuildConfig.DEBUG;
-		CrashlyticsCore cc = new CrashlyticsCore.Builder().disabled(crashDisabled).build();
-		Fabric.with(this, new Crashlytics.Builder().core(cc).build());
-	}
+        boolean crashDisabled = !gdprConsent || BuildConfig.DEBUG;
+        CrashlyticsCore cc = new CrashlyticsCore.Builder().disabled(crashDisabled).build();
+        Fabric.with(this, new Crashlytics.Builder().core(cc).build());
+    }
 
     /*
     @Override

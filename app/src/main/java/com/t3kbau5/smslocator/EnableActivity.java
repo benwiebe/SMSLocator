@@ -50,7 +50,7 @@ public class EnableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enable);
-        DPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        DPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         /* Get Views */
@@ -107,10 +107,10 @@ public class EnableActivity extends AppCompatActivity {
             public void onClick(View view) {
                 new RuntimePermission((FragmentActivity) _this).request(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
                         .onAccepted((result) -> {
-                            if(prefs.getBoolean("premium", false)) {
+                            if (prefs.getBoolean("premium", false)) {
                                 el_s3.setEnabled(true);
                                 el_s3.expand(true);
-                            }else{
+                            } else {
                                 el_s4.setEnabled(true);
                                 el_s4.expand(true);
                                 tv_s3Label.setTextColor(getResources().getColor(R.color.primary));
@@ -173,7 +173,7 @@ public class EnableActivity extends AppCompatActivity {
                 el_s4.setEnabled(true);
                 el_s4.expand(true);
                 tv_s3Label.setTextColor(getResources().getColor(R.color.primary));
-            }else{
+            } else {
                 showAdminDialog();
             }
         }
@@ -207,10 +207,10 @@ public class EnableActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(el_s5.isExpanded()) {
-            if(prefs.getString("keyPhrase", "").equals("")) {
+        if (el_s5.isExpanded()) {
+            if (prefs.getString("keyPhrase", "").equals("")) {
                 CustomToast.makeText(this, getStr(R.string.error_nokeyword), Toast.LENGTH_LONG, 1).show();
-            }else{
+            } else {
                 el_s6.setEnabled(true);
                 el_s6.expand(true);
                 tv_s5Label.setTextColor(getResources().getColor(R.color.primary));
@@ -222,16 +222,16 @@ public class EnableActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(!prefs.getBoolean("smsenabled", false)) {
+        if (!prefs.getBoolean("smsenabled", false)) {
             ComponentName cm = new ComponentName(_this, DevAdmin.class);
             DPM.removeActiveAdmin(cm);
             prefs.edit().putBoolean("admin", false).apply();
         }
     }
 
-    private void requestAdmin(){
+    private void requestAdmin() {
 
-        if(prefs.getBoolean("admin", false)) return;
+        if (prefs.getBoolean("admin", false)) return;
 
         ComponentName comp = new ComponentName(_this, DevAdmin.class);
 
@@ -241,18 +241,18 @@ public class EnableActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
     }
 
-    private void showAdminDialog(){
+    private void showAdminDialog() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle(getStr(R.string.dialog_notice));
         adb.setMessage(getStr(R.string.message_noadmin));
-        adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener(){
+        adb.setNegativeButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface di, int arg1) {
                 di.dismiss();
             }
         });
-        adb.setPositiveButton(getStr(R.string.dialog_tryagain), new DialogInterface.OnClickListener(){
+        adb.setPositiveButton(getStr(R.string.dialog_tryagain), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -262,31 +262,31 @@ public class EnableActivity extends AppCompatActivity {
         adb.show();
     }
 
-    private void setPin(){
+    private void setPin() {
         final PinDialog adb = new PinDialog(_this, getStr(R.string.message_choosepin), getStr(R.string.dialog_setpin));
         adb.setCancelable(true);
-        adb.setPositiveButton(getStr(R.string.dialog_done), new DialogInterface.OnClickListener(){
+        adb.setPositiveButton(getStr(R.string.dialog_done), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String pin1 = adb.getPin();
 
-                if(pin1.equals("") || pin1.length() < 4){
+                if (pin1.equals("") || pin1.length() < 4) {
                     CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
                     setPin();
                 }
 
                 final PinDialog adbc = new PinDialog(_this, getStr(R.string.message_confirmpin), "Set Pin");
                 adbc.setCancelable(false);
-                adbc.setPositiveButton(getStr(R.string.dialog_done), new DialogInterface.OnClickListener(){
+                adbc.setPositiveButton(getStr(R.string.dialog_done), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")){
+                        if (pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")) {
                             String pin;
                             try {
                                 pin = Utils.SHA1(adbc.getPin());
-                            } catch (NoSuchAlgorithmException |UnsupportedEncodingException e) {
+                            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                                 CustomToast.makeText(_this, getStr(R.string.error_decoding), Toast.LENGTH_LONG, 1).show();
                                 e.printStackTrace();
                                 return;
@@ -295,15 +295,15 @@ public class EnableActivity extends AppCompatActivity {
                             prefs.edit().putString("pin", pin).apply();
                             tv_s4Label.setTextColor(getResources().getColor(R.color.primary));
                             el_s5.setEnabled(true);
-                            if(prefs.getString("keyPhrase", "").equals("")) {
+                            if (prefs.getString("keyPhrase", "").equals("")) {
                                 el_s5.expand(true);
-                            }else{
+                            } else {
                                 tv_s5Label.setTextColor(getResources().getColor(R.color.primary));
                                 el_s6.setEnabled(true);
                                 el_s6.expand(true);
                                 performSystemTest();
                             }
-                        }else{
+                        } else {
                             CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
                         }
                     }
@@ -328,7 +328,7 @@ public class EnableActivity extends AppCompatActivity {
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         Location loc = null;
 
-        bt_done.setOnClickListener(new OnClickListener(){
+        bt_done.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -342,16 +342,16 @@ public class EnableActivity extends AppCompatActivity {
             loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
+        }
 
         setTestStatus(tv_cached, loc != null);
 
         String provider = lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ? LocationManager.GPS_PROVIDER : null;
-        if(provider == null){
+        if (provider == null) {
             provider = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ? LocationManager.NETWORK_PROVIDER : null;
         }
 
-        if(provider != null) {
+        if (provider != null) {
             LocationListener locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -386,7 +386,7 @@ public class EnableActivity extends AppCompatActivity {
             new Handler().postDelayed(timeoutRunnable, waitTime);
 
             lm.requestSingleUpdate(provider, locationListener, this.getMainLooper());
-        }else{
+        } else {
             setTestStatus(tv_newloc, false);
         }
 
@@ -398,7 +398,7 @@ public class EnableActivity extends AppCompatActivity {
         testView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(drawable), null, null, null);
         testView.getCompoundDrawables()[0].setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
 
-        if(!status) {
+        if (!status) {
             TextView tv_warning = findViewById(R.id.tv_warning_errors);
             tv_warning.setVisibility(View.VISIBLE);
             issuesDetected = true;
@@ -406,7 +406,7 @@ public class EnableActivity extends AppCompatActivity {
         tv_s6Label.setTextColor(getResources().getColor(issuesDetected ? R.color.accent : R.color.primary));
     }
 
-    private String getStr(int id){
+    private String getStr(int id) {
         return getResources().getString(id);
     }
 }

@@ -11,41 +11,41 @@ import android.widget.Toast;
 
 public class DevAdmin extends DeviceAdminReceiver {
 
-	private Context context;
-	
+    private Context context;
+
     @SuppressLint("ApplySharedPref")
-	@Override
+    @Override
     public void onEnabled(Context context, Intent intent) {
-    	Log.d("DevAdmin", "onEnabled");
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	prefs.edit().putBoolean("admin", true).commit();
+        Log.d("DevAdmin", "onEnabled");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putBoolean("admin", true).commit();
     }
 
     @Override
     public CharSequence onDisableRequested(Context context, Intent intent) {
-    	this.context = context;
-    	Log.d("DevAdmin", "onDisableRequested");
-    	return getStr(R.string.message_admindisable);
+        this.context = context;
+        Log.d("DevAdmin", "onDisableRequested");
+        return getStr(R.string.message_admindisable);
     }
 
     @SuppressLint("ApplySharedPref")
-	@Override
+    @Override
     public void onDisabled(Context context, Intent intent) {
-    	this.context = context;
-    	Log.d("DevAdmin", "onDisabled");
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	prefs.edit().putBoolean("admin", false).commit();
-    	prefs.edit().putBoolean("smsenabled", false).commit();
-    	CustomToast.makeText(context, getStr(R.string.message_smslocatordisabled), Toast.LENGTH_LONG).show();
+        this.context = context;
+        Log.d("DevAdmin", "onDisabled");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putBoolean("admin", false).commit();
+        prefs.edit().putBoolean("smsenabled", false).commit();
+        CustomToast.makeText(context, getStr(R.string.message_smslocatordisabled), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onPasswordChanged(Context context, Intent intent) {
-    	Log.d("DevAdmin", "onPasswordChanged");
+        Log.d("DevAdmin", "onPasswordChanged");
     }
 
-    public String getStr(int id){
-    	return context.getResources().getString(id);
+    public String getStr(int id) {
+        return context.getResources().getString(id);
     }
-    
+
 }

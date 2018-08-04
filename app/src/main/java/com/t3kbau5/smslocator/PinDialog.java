@@ -10,134 +10,134 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-class PinDialog extends AlertDialog.Builder{
+class PinDialog extends AlertDialog.Builder {
 
-	private final Context context;
-	
-	private final String message;
-	private Boolean hidden = true;
-	
-	private String input = "";
+    private final Context context;
 
-	public PinDialog(Context context) {
-		this(context, "");
-	}
+    private final String message;
+    private Boolean hidden = true;
 
-	public PinDialog(Context context, String message) {
-		this(context, message, context.getResources().getString(R.string.dialog_enterpin));
-	}
-	
-	public PinDialog(Context context, String message, String title) {
-		super(context);
-		this.context = context;
-		this.message = message;
+    private String input = "";
 
-		this.setTitle(title);
-		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.setView(Objects.requireNonNull(inflater).inflate(R.layout.pin_layout, null));
+    public PinDialog(Context context) {
+        this(context, "");
+    }
 
-		super.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener(){
+    public PinDialog(Context context, String message) {
+        this(context, message, context.getResources().getString(R.string.dialog_enterpin));
+    }
 
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				dialogInterface.dismiss();
-			}
-		});
-		
-	}
-	
-	public void setHidden(Boolean hidden){
-		this.hidden = hidden;
-	}
-	
-	public String getPin(){
-		return input;
-	}
+    public PinDialog(Context context, String message, String title) {
+        super(context);
+        this.context = context;
+        this.message = message;
 
-	@Override
-	@Deprecated
-	public AlertDialog.Builder setNegativeButton(CharSequence title, DialogInterface.OnClickListener listener) {
-		return this;
-	}
+        this.setTitle(title);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.setView(Objects.requireNonNull(inflater).inflate(R.layout.pin_layout, null));
 
-	@Override
-	@Deprecated
-	public AlertDialog.Builder setNegativeButton(int resId, DialogInterface.OnClickListener listener) {
-		return this;
-	}
+        super.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 
-	@Override
-	public AlertDialog.Builder setCancelable(boolean cancelable) {
-		super.setCancelable(cancelable);
-		super.setNegativeButton("", null);
-		return this;
-	}
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
 
-	public AlertDialog show(){
-		AlertDialog d = super.show();
-		
-		TextView tv = d.findViewById(R.id.pinLayoutMessage);
-		tv.setText(message);
-		
-		final TextView output = d.findViewById(R.id.pinLayoutOutput);
+    }
 
-		Button keys[] = new Button[11];
-		
-		keys[0] = d.findViewById(R.id.keypad_0);
-		keys[1] = d.findViewById(R.id.keypad_1);
-		keys[2] = d.findViewById(R.id.keypad_2);
-		keys[3] = d.findViewById(R.id.keypad_3);
-		keys[4] = d.findViewById(R.id.keypad_4);
-		keys[5] = d.findViewById(R.id.keypad_5);
-		keys[6] = d.findViewById(R.id.keypad_6);
-		keys[7] = d.findViewById(R.id.keypad_7);
-		keys[8] = d.findViewById(R.id.keypad_8);
-		keys[9] = d.findViewById(R.id.keypad_9);
-		keys[10] = d.findViewById(R.id.keypad_back);
-		
-		for(int i=0; i<=9; i++){
-			keys[i].setOnClickListener(new Button.OnClickListener(){
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
 
-				@Override
-				public void onClick(View v) {
-					input = input + ((Button)v).getText();
-					if(hidden){
-						StringBuilder display = new StringBuilder();
-						for(int j=0; j<input.length(); j++){
-							display.append("•");
-						}
-						output.setText(display.toString());
-					}else{
-						output.setText(input);
-					}
-					
-				}
-				
-			});
-		}
-		keys[10].setOnClickListener(new Button.OnClickListener(){
+    public String getPin() {
+        return input;
+    }
 
-			@Override
-			public void onClick(View v) {
-				if(input.length() == 0) return;
-				input = input.substring(0, input.length()-1);
-				if(hidden){
-					StringBuilder display = new StringBuilder();
-					for(int j=0; j<input.length(); j++){
-						display.append("•");
-					}
-					output.setText(display.toString());
-				}else{
-					output.setText(input);
-				}
-			}
-			
-		});
-		return d;
-	}
-	
-	private String getStr(int id){
-    	return context.getResources().getString(id);
+    @Override
+    @Deprecated
+    public AlertDialog.Builder setNegativeButton(CharSequence title, DialogInterface.OnClickListener listener) {
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public AlertDialog.Builder setNegativeButton(int resId, DialogInterface.OnClickListener listener) {
+        return this;
+    }
+
+    @Override
+    public AlertDialog.Builder setCancelable(boolean cancelable) {
+        super.setCancelable(cancelable);
+        super.setNegativeButton("", null);
+        return this;
+    }
+
+    public AlertDialog show() {
+        AlertDialog d = super.show();
+
+        TextView tv = d.findViewById(R.id.pinLayoutMessage);
+        tv.setText(message);
+
+        final TextView output = d.findViewById(R.id.pinLayoutOutput);
+
+        Button keys[] = new Button[11];
+
+        keys[0] = d.findViewById(R.id.keypad_0);
+        keys[1] = d.findViewById(R.id.keypad_1);
+        keys[2] = d.findViewById(R.id.keypad_2);
+        keys[3] = d.findViewById(R.id.keypad_3);
+        keys[4] = d.findViewById(R.id.keypad_4);
+        keys[5] = d.findViewById(R.id.keypad_5);
+        keys[6] = d.findViewById(R.id.keypad_6);
+        keys[7] = d.findViewById(R.id.keypad_7);
+        keys[8] = d.findViewById(R.id.keypad_8);
+        keys[9] = d.findViewById(R.id.keypad_9);
+        keys[10] = d.findViewById(R.id.keypad_back);
+
+        for (int i = 0; i <= 9; i++) {
+            keys[i].setOnClickListener(new Button.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    input = input + ((Button) v).getText();
+                    if (hidden) {
+                        StringBuilder display = new StringBuilder();
+                        for (int j = 0; j < input.length(); j++) {
+                            display.append("•");
+                        }
+                        output.setText(display.toString());
+                    } else {
+                        output.setText(input);
+                    }
+
+                }
+
+            });
+        }
+        keys[10].setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (input.length() == 0) return;
+                input = input.substring(0, input.length() - 1);
+                if (hidden) {
+                    StringBuilder display = new StringBuilder();
+                    for (int j = 0; j < input.length(); j++) {
+                        display.append("•");
+                    }
+                    output.setText(display.toString());
+                } else {
+                    output.setText(input);
+                }
+            }
+
+        });
+        return d;
+    }
+
+    private String getStr(int id) {
+        return context.getResources().getString(id);
     }
 
 }

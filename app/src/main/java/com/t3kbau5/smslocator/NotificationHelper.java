@@ -25,7 +25,7 @@ class NotificationHelper {
 
     private static NotificationChannel createNotifChannel(Context context, String id, String name, int importance, boolean vibration, boolean bypassDnd, boolean showBadge) {
         NotificationChannel channel = null;
-        if(Build.VERSION.SDK_INT >= 26) {
+        if (Build.VERSION.SDK_INT >= 26) {
             channel = new NotificationChannel(id, name, importance);
             channel.setBypassDnd(bypassDnd);
             channel.enableVibration(vibration);
@@ -47,7 +47,7 @@ class NotificationHelper {
         Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
 
         Notification.Builder mBuilder;
-        if(Build.VERSION.SDK_INT >= 26)
+        if (Build.VERSION.SDK_INT >= 26)
             mBuilder = new Notification.Builder(context, channel.getId());
         else
             mBuilder = new Notification.Builder(context);
@@ -57,14 +57,14 @@ class NotificationHelper {
                 .setContentText(message)
                 .setLargeIcon(largeIconB)
                 .setNumber(number);
-        if(Build.VERSION.SDK_INT >= 16)
+        if (Build.VERSION.SDK_INT >= 16)
             mBuilder.setPriority(priority);
 
         mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
         showNotif(context, mBuilder.build(), id);
     }
 
-    public static void showMessageNotif(Context context, String destination, String contents){
+    public static void showMessageNotif(Context context, String destination, String contents) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         int displayNum = prefs.getInt("notifDisplayNum", 0);
@@ -77,16 +77,16 @@ class NotificationHelper {
         NotificationChannel channel = createNotifChannel(context, CHANNEL_ID_SMS, Utils.getStr(context, R.string.notif_channel_name_sms), NotificationManager.IMPORTANCE_HIGH, true, false, true);
 
         showNotif(context,
-                    Utils.getStr(context, R.string.notif_sent_title),
-                    Utils.getStr(context, R.string.notif_sent_body) + destination,
-                    R.drawable.icon_notif, R.drawable.ic_launcher,
-                    intent, displayNum,
-                    Integer.parseInt(prefs.getString("notif_priority", "0")),
-                    channel,
-                    NOTIF_ID_SMS);
+                Utils.getStr(context, R.string.notif_sent_title),
+                Utils.getStr(context, R.string.notif_sent_body) + destination,
+                R.drawable.icon_notif, R.drawable.ic_launcher,
+                intent, displayNum,
+                Integer.parseInt(prefs.getString("notif_priority", "0")),
+                channel,
+                NOTIF_ID_SMS);
     }
 
-    private static void cancelNotif(Context context, int id){
+    private static void cancelNotif(Context context, int id) {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Objects.requireNonNull(mNotificationManager).cancel(id);

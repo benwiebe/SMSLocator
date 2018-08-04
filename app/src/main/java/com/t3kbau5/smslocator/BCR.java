@@ -63,7 +63,7 @@ public class BCR extends BroadcastReceiver {
 
             Bundle pdusBundle = intent.getExtras();
             Object[] pdus = (Object[]) Objects.requireNonNull(pdusBundle).get("pdus");
-            if(pdus == null)
+            if (pdus == null)
                 return;
             SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
 
@@ -141,16 +141,16 @@ public class BCR extends BroadcastReceiver {
 
                 hasPremium = prefs.getBoolean("premium", false);
                 boolean freemiumExpired = false;
-                if(hasPremium && prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) < Calendar.getInstance().getTimeInMillis()) {
+                if (hasPremium && prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) < Calendar.getInstance().getTimeInMillis()) {
                     prefs.edit().putBoolean("premium", false).apply();
                     freemiumExpired = true;
                     hasPremium = false;
                 }
 
                 if (cmd != null && !cmd.equals("") && !hasPremium) {
-                    if(freemiumExpired) {
+                    if (freemiumExpired) {
                         reply(getStr(R.string.sms_freemium_expired), sender);
-                    }else{
+                    } else {
                         reply(getStr(R.string.sms_nopremium), sender);
                     }
                     return;
@@ -233,7 +233,7 @@ public class BCR extends BroadcastReceiver {
     private void sendLocation(String destinationAddress) {
         if (destinationAddress.equals("")) return; //if we didn't get a valid address, return
 
-        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
             getStr(R.string.sms_permissionmissing);
             getStr(R.string.sms_errorcode);
@@ -251,193 +251,193 @@ public class BCR extends BroadcastReceiver {
         } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             notAccurate = true;
-		}else{
-			reply(getStr(R.string.sms_noprovider) + " "+ getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial), destinationAddress);
+        } else {
+            reply(getStr(R.string.sms_noprovider) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_initial), destinationAddress);
             getStr(R.string.sms_noprovider);
             getStr(R.string.sms_errorcode);
             getStr(R.string.code_noprovider_initial);
             return;
-		}
+        }
 
-		if(loc == null){
-			//reply(getStr(R.string.sms_nullloc), destinationAddress);
-			sendUpdatedLocation(destinationAddress);
-			return;
-		}
+        if (loc == null) {
+            //reply(getStr(R.string.sms_nullloc), destinationAddress);
+            sendUpdatedLocation(destinationAddress);
+            return;
+        }
 
-		final int refreshTime = Integer.parseInt(prefs.getString("refresh_time", "300000"));
+        final int refreshTime = Integer.parseInt(prefs.getString("refresh_time", "300000"));
 
-		if(System.currentTimeMillis() - loc.getTime() > refreshTime){
-			sendUpdatedLocation(destinationAddress);
-			return;
-		}
+        if (System.currentTimeMillis() - loc.getTime() > refreshTime) {
+            sendUpdatedLocation(destinationAddress);
+            return;
+        }
 
         double lat = loc.getLatitude();
-		double lon = loc.getLongitude();
-		double acc = Math.round(loc.getAccuracy()*10d)/10d;
-		if(notAccurate){
+        double lon = loc.getLongitude();
+        double acc = Math.round(loc.getAccuracy() * 10d) / 10d;
+        if (notAccurate) {
             reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
-		}else{
+        } else {
             reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
-		}
-		if(hasPremium){
+        }
+        if (hasPremium) {
             reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
-		}
+        }
     }
 
-	private void sendUpdatedLocation(final String destinationAddress){
+    private void sendUpdatedLocation(final String destinationAddress) {
 
-		Log.d("BCR", "sendUpdatedLocation");
+        Log.d("BCR", "sendUpdatedLocation");
 
-		final LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-		final Handler handler = new Handler();
+        final Handler handler = new Handler();
 
 
-    	final LocationListener ll = new LocationListener(){
+        final LocationListener ll = new LocationListener() {
 
-    		int i=0;
+            int i = 0;
 
-			@Override
-			public void onLocationChanged(Location loc) {
+            @Override
+            public void onLocationChanged(Location loc) {
 
-				if(i < 5 && loc.getAccuracy() > 8){
-					i ++;
-					return;
-				}
-				handler.removeCallbacks(rn);
-				Log.d("OLC", String.valueOf(loc.getAccuracy()));
-				double lat = loc.getLatitude();
-				double lon = loc.getLongitude();
-				double acc = Math.round(loc.getAccuracy()*10d)/10d;
-				if(loc.getProvider().equals(LocationManager.NETWORK_PROVIDER)){
-					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
-				}else{
-					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
-				}
-				if(hasPremium){
-					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
-				}
+                if (i < 5 && loc.getAccuracy() > 8) {
+                    i++;
+                    return;
+                }
+                handler.removeCallbacks(rn);
+                Log.d("OLC", String.valueOf(loc.getAccuracy()));
+                double lat = loc.getLatitude();
+                double lon = loc.getLongitude();
+                double acc = Math.round(loc.getAccuracy() * 10d) / 10d;
+                if (loc.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
+                    reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
+                } else {
+                    reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
+                }
+                if (hasPremium) {
+                    reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
+                }
 
                 try {
                     Objects.requireNonNull(lm).removeUpdates(this);
-                }catch (SecurityException e){
+                } catch (SecurityException e) {
                     e.printStackTrace();
                 }
 
-			}
+            }
 
-			@Override
-			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-				
-			}
+            @Override
+            public void onProviderDisabled(String provider) {
+                // TODO Auto-generated method stub
 
-			@Override
-			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-				
-			}
+            }
 
-			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-				// TODO Auto-generated method stub
-				
-			}
-    		
-    	};
-    	
-    	rn = new Runnable() {
-			  @Override
-			  public void run() {
+            @Override
+            public void onProviderEnabled(String provider) {
+                // TODO Auto-generated method stub
 
-              if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                  reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
-                  return;
-              }
-			    Objects.requireNonNull(lm).removeUpdates(ll);
-			    Location loc;
-			    Boolean notAccurate;
-			    if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-					loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-					notAccurate = false;
-				}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-					loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-					notAccurate = true;
-				}else{
-					reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_update), destinationAddress);
-					return;
-				}
-			    
-			    if(loc == null){
-			    	reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_oldlocationnull), destinationAddress);
-			    	return;
-			    }
-			    
-			    double lat = loc.getLatitude();
-				double lon = loc.getLongitude();
-				double acc = loc.getAccuracy();
-				if(notAccurate){
-					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
-				}else{
-					reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
-				}
-				if(hasPremium){
-					reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
-				}
-			    
-			  }
-			};
-		
-		int waitTime = Integer.parseInt(prefs.getString("gps_wait", "20000"));
-		Log.d("BCR-WT", prefs.getString("gps_wait", "20000")); //load the wait time (default 20 sec)
-		String provider = getProvider(Objects.requireNonNull(lm));
-		handler.postDelayed(rn, waitTime); //if we can't get a new location after waitTime ms, just send the old one
-		lm.requestLocationUpdates(provider, 0, 0, ll);
-	}
-	
-	private void reply(String message, String destination){
-		Utils.sendSMS(message, destination);
-		addInteraction(destination, cmd, message);
-		if(prefs.getBoolean("preference_notify", true)){
-			NotificationHelper.showMessageNotif(context, destination, message);
-		}
-		
-	}
-	
-	private void playSound(){
-		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-		Ringtone r = RingtoneManager.getRingtone(context, notification);
-		r.play();
-	}
+            }
 
-	@TargetApi(Build.VERSION_CODES.M)
-    private void unDnd(NotificationManager nm){
+            @Override
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+                // TODO Auto-generated method stub
+
+            }
+
+        };
+
+        rn = new Runnable() {
+            @Override
+            public void run() {
+
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    reply(getStr(R.string.sms_permissionmissing) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_missingloc), destinationAddress);
+                    return;
+                }
+                Objects.requireNonNull(lm).removeUpdates(ll);
+                Location loc;
+                Boolean notAccurate;
+                if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    notAccurate = false;
+                } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    notAccurate = true;
+                } else {
+                    reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_noprovider_update), destinationAddress);
+                    return;
+                }
+
+                if (loc == null) {
+                    reply(getStr(R.string.sms_nullloc) + " " + getStr(R.string.sms_errorcode) + getStr(R.string.code_oldlocationnull), destinationAddress);
+                    return;
+                }
+
+                double lat = loc.getLatitude();
+                double lon = loc.getLongitude();
+                double acc = loc.getAccuracy();
+                if (notAccurate) {
+                    reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc + getStr(R.string.smstemp_notacc), destinationAddress);
+                } else {
+                    reply(getStr(R.string.smstemp_pos1) + getStr(R.string.smstemp_lat) + lat + getStr(R.string.smstemp_lon) + lon + getStr(R.string.smstemp_acc) + acc, destinationAddress);
+                }
+                if (hasPremium) {
+                    reply(getStr(R.string.smstemp_gml) + "http://maps.google.com/maps?q=" + lat + "," + lon + "&ll=" + lat + "," + lon + "&z=15", destinationAddress);
+                }
+
+            }
+        };
+
+        int waitTime = Integer.parseInt(prefs.getString("gps_wait", "20000"));
+        Log.d("BCR-WT", prefs.getString("gps_wait", "20000")); //load the wait time (default 20 sec)
+        String provider = getProvider(Objects.requireNonNull(lm));
+        handler.postDelayed(rn, waitTime); //if we can't get a new location after waitTime ms, just send the old one
+        lm.requestLocationUpdates(provider, 0, 0, ll);
+    }
+
+    private void reply(String message, String destination) {
+        Utils.sendSMS(message, destination);
+        addInteraction(destination, cmd, message);
+        if (prefs.getBoolean("preference_notify", true)) {
+            NotificationHelper.showMessageNotif(context, destination, message);
+        }
+
+    }
+
+    private void playSound() {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        Ringtone r = RingtoneManager.getRingtone(context, notification);
+        r.play();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void unDnd(NotificationManager nm) {
         //see http://stackoverflow.com/a/35324211/1896516
         nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
         //nm.setNotificationPolicy(NotificationManager.Policy.CR);
-	}
-	
-	private String getProvider(LocationManager lm){
-		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-			return LocationManager.GPS_PROVIDER;
-		}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-			return LocationManager.NETWORK_PROVIDER;
-		}else{
-			return null;
-		}
-	}
-	
-	private void addInteraction(String number, String request, String response){
-		
-		Interaction iaction = new Interaction(number, request, response, System.currentTimeMillis());
-		
-		dh.addInteraction(iaction);
-	}
-	
-	private String getStr(int id){
-    	return context.getResources().getString(id);
     }
-	        
+
+    private String getProvider(LocationManager lm) {
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            return LocationManager.GPS_PROVIDER;
+        } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            return LocationManager.NETWORK_PROVIDER;
+        } else {
+            return null;
+        }
+    }
+
+    private void addInteraction(String number, String request, String response) {
+
+        Interaction iaction = new Interaction(number, request, response, System.currentTimeMillis());
+
+        dh.addInteraction(iaction);
+    }
+
+    private String getStr(int id) {
+        return context.getResources().getString(id);
+    }
+
 }

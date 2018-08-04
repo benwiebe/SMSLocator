@@ -31,10 +31,10 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
 
     private final Activity activity;
     private final BillingClient mBillingClient;
-    private boolean hasPremium = false;
-    private boolean buyingPremium = false;
     private final SharedPreferences prefs;
     private final FirebaseAnalytics mFirebaseAnalytics;
+    private boolean hasPremium = false;
+    private boolean buyingPremium = false;
 
     public BillingUtil2(MainActivity activity, FirebaseAnalytics fa) {
         this.activity = activity;
@@ -47,7 +47,7 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
     }
 
     public void close() {
-        if(mBillingClient.isReady())
+        if (mBillingClient.isReady())
             mBillingClient.endConnection();
     }
 
@@ -60,8 +60,8 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
 
         Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
         List<Purchase> purchases = purchasesResult.getPurchasesList();
-        for(Purchase purchase : purchases) {
-            if(purchase.getSku().equals(SKU_PREMIUM))
+        for (Purchase purchase : purchases) {
+            if (purchase.getSku().equals(SKU_PREMIUM))
                 hasPremium = true;
         }
     }
@@ -76,11 +76,11 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
 
     }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         return mBillingClient.isReady();
     }
 
-    public boolean hasPremium(){
+    public boolean hasPremium() {
         return hasPremium;
     }
 
@@ -92,10 +92,10 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
             hasPremium = false;
 
             for (Purchase purchase : purchases) {
-                switch(purchase.getSku()) {
+                switch (purchase.getSku()) {
                     case SKU_PREMIUM:
                         hasPremium = true;
-                        if(prefs.getBoolean("smsenabled", false) && prefs.getBoolean("admin", false))
+                        if (prefs.getBoolean("smsenabled", false) && prefs.getBoolean("admin", false))
                             ((MainActivity) activity).requestAdmin();
 
                         //((MainActivity) activity).updateStates();
@@ -106,13 +106,13 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
             }
 
             // Support Freemium Stuff
-            if(prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) > Calendar.getInstance().getTimeInMillis()) {
+            if (prefs.getBoolean("premium_is_freemium", false) && prefs.getLong("freemium_expiry", 0L) > Calendar.getInstance().getTimeInMillis()) {
                 hasPremium = true;
-            }else{
+            } else {
                 prefs.edit().putBoolean("premium_is_freemium", false).apply();
             }
             prefs.edit().putBoolean("premium", hasPremium).apply();
-            if(buyingPremium && hasPremium){
+            if (buyingPremium && hasPremium) {
                 activity.finish();
                 activity.startActivity(activity.getIntent());
             }
@@ -140,15 +140,15 @@ class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListen
 
     @Override
     public void onPurchaseHistoryResponse(int responseCode, List<Purchase> purchasesList) {
-        if(!TEST_MODE)
+        if (!TEST_MODE)
             onPurchasesUpdated(responseCode, purchasesList);
-        else if(responseCode == BillingClient.BillingResponse.OK && purchasesList != null){
-            for(Purchase purchase : purchasesList) {
-                if(purchase.getSku().equals(SKU_PREMIUM)) {
+        else if (responseCode == BillingClient.BillingResponse.OK && purchasesList != null) {
+            for (Purchase purchase : purchasesList) {
+                if (purchase.getSku().equals(SKU_PREMIUM)) {
                     mBillingClient.consumeAsync(purchase.getPurchaseToken(), new ConsumeResponseListener() {
                         @Override
                         public void onConsumeResponse(int responseCode, String purchaseToken) {
-                            if(responseCode == BillingClient.BillingResponse.OK) {
+                            if (responseCode == BillingClient.BillingResponse.OK) {
                                 CustomToast.makeText(activity, "Premium consumed", Toast.LENGTH_LONG, 2).show();
                             }
                         }
