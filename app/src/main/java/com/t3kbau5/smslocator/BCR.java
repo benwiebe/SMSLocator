@@ -2,7 +2,6 @@ package com.t3kbau5.smslocator;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;

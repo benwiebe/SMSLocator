@@ -11,9 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
-
-import java.util.Random;
 
 /**
  * Created by Ben on 2018-04-16.

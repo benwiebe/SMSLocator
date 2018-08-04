@@ -1,10 +1,8 @@
 package com.t3kbau5.smslocator;
 
-import android.*;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,22 +10,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +30,8 @@ import com.github.florent37.expansionpanel.ExpansionLayout;
 import com.github.florent37.expansionpanel.viewgroup.ExpansionLayoutCollection;
 import com.github.florent37.runtimepermission.RuntimePermission;
 
-import org.w3c.dom.Text;
-
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-
-import static com.github.florent37.runtimepermission.RuntimePermission.askPermission;
 
 public class EnableActivity extends AppCompatActivity {
 
@@ -63,27 +53,27 @@ public class EnableActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         /* Get Views */
-        TextView tv_s1content = (TextView) findViewById(R.id.s1Content);
-        TextView tv_s3content = (TextView) findViewById(R.id.s3Content);
-        TextView tv_s4content = (TextView) findViewById(R.id.s4Content);
-        Button bt_accept = (Button) findViewById(R.id.bt_accept);
-        Button bt_grant_perm = (Button) findViewById(R.id.bt_grant_perm);
-        Button bt_grant_admin = (Button) findViewById(R.id.bt_grant_admin);
-        Button bt_set_pin = (Button) findViewById(R.id.bt_set_pin);
-        Button bt_set_keyword = (Button) findViewById(R.id.bt_set_keyword);
+        TextView tv_s1content = findViewById(R.id.s1Content);
+        TextView tv_s3content = findViewById(R.id.s3Content);
+        TextView tv_s4content = findViewById(R.id.s4Content);
+        Button bt_accept = findViewById(R.id.bt_accept);
+        Button bt_grant_perm = findViewById(R.id.bt_grant_perm);
+        Button bt_grant_admin = findViewById(R.id.bt_grant_admin);
+        Button bt_set_pin = findViewById(R.id.bt_set_pin);
+        Button bt_set_keyword = findViewById(R.id.bt_set_keyword);
 
-        el_s1 = (ExpansionLayout) findViewById(R.id.step1Expansion);
-        el_s2 = (ExpansionLayout) findViewById(R.id.step2Expansion);
-        el_s3 = (ExpansionLayout) findViewById(R.id.step3Expansion);
-        el_s4 = (ExpansionLayout) findViewById(R.id.step4Expansion);
-        el_s5 = (ExpansionLayout) findViewById(R.id.step5Expansion);
-        el_s6 = (ExpansionLayout) findViewById(R.id.step6Expansion);
-        tv_s1Label = (TextView) findViewById(R.id.step1Label);
-        tv_s2Label = (TextView) findViewById(R.id.step2Label);
-        tv_s3Label = (TextView) findViewById(R.id.step3Label);
-        tv_s4Label = (TextView) findViewById(R.id.step4Label);
-        tv_s5Label = (TextView) findViewById(R.id.step5Label);
-        tv_s6Label = (TextView) findViewById(R.id.step6Label);
+        el_s1 = findViewById(R.id.step1Expansion);
+        el_s2 = findViewById(R.id.step2Expansion);
+        el_s3 = findViewById(R.id.step3Expansion);
+        el_s4 = findViewById(R.id.step4Expansion);
+        el_s5 = findViewById(R.id.step5Expansion);
+        el_s6 = findViewById(R.id.step6Expansion);
+        tv_s1Label = findViewById(R.id.step1Label);
+        tv_s2Label = findViewById(R.id.step2Label);
+        tv_s3Label = findViewById(R.id.step3Label);
+        tv_s4Label = findViewById(R.id.step4Label);
+        tv_s5Label = findViewById(R.id.step5Label);
+        tv_s6Label = findViewById(R.id.step6Label);
 
         /* Setup Expander Contents */
         tv_s1content.setText(Utils.formatAndSpan(getStr(R.string.app_terms)));
@@ -327,10 +317,10 @@ public class EnableActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void performSystemTest() {
-        Button bt_done = (Button) findViewById(R.id.bt_done);
+        Button bt_done = findViewById(R.id.bt_done);
 
-        TextView tv_cached = (TextView) findViewById(R.id.tv_test_cached);
-        TextView tv_newloc = (TextView) findViewById(R.id.tv_test_newloc);
+        TextView tv_cached = findViewById(R.id.tv_test_cached);
+        TextView tv_newloc = findViewById(R.id.tv_test_newloc);
         tv_cached.getCompoundDrawables()[0].setColorFilter(getResources().getColor(R.color.tint_neutral_blue), PorterDuff.Mode.SRC_ATOP);
         tv_newloc.getCompoundDrawables()[0].setColorFilter(getResources().getColor(R.color.tint_neutral_blue), PorterDuff.Mode.SRC_ATOP);
 
@@ -408,7 +398,7 @@ public class EnableActivity extends AppCompatActivity {
         testView.getCompoundDrawables()[0].setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
 
         if(!status) {
-            TextView tv_warning = (TextView) findViewById(R.id.tv_warning_errors);
+            TextView tv_warning = findViewById(R.id.tv_warning_errors);
             tv_warning.setVisibility(View.VISIBLE);
             issuesDetected = true;
         }
