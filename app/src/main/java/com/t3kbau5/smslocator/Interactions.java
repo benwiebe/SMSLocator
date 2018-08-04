@@ -128,8 +128,8 @@ public class Interactions extends AppCompatActivity {
 					tv3.setText(iaction.getCommand());
 					
 					tv4.setText(iaction.getResponse());
-					
-					
+
+
 					tr.setLayoutParams(new TableRow.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 					tr.addView(tv1);
 					tr.addView(tv2);
