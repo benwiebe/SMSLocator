@@ -31,5 +31,9 @@
     <string name="ls_enable_step5_desc">Set Keyword</string>
     <string name="ls_enable_step6">Step 6</string>
     <string name="ls_enable_step6_desc">System Test</string>
+    <string name="ls_test_cached">Cached Locations</string>
+    <string name="ls_test_newloc">GPS/Network Location</string>
+    <string name="ls_bt_done">Done</string>
+    <string name="ls_warning_errors">Warning: errors have been detected which may prevent SMSLocator from working on your device. Please ensure that you have enabled location services. If you need help, please visit https://t3kbau5.com/support/.</string>
 
 </resources>

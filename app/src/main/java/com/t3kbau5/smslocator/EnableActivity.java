@@ -1,6 +1,7 @@
 package com.t3kbau5.smslocator;
 
 import android.*;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +11,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +25,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +35,11 @@ import com.github.florent37.expansionpanel.ExpansionLayout;
 import com.github.florent37.expansionpanel.viewgroup.ExpansionLayoutCollection;
 import com.github.florent37.runtimepermission.RuntimePermission;
 
+import org.w3c.dom.Text;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 
 import static com.github.florent37.runtimepermission.RuntimePermission.askPermission;
 
@@ -40,6 +52,8 @@ public class EnableActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private ExpansionLayout el_s1, el_s2, el_s3, el_s4, el_s5, el_s6;
     private TextView tv_s1Label, tv_s2Label, tv_s3Label, tv_s4Label, tv_s5Label, tv_s6Label;
+
+    private boolean issuesDetected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +102,7 @@ public class EnableActivity extends AppCompatActivity {
         expansionLayoutCollection.openOnlyOne(true);
 
         /* Setup Listeners */
-        bt_accept.setOnClickListener(new Button.OnClickListener() {
+        bt_accept.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 el_s2.setEnabled(true);
@@ -97,7 +111,7 @@ public class EnableActivity extends AppCompatActivity {
             }
         });
 
-        bt_grant_perm.setOnClickListener(new Button.OnClickListener() {
+        bt_grant_perm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 new RuntimePermission((FragmentActivity) _this).request(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
@@ -128,21 +142,21 @@ public class EnableActivity extends AppCompatActivity {
             }
         });
 
-        bt_grant_admin.setOnClickListener(new Button.OnClickListener() {
+        bt_grant_admin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 requestAdmin();
             }
         });
 
-        bt_set_pin.setOnClickListener(new Button.OnClickListener() {
+        bt_set_pin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 setPin();
             }
         });
 
-        bt_set_keyword.setOnClickListener(new Button.OnClickListener() {
+        bt_set_keyword.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(_this, SetKeyword.class);
@@ -209,6 +223,7 @@ public class EnableActivity extends AppCompatActivity {
                 el_s6.setEnabled(true);
                 el_s6.expand(true);
                 tv_s5Label.setTextColor(getResources().getColor(R.color.primary));
+                performSystemTest();
             }
         }
     }
@@ -258,7 +273,7 @@ public class EnableActivity extends AppCompatActivity {
 
     private void setPin(){
         final PinDialog adb = new PinDialog(_this, getStr(R.string.message_choosepin), getStr(R.string.dialog_setpin));
-        adb.setCancelable(false);
+        adb.setCancelable(true);
         adb.setPositiveButton(getStr(R.string.dialog_done), new DialogInterface.OnClickListener(){
 
             @Override
@@ -292,8 +307,10 @@ public class EnableActivity extends AppCompatActivity {
                             if(prefs.getString("keyPhrase", "").equals("")) {
                                 el_s5.expand(true);
                             }else{
+                                tv_s5Label.setTextColor(getResources().getColor(R.color.primary));
                                 el_s6.setEnabled(true);
                                 el_s6.expand(true);
+                                performSystemTest();
                             }
                         }else{
                             CustomToast.makeText(getBaseContext(), getStr(R.string.error_pinmatch), Toast.LENGTH_LONG, 1).show();
@@ -306,6 +323,96 @@ public class EnableActivity extends AppCompatActivity {
         });
         adb.setHidden(true);
         adb.show();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void performSystemTest() {
+        Button bt_done = (Button) findViewById(R.id.bt_done);
+
+        TextView tv_cached = (TextView) findViewById(R.id.tv_test_cached);
+        TextView tv_newloc = (TextView) findViewById(R.id.tv_test_newloc);
+        tv_cached.getCompoundDrawables()[0].setColorFilter(getResources().getColor(R.color.tint_neutral_blue), PorterDuff.Mode.SRC_ATOP);
+        tv_newloc.getCompoundDrawables()[0].setColorFilter(getResources().getColor(R.color.tint_neutral_blue), PorterDuff.Mode.SRC_ATOP);
+
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Location loc = null;
+
+        bt_done.setOnClickListener(new OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                prefs.edit().putBoolean("smsenabled", true).commit();
+                finish();
+            }
+        });
+
+
+        if (lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+            loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+
+        setTestStatus(tv_cached, loc != null);
+
+        String provider = lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ? LocationManager.GPS_PROVIDER : null;
+        if(provider == null){
+            provider = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ? LocationManager.NETWORK_PROVIDER : null;
+        }
+
+        if(provider != null) {
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    setTestStatus(tv_newloc, location != null);
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            };
+
+            Runnable timeoutRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    lm.removeUpdates(locationListener);
+                    setTestStatus(tv_newloc, false);
+                }
+            };
+
+            int waitTime = Integer.parseInt(prefs.getString("gps_wait", "20000"));
+            new Handler().postDelayed(timeoutRunnable, waitTime);
+
+            lm.requestSingleUpdate(provider, locationListener, this.getMainLooper());
+        }else{
+            setTestStatus(tv_newloc, false);
+        }
+
+    }
+
+    private void setTestStatus(TextView testView, boolean status) {
+        int drawable = status ? R.drawable.ic_sentiment_very_satisfied_black_24dp : R.drawable.ic_sentiment_very_dissatisfied_black_24dp;
+        int color = status ? R.color.primary : R.color.accent;
+        testView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(drawable), null, null, null);
+        testView.getCompoundDrawables()[0].setColorFilter(getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
+
+        if(!status) {
+            TextView tv_warning = (TextView) findViewById(R.id.tv_warning_errors);
+            tv_warning.setVisibility(View.VISIBLE);
+            issuesDetected = true;
+        }
+        tv_s6Label.setTextColor(getResources().getColor(issuesDetected ? R.color.accent : R.color.primary));
     }
 
     public String getStr(int id){

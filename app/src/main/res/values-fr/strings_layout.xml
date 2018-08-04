@@ -31,4 +31,8 @@
     <string name="ls_enable_step5_desc">Changer Mot-Clé</string>
     <string name="ls_enable_step6">Étape 6</string>
     <string name="ls_enable_step6_desc">Test du système</string>
+    <string name="ls_test_cached">Emplacement en cache</string>
+    <string name="ls_test_newloc">Localisation GPS / réseau</string>
+    <string name="ls_bt_done">Continuer</string>
+    <string name="ls_warning_errors">Attention: des erreurs ont été détectées qui pourraient empêcher SMSLocator de fonctionner sur votre appareil. Veuillez vous assurer que vous avez activé les services de localisation. Si vous avez besoin d\'aide, rendez-vous sur https://t3kbau5.com/support/.</string>
 </resources>

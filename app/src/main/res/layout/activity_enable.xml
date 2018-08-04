@@ -62,7 +62,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/s1Content"
                 android:gravity="start"
@@ -133,7 +135,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/s2Content"
                 android:gravity="start"
@@ -203,7 +207,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/s3Content"
                 android:gravity="start"
@@ -273,7 +279,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/s4Content"
                 android:gravity="start"
@@ -343,7 +351,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/s5Content"
                 android:gravity="start"
@@ -413,13 +423,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
             <TextView
-                android:id="@+id/s6Content"
-                android:gravity="start"
-                android:layout_height="wrap_content"
+                android:id="@+id/tv_test_cached"
                 android:layout_width="match_parent"
-                android:text="@string/keyword_message" />
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_sentiment_neutral_black_24dp"
+                android:text="@string/ls_test_cached"/>
+            <TextView
+                android:id="@+id/tv_test_newloc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_sentiment_neutral_black_24dp"
+                android:text="@string/ls_test_newloc"/>
+
+            <TextView
+                android:id="@+id/tv_warning_errors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:textColor="@color/accent"
+                android:text="@string/ls_warning_errors"/>
+            <Button
+                android:id="@+id/bt_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ls_bt_done"
+                android:layout_gravity="center_horizontal"/>
         </LinearLayout>
     </com.github.florent37.expansionpanel.ExpansionLayout>
 </LinearLayout>

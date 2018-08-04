@@ -554,7 +554,8 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 
 		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
 												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4")
-                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().getConsent() == GDPRConsent.PERSONAL_CONSENT)).build();
+                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().getConsent() == GDPRConsent.PERSONAL_CONSENT))
+                                                 .build();
 		
 		RelativeLayout layout = findViewById(R.id.mainLayout);
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
