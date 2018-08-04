@@ -33,6 +33,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -44,14 +46,18 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.michaelflisar.gdprdialog.GDPR;
 import com.michaelflisar.gdprdialog.GDPRConsent;
+import com.michaelflisar.gdprdialog.GDPRConsentState;
 import com.michaelflisar.gdprdialog.GDPRDefinitions;
+import com.michaelflisar.gdprdialog.GDPRLocation;
 import com.michaelflisar.gdprdialog.GDPRSetup;
+import com.michaelflisar.gdprdialog.helper.GDPRPreperationData;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import io.github.tonnyl.whatsnew.WhatsNew;
 import io.github.tonnyl.whatsnew.item.WhatsNewItem;
 
@@ -316,9 +322,10 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 		}
 
         GDPR.getInstance().init(this);
-        gdprSetup = new GDPRSetup(GDPRDefinitions.ADMOB); // add all networks you use to the constructor
+        gdprSetup = new GDPRSetup(GDPRDefinitions.ADMOB, GDPRDefinitions.FABRIC_CRASHLYTICS); // add all networks you use to the constructor
         //gdprSetup.withPaidVersion(true);
         gdprSetup.withExplicitAgeConfirmation(true);
+        gdprSetup.withPrivacyPolicy("https://t3kbau5.com/app-policy.php?app=SMSLocator");
         GDPR.getInstance().checkIfNeedsToBeShown(this, gdprSetup);
 
 		//Support for the new permissions system
@@ -494,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
             	this.startActivity(intent);
             	return true;
             case R.id.menu_updateGDPR:
-                GDPR.getInstance().showDialog(this, gdprSetup);
+                GDPR.getInstance().showDialog(this, gdprSetup, GDPRLocation.UNDEFINED);
 				return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -545,7 +552,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 
 		AdRequest adreq = new AdRequest.Builder().addTestDevice("0CA205FF0785B1495463D2F5D77BEBF7")
 												 .addTestDevice("A030DF014385BBC02B04E68B65A8F7D4")
-                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().getConsent() == GDPRConsent.PERSONAL_CONSENT))
+                                                 .addNetworkExtrasBundle(AdMobAdapter.class, Utils.personalAdBundle(GDPR.getInstance().canCollectPersonalInformation()))
                                                  .build();
 		
 		RelativeLayout layout = findViewById(R.id.mainLayout);
@@ -790,15 +797,15 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
     }
 
     @Override
-    public void onConsentNeedsToBeRequested() {
-        GDPR.getInstance().showDialog(this, gdprSetup);
+    public void onConsentNeedsToBeRequested(GDPRPreperationData gdprPreperationData) {
+        GDPR.getInstance().showDialog(this, gdprSetup, gdprPreperationData.getLocation());
     }
 
     @Override
-    public void onConsentInfoUpdate(GDPRConsent gdprConsent, boolean isNewState) {
+    public void onConsentInfoUpdate(GDPRConsentState gdprConsentState, boolean isNewState) {
         if (isNewState) {
             // user just selected this consent, do whatever you want...
-            switch (gdprConsent) {
+            switch (gdprConsentState.getConsent()) {
                 case UNKNOWN:
                     // never happens!
                     break;
@@ -808,11 +815,11 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                     break;
                 case NON_PERSONAL_CONSENT_ONLY:
                 case PERSONAL_CONSENT:
-                    onConsentKnown(gdprConsent == GDPRConsent.PERSONAL_CONSENT);
+                    onConsentKnown(gdprConsentState.getConsent() == GDPRConsent.PERSONAL_CONSENT);
                     break;
             }
         } else {
-            switch (gdprConsent) {
+            switch (gdprConsentState.getConsent()) {
                 case UNKNOWN:
                     // never happens!
                     break;
@@ -822,7 +829,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                 case NON_PERSONAL_CONSENT_ONLY:
                 case PERSONAL_CONSENT:
                     // user restarted activity and consent was already given...
-                    onConsentKnown(gdprConsent == GDPRConsent.PERSONAL_CONSENT);
+                    onConsentKnown(gdprConsentState.getConsent() == GDPRConsent.PERSONAL_CONSENT);
                     break;
             }
         }
@@ -832,7 +839,14 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
         if(!prefs.getBoolean("premium", false)){
             showAd(); //if the user isn't premium, show an ad
         }
+        setupCrashlytics(personal);
     }
+
+    private void setupCrashlytics(boolean gdprConsent) {
+		boolean crashDisabled = !gdprConsent || BuildConfig.DEBUG;
+		CrashlyticsCore cc = new CrashlyticsCore.Builder().disabled(crashDisabled).build();
+		Fabric.with(this, new Crashlytics.Builder().core(cc).build());
+	}
 
     /*
     @Override

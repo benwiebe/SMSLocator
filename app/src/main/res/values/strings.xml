@@ -112,6 +112,6 @@
     <string name="prefs_gpswait_desc">Sets how long the device tries to get a new location before sending an old one</string>
 
     <!-- Other? -->
-    <string name="menustr_updategdpr">Ad Choices</string>
+    <string name="menustr_updategdpr">Data Choices</string>
 
 </resources>

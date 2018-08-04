@@ -15,10 +15,9 @@ android {
 
     buildTypes {
         debug {
-            resValue("bool", "FIREBASE_CRASH_ENABLED", "false")
+
         }
         release {
-            resValue("bool", "FIREBASE_CRASH_ENABLED", "true")
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
@@ -40,7 +39,7 @@ android {
         implementation 'com.google.android.gms:play-services-base:11.8.0'
         implementation 'com.android.billingclient:billing:1.0'
         implementation 'com.github.florent37:expansionpanel:1.1.2'
-        implementation 'com.github.MFlisar:GDPRDialog:0.4'
+        implementation 'com.github.MFlisar:GDPRDialog:1.2.4'
         implementation 'com.google.firebase:firebase-core:11.8.0'
         implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
