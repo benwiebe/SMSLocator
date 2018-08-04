@@ -112,4 +112,6 @@
 
     <!-- Other? -->
     <string name="menustr_updategdpr">Choix des données</string>
+    <string name="menustr_clear_interactions">Effacer les Interactions</string>
+    <string name="menustr_clear">Effacer</string>
 </resources>

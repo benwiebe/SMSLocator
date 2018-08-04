@@ -7,6 +7,6 @@
         android:id="@+id/menu_clearInteractions"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:title="Clear Interactions" android:icon="@android:drawable/ic_menu_delete" android:titleCondensed="Clear" android:enabled="true" android:visible="true" android:checkable="false"/>
+        android:title="@string/menustr_clear_interactions" android:icon="@android:drawable/ic_menu_delete" android:titleCondensed="@string/menustr_clear" android:enabled="true" android:visible="true" android:checkable="false"/>
 
 </menu>

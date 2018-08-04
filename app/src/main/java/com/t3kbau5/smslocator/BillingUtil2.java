@@ -22,19 +22,19 @@ import java.util.List;
  * Created by Ben on 2018-03-03.
  */
 
-public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListener, PurchaseHistoryResponseListener {
+class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStateListener, PurchaseHistoryResponseListener {
 
     private static final boolean TEST_MODE = false && BuildConfig.DEBUG; //use test mode if this is a debug build and I'm not doing other fancy stuff
 
     private static final String SKU_PREMIUM = "premium";
 
 
-    private Activity activity;
-    private BillingClient mBillingClient;
+    private final Activity activity;
+    private final BillingClient mBillingClient;
     private boolean hasPremium = false;
     private boolean buyingPremium = false;
-    private SharedPreferences prefs;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private final SharedPreferences prefs;
+    private final FirebaseAnalytics mFirebaseAnalytics;
 
     public BillingUtil2(MainActivity activity, FirebaseAnalytics fa) {
         this.activity = activity;
@@ -51,7 +51,7 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
             mBillingClient.endConnection();
     }
 
-    public void updatePurchases() {
+    private void updatePurchases() {
         mBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, this);
     }
 
@@ -121,8 +121,6 @@ public class BillingUtil2 implements PurchasesUpdatedListener, BillingClientStat
             // Handle an error caused by a user cancelling the purchase flow.
             CustomToast.makeText(activity, Utils.getStr(activity, R.string.error_purchase), CustomToast.LENGTH_LONG, 1);
             mFirebaseAnalytics.logEvent("cancel_purchase", null);
-        } else {
-            // Handle any other error codes.
         }
 
     }

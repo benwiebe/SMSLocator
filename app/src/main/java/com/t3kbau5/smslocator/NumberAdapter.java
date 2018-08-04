@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NumberAdapter extends BaseAdapter{
+class NumberAdapter extends BaseAdapter{
 
-	private Context context;
-	private SharedPreferences prefs;
-	private List<String> numbers = new ArrayList<String>();
-	private int vid1, vid2;
+	private final Context context;
+	private final SharedPreferences prefs;
+	private List<String> numbers = new ArrayList<>();
+	private final int vid1;
+	private final int vid2;
 	
 	public NumberAdapter(Context c){
 		context = c;
@@ -144,20 +145,20 @@ public class NumberAdapter extends BaseAdapter{
 	private void loadData(){
 		String serialized = prefs.getString("pnumbers", "");
 		String[] nums = serialized.split(",");
-		if(nums[0].equals("")) numbers = new ArrayList<String>();
-		else numbers = new ArrayList<String>(Arrays.asList(nums));
+		if(nums[0].equals("")) numbers = new ArrayList<>();
+		else numbers = new ArrayList<>(Arrays.asList(nums));
 	}
 	
 	private void saveData(){
-		String fs = "";
+		StringBuilder fs = new StringBuilder();
 		for(int i=0; i<numbers.size()-1; i++){
-			fs = fs + numbers.get(i) + ",";
+			fs.append(numbers.get(i)).append(",");
 		}
 		if(numbers.size() > 0){
-			fs = fs + numbers.get(numbers.size()-1);
+			fs.append(numbers.get(numbers.size() - 1));
 		}
-		Log.d("NumberAdapter", fs);
-		prefs.edit().putString("pnumbers", fs).apply();
+		Log.d("NumberAdapter", fs.toString());
+		prefs.edit().putString("pnumbers", fs.toString()).apply();
 	}
 	
 	public void updateData(){
@@ -166,7 +167,7 @@ public class NumberAdapter extends BaseAdapter{
 		this.notifyDataSetChanged();
 	}
 	
-	public void updateData(Boolean load){
+	private void updateData(Boolean load){
 		if(load){
 			loadData();
 		}
@@ -179,7 +180,7 @@ public class NumberAdapter extends BaseAdapter{
 		saveData();
 	}
 	
-	public String getStr(int id){
+	private String getStr(int id){
     	return context.getResources().getString(id);
     }
 

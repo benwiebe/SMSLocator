@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HelpGridAdapter extends BaseAdapter{
+class HelpGridAdapter extends BaseAdapter{
 
-	private int count = 0;
-	private Context context;
-	private List<String> topics;
+	private int count;
+	private final Context context;
+	private final List<String> topics;
 	
-	public HelpGridAdapter(Context context){
+	HelpGridAdapter(Context context){
 		this.context = context;
 		String[] t = context.getResources().getStringArray(R.array.help_topics);
-		topics = new ArrayList<String>(Arrays.asList(t));
+		topics = new ArrayList<>(Arrays.asList(t));
 		count = topics.size();
 	}
 	
@@ -42,7 +42,7 @@ public class HelpGridAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Button b = null;
+		Button b;
 		if(convertView != null){
 			b = (Button) convertView;
 		}else{

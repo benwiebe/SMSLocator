@@ -27,10 +27,11 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.Random;
 
-public class Utils {
-    public static String convertToHex(byte[] data) {
+class Utils {
+    private static String convertToHex(byte[] data) {
         StringBuilder buf = new StringBuilder();
         for (byte b : data) {
             int halfbyte = (b >>> 4) & 0x0F;
@@ -56,7 +57,7 @@ public class Utils {
     }
 
 
-    public static String formatHtml(String coded){
+    private static String formatHtml(String coded){
 		coded = coded.replace("[b]", "<b>");
 		coded = coded.replace("[/b]", "</b>");
 		coded = coded.replace("[i]", "<i>");
@@ -73,14 +74,13 @@ public class Utils {
     }
 
     public static void sendSMS(String message, String destination){
-    	if(destination.equals(null)) return; //if we didn't get a valid address, return
 		SmsManager sm = SmsManager.getDefault();
 		sm.sendTextMessage(destination, null, message, null, null);
     }
 
     public static String getProvider(Context context){
     	LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-    	if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) return LocationManager.GPS_PROVIDER;
+    	if(Objects.requireNonNull(lm).isProviderEnabled(LocationManager.GPS_PROVIDER)) return LocationManager.GPS_PROVIDER;
     	else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return LocationManager.NETWORK_PROVIDER;
     	else return null;
     }
@@ -94,130 +94,16 @@ public class Utils {
     public static String getStr(Context context, int id){
     	return context.getResources().getString(id);
     }
-
-    public static Location getUpdatedLocation(final Context context){
-
-    	final LocationListener ll = new LocationListener(){
-
-    		int i=0;
-
-			@Override
-			public void onLocationChanged(Location location) {
-				if(i >= 5){
-
-				}else{
-					i++;
-				}
-
-			}
-
-			@Override
-			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-				// TODO Auto-generated method stub
-
-			}
-
-    	};
-
-		LocationManager lm  = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		String provider;
-		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-			provider = LocationManager.GPS_PROVIDER;
-		}else if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-			provider = LocationManager.NETWORK_PROVIDER;
-		}else{
-			return null;
-		}
-
-		//lm.requestLocationUpdates(provider, 5, 1000, ll); //TODO: this
-
-    	
-    	return null;
-    }
     
     public static String randomBase64(){
     	byte[] r = new byte[64]; //Means 2048 bit
     	Random rand = new Random();
     	rand.nextBytes(r);
-    	String s = Base64.encodeToString(r, Base64.DEFAULT);
-    	return s;
-    }
-    
-    
-    //code from http://muzikant-android.blogspot.ca/2011/02/how-to-get-root-access-and-execute.html
-    public static boolean canRunRootCommands()
-    {
-       boolean retval = false;
-       Process suProcess;
-
-       try
-       {
-          suProcess = Runtime.getRuntime().exec("su");
-
-          DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
-          DataInputStream osRes = new DataInputStream(suProcess.getInputStream());
-
-          if (null != os && null != osRes)
-          {
-             // Getting the id of the current user to check if this is root
-             os.writeBytes("id\n");
-             os.flush();
-
-             String currUid = osRes.readLine();
-             boolean exitSu = false;
-             if (null == currUid)
-             {
-                retval = false;
-                exitSu = false;
-                Log.d("ROOT", "Can't get root access or denied by user");
-             }
-             else if (currUid.contains("uid=0"))
-             {
-                retval = true;
-                exitSu = true;
-                Log.d("ROOT", "Root access granted");
-             }
-             else
-             {
-                retval = false;
-                exitSu = true;
-                Log.d("ROOT", "Root access rejected: " + currUid);
-             }
-
-             if (exitSu)
-             {
-                os.writeBytes("exit\n");
-                os.flush();
-             }
-          }
-       }
-       catch (Exception e)
-       {
-          // Can't get root !
-          // Probably broken pipe exception on trying to write to output stream (os) after su failed, meaning that the device is not rooted
-
-          retval = false;
-          Log.d("ROOT", "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage());
-       }
-
-       return retval;
+    	return Base64.encodeToString(r, Base64.DEFAULT);
     }
     
     public static boolean checkAdBlock(){
-    	BufferedReader in = null;
+    	BufferedReader in;
 
             try {
 				in = new BufferedReader(new InputStreamReader(
@@ -261,7 +147,7 @@ public class Utils {
 	public static boolean internetConnected(Context ctx) {
 		ConnectivityManager cm =
 				(ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		NetworkInfo netInfo = Objects.requireNonNull(cm).getActiveNetworkInfo();
 		return netInfo != null && netInfo.isConnectedOrConnecting();
 	}
 

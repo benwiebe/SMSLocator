@@ -7,19 +7,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class CustomToast extends Toast{
 
-	public CustomToast(Context context) {
+	private CustomToast(Context context) {
 		super(context);
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-		View view = inflater.inflate(R.layout.customtoast_layout, null);
+		View view = Objects.requireNonNull(inflater).inflate(R.layout.customtoast_layout, null);
 		this.setView(view);
 	}
 	
-	public CustomToast(Context context, int type) {
+	private CustomToast(Context context, int type) {
 		super(context);
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-		View view = inflater.inflate(R.layout.customtoast_layout, null);
+		View view = Objects.requireNonNull(inflater).inflate(R.layout.customtoast_layout, null);
 		switch(type){
 		case 1:
 			view.findViewById(R.id.ctll).setBackgroundResource(R.drawable.toast_negative);

@@ -19,15 +19,16 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 public class SetKeyword extends AppCompatActivity {
 
-	Context _this;
-	SharedPreferences prefs;
-	
-	EditText passIn;
-	EditText passConf;
-	Button setPass;
+	private Context _this;
+	private SharedPreferences prefs;
+
+	private EditText passIn;
+	private EditText passConf;
+	private Button setPass;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class SetKeyword extends AppCompatActivity {
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {
 							String pin = pd.getPin();
-							Boolean isCorrectPin = false;
+							Boolean isCorrectPin;
 							
 							try {
 								isCorrectPin = Utils.compareToSHA1(pin, prefs.getString("pin", ""));
@@ -98,9 +99,7 @@ public class SetKeyword extends AppCompatActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -125,8 +124,8 @@ public class SetKeyword extends AppCompatActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public String getStr(int id){
+
+	private String getStr(int id){
     	return getResources().getString(id);
     }
 

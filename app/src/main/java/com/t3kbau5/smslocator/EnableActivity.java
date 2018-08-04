@@ -32,12 +32,13 @@ import com.github.florent37.runtimepermission.RuntimePermission;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 public class EnableActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ENABLE_ADMIN = 1203;
 
-    private Activity _this = this;
+    private final Activity _this = this;
     private DevicePolicyManager DPM;
     private SharedPreferences prefs;
     private ExpansionLayout el_s1, el_s2, el_s3, el_s4, el_s5, el_s6;
@@ -228,7 +229,7 @@ public class EnableActivity extends AppCompatActivity {
         }
     }
 
-    protected void requestAdmin(){
+    private void requestAdmin(){
 
         if(prefs.getBoolean("admin", false)) return;
 
@@ -270,7 +271,7 @@ public class EnableActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 final String pin1 = adb.getPin();
 
-                if(pin1.equals("") || pin1 == null || pin1.length() < 4){
+                if(pin1.equals("") || pin1.length() < 4){
                     CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
                     setPin();
                 }
@@ -282,7 +283,7 @@ public class EnableActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")){
-                            String pin = "";
+                            String pin;
                             try {
                                 pin = Utils.SHA1(adbc.getPin());
                             } catch (NoSuchAlgorithmException |UnsupportedEncodingException e) {
@@ -337,7 +338,7 @@ public class EnableActivity extends AppCompatActivity {
         });
 
 
-        if (lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+        if (Objects.requireNonNull(lm).isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
             loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -405,7 +406,7 @@ public class EnableActivity extends AppCompatActivity {
         tv_s6Label.setTextColor(getResources().getColor(issuesDetected ? R.color.accent : R.color.primary));
     }
 
-    public String getStr(int id){
+    private String getStr(int id){
         return getResources().getString(id);
     }
 }

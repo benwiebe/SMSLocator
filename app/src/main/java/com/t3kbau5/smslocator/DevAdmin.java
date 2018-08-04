@@ -1,5 +1,6 @@
 package com.t3kbau5.smslocator;
 
+import android.annotation.SuppressLint;
 import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +11,10 @@ import android.widget.Toast;
 
 public class DevAdmin extends DeviceAdminReceiver {
 
-	Context context;
+	private Context context;
 	
-    @Override
+    @SuppressLint("ApplySharedPref")
+	@Override
     public void onEnabled(Context context, Intent intent) {
     	Log.d("DevAdmin", "onEnabled");
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -26,7 +28,8 @@ public class DevAdmin extends DeviceAdminReceiver {
     	return getStr(R.string.message_admindisable);
     }
 
-    @Override
+    @SuppressLint("ApplySharedPref")
+	@Override
     public void onDisabled(Context context, Intent intent) {
     	this.context = context;
     	Log.d("DevAdmin", "onDisabled");

@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class PinDialog extends AlertDialog.Builder{
+import java.util.Objects;
 
-	Context context;
+class PinDialog extends AlertDialog.Builder{
+
+	private final Context context;
 	
-	private String message;
+	private final String message;
 	private Boolean hidden = true;
 	
 	private String input = "";
@@ -32,7 +34,7 @@ public class PinDialog extends AlertDialog.Builder{
 
 		this.setTitle(title);
 		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.setView(inflater.inflate(R.layout.pin_layout, null));
+		this.setView(Objects.requireNonNull(inflater).inflate(R.layout.pin_layout, null));
 
 		super.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener(){
 
@@ -100,11 +102,11 @@ public class PinDialog extends AlertDialog.Builder{
 				public void onClick(View v) {
 					input = input + ((Button)v).getText();
 					if(hidden){
-						String display = "";
+						StringBuilder display = new StringBuilder();
 						for(int j=0; j<input.length(); j++){
-							display = display + "•";
+							display.append("•");
 						}
-						output.setText(display);
+						output.setText(display.toString());
 					}else{
 						output.setText(input);
 					}
@@ -120,11 +122,11 @@ public class PinDialog extends AlertDialog.Builder{
 				if(input.length() == 0) return;
 				input = input.substring(0, input.length()-1);
 				if(hidden){
-					String display = "";
+					StringBuilder display = new StringBuilder();
 					for(int j=0; j<input.length(); j++){
-						display = display + "•";
+						display.append("•");
 					}
-					output.setText(display);
+					output.setText(display.toString());
 				}else{
 					output.setText(input);
 				}
@@ -134,7 +136,7 @@ public class PinDialog extends AlertDialog.Builder{
 		return d;
 	}
 	
-	public String getStr(int id){
+	private String getStr(int id){
     	return context.getResources().getString(id);
     }
 

@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import java.util.Objects;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -53,10 +55,8 @@ public class MoreSettings extends PreferenceActivity{
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			// Show the Up button in the action bar.
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		// Show the Up button in the action bar.
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -83,34 +83,10 @@ public class MoreSettings extends PreferenceActivity{
 		super.onPostCreate(savedInstanceState);
 
 		setupSimplePreferencesScreen();
-		
-		Toolbar bar;
 
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-	        LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
-	        bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
-	        root.addView(bar, 0); // insert at top
-	    } else {
-	        ViewGroup root = findViewById(android.R.id.content);
-	        ListView content = (ListView) root.getChildAt(0);
-
-	        root.removeAllViews();
-
-	        bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
-
-	        int height;
-	        TypedValue tv = new TypedValue();
-	        if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-	            height = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-	        }else{
-	            height = bar.getHeight();
-	        }
-
-	        content.setPadding(0, height, 0, 0);
-
-	        root.addView(content);
-	        root.addView(bar);
-	    }
+		LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
+		Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+		root.addView(bar, 0); // insert at top
 
 	    bar.setNavigationOnClickListener(new View.OnClickListener() {
 	        @Override
@@ -173,9 +149,7 @@ public class MoreSettings extends PreferenceActivity{
 	 * "simplified" settings UI should be shown.
 	 */
 	private static boolean isSimplePreferences(Context context) {
-		return ALWAYS_SIMPLE_PREFS
-				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-				|| !isXLargeTablet(context);
+		return ALWAYS_SIMPLE_PREFS || !isXLargeTablet(context);
 	}
 
 	/** {@inheritDoc} */
@@ -191,7 +165,7 @@ public class MoreSettings extends PreferenceActivity{
 	 * A preference value change listener that updates the preference's summary
 	 * to reflect its new value.
 	 */
-	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+	private static final Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();

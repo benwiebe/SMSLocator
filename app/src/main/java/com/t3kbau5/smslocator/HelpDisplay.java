@@ -12,22 +12,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 public class HelpDisplay extends AppCompatActivity {
 
-	String topic;
-	TextView tv;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help_display);
 		// Show the Up button in the action bar.
 		Intent intent = this.getIntent();
-		topic = intent.getStringExtra("topic");
+		String topic = intent.getStringExtra("topic");
 		
 		this.setTitle(getStr(R.string.title_activity_help_display) + " " + topic);
-		
-		tv = findViewById(R.id.helpDisplayTV);
+
+		TextView tv = findViewById(R.id.helpDisplayTV);
 		tv.setText(Html.fromHtml(getDisplayText(topic)));
 		
 		//setupActionBar();
@@ -38,9 +37,7 @@ public class HelpDisplay extends AppCompatActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -106,7 +103,7 @@ public class HelpDisplay extends AppCompatActivity {
 		return coded;
 	}
 
-	public String getStr(int id){
+	private String getStr(int id){
     	return getResources().getString(id);
     }
 	

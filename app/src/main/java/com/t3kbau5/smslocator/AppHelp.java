@@ -6,9 +6,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
+import java.util.Objects;
+
 public class AppHelp extends AppCompatActivity {
 
-	GridView topicGrid;
+	private GridView topicGrid;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,7 @@ public class AppHelp extends AppCompatActivity {
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
 	private void setupActionBar() {
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

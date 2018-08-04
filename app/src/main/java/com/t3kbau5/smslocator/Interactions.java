@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class Interactions extends AppCompatActivity {
 
@@ -52,7 +53,7 @@ public class Interactions extends AppCompatActivity {
 		
 		new Thread(new Runnable(){
 			
-			List<Interaction> interactions = new ArrayList<Interaction>();
+			List<Interaction> interactions = new ArrayList<>();
 			int count = 0;
 			
 			@Override
@@ -160,9 +161,7 @@ public class Interactions extends AppCompatActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

@@ -20,14 +20,23 @@
         android:enabled="true"
         android:visible="true"
         android:icon="@drawable/ic_action_settings"/>
-    
-    <item android:id="@+id/menu_unlock"
+
+    <item
+        android:id="@+id/menu_unlock"
         android:title="@string/action_unlock"
         android:visible="true"
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/ic_action_accounts" android:orderInCategory="100"></item>
-    <item android:id="@+id/menu_interactions" android:title="Interactions" app:showAsAction="never" android:checkable="false" android:visible="true" android:enabled="true" android:orderInCategory="99"></item>
+        android:icon="@drawable/ic_action_accounts"
+        android:orderInCategory="100" />
+    <item
+        android:id="@+id/menu_interactions"
+        android:title="@string/title_activity_interactions"
+        app:showAsAction="never"
+        android:checkable="false"
+        android:visible="true"
+        android:enabled="true"
+        android:orderInCategory="99" />
     <item android:id="@+id/menu_updateGDPR" app:showAsAction="never" android:titleCondensed="@string/menustr_updategdpr" android:enabled="true" android:title="@string/menustr_updategdpr" android:visible="true" android:checkable="false" />
 
 </menu>

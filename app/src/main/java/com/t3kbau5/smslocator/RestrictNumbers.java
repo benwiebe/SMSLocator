@@ -18,15 +18,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.Objects;
+
 public class RestrictNumbers extends AppCompatActivity {
 
-	Button add;
-	ListView lv;
-	SharedPreferences prefs;
-	
-	NumberAdapter na;
-	
-	Context _this = this;
+	private Button add;
+    private ListView lv;
+    private SharedPreferences prefs;
+
+    private NumberAdapter na;
+
+    private final Context _this = this;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +87,7 @@ public class RestrictNumbers extends AppCompatActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class RestrictNumbers extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public String getStr(int id){
+	private String getStr(int id){
     	return getResources().getString(id);
     }
 

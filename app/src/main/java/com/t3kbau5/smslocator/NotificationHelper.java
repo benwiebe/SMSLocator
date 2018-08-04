@@ -12,11 +12,13 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import java.util.Objects;
+
 /**
  * Created by Ben on 2018-04-16.
  */
 
-public class NotificationHelper {
+class NotificationHelper {
 
     private static final String CHANNEL_ID_SMS = "sms";
     private static final int NOTIF_ID_SMS = 8675309;
@@ -30,18 +32,18 @@ public class NotificationHelper {
             channel.setShowBadge(showBadge);
             NotificationManager notifManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notifManager.createNotificationChannel(channel);
+            Objects.requireNonNull(notifManager).createNotificationChannel(channel);
         }
         return channel;
     }
 
-    public static void showNotif(Context context, Notification notification, int id) {
+    private static void showNotif(Context context, Notification notification, int id) {
         NotificationManager notifManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notifManager.notify(id, notification);
+        Objects.requireNonNull(notifManager).notify(id, notification);
     }
 
-    public static void showNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int priority, NotificationChannel channel, int id) {
+    private static void showNotif(Context context, String title, String message, int smallIcon, int largeIcon, Intent resultIntent, int number, int priority, NotificationChannel channel, int id) {
         Bitmap largeIconB = BitmapFactory.decodeResource(context.getResources(), largeIcon);
 
         Notification.Builder mBuilder;
@@ -59,10 +61,7 @@ public class NotificationHelper {
             mBuilder.setPriority(priority);
 
         mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT));
-        if(Build.VERSION.SDK_INT < 16)
-            showNotif(context, mBuilder.getNotification(), id);
-        else
-            showNotif(context, mBuilder.build(), id);
+        showNotif(context, mBuilder.build(), id);
     }
 
     public static void showMessageNotif(Context context, String destination, String contents){
@@ -87,10 +86,10 @@ public class NotificationHelper {
                     NOTIF_ID_SMS);
     }
 
-    public static void cancelNotif(Context context, int id){
+    private static void cancelNotif(Context context, int id){
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(id);
+        Objects.requireNonNull(mNotificationManager).cancel(id);
     }
 
     public static void clearMessageNotif(Context context) {

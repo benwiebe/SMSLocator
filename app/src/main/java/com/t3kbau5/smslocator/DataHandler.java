@@ -10,20 +10,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataHandler extends SQLiteOpenHelper{
+class DataHandler extends SQLiteOpenHelper{
 
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "interactions.db";
-	public static final String TABLE_INTERACTIONS = "interactions";
+	private static final String TABLE_INTERACTIONS = "interactions";
 	
-	public static final String COLUMN_ID = "id";
-	public static final String COLUMN_NUMBER = "number";
-	public static final String COLUMN_COMMAND = "command";
-	public static final String COLUMN_RESPONSE = "response";
-	public static final String COLUMN_DATE = "date";
+	private static final String COLUMN_ID = "id";
+	private static final String COLUMN_NUMBER = "number";
+	private static final String COLUMN_COMMAND = "command";
+	private static final String COLUMN_RESPONSE = "response";
+	private static final String COLUMN_DATE = "date";
 	
-	public DataHandler(Context context, String name, CursorFactory factory,
-			int version) {
+	DataHandler(Context context, String name, CursorFactory factory,
+                int version) {
 		super(context, DATABASE_NAME, factory, DATABASE_VERSION);
 	}
 
@@ -59,7 +59,7 @@ public class DataHandler extends SQLiteOpenHelper{
 	}
 	
 	public List<Interaction> getInteractions(){
-		List<Interaction> interactions = new ArrayList<Interaction>();
+		List<Interaction> interactions = new ArrayList<>();
 		
 		SQLiteDatabase db = this.getWritableDatabase();
     	

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
@@ -56,6 +55,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 import io.github.tonnyl.whatsnew.WhatsNew;
@@ -63,21 +63,21 @@ import io.github.tonnyl.whatsnew.item.WhatsNewItem;
 
 public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallback{
 
-	private int REQUEST_CODE_ENABLE_ADMIN = 1203;
-    private int REQUEST_CODE_PERMISSIONS = 1703;
+	private final int REQUEST_CODE_ENABLE_ADMIN = 1203;
+    private final int REQUEST_CODE_PERMISSIONS = 1703;
 	private SharedPreferences prefs;
 	
 	private Context _this;
-	ToggleButton enableSMS;
-	Boolean smsenabled = false;
-	Button gotoSetKeyword;
-	CompoundButton passSMS;
-	Button gotoRestriction;
-	CompoundButton toggleRestriction;
-	DevicePolicyManager DPM;
-	CompoundButton toggleDnd;
-	Boolean dndPending = false;
-    Boolean permissionsDuringEnable = false;
+	private ToggleButton enableSMS;
+	private Boolean smsenabled = false;
+	private Button gotoSetKeyword;
+	private CompoundButton passSMS;
+	private Button gotoRestriction;
+	private CompoundButton toggleRestriction;
+	private DevicePolicyManager DPM;
+	private CompoundButton toggleDnd;
+	private Boolean dndPending = false;
+	private Boolean permissionsDuringEnable = false;
 	
 	BillingUtil2 bu;
 
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 			@Override
 			public void onClick(View v) {
 				Boolean s = enableSMS.isChecked();
-				
+
 				if(s){
 					//showTermsDialog();
 					enableSMS.setChecked(false);
@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 					final PinDialog adb = new PinDialog(_this, getStr(R.string.message_confirmdisable));
 					adb.setCancelable(false);
 					adb.setPositiveButton(getStr(R.string.dialog_done), new OnClickListener(){
-						
+
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Boolean isCorrectPin = false;
+							Boolean isCorrectPin;
 							try {
 								isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
 							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 								CustomToast.makeText(_this, getStr(R.string.error_badpin), Toast.LENGTH_LONG, 1).show();
 							}
 						}
-						
+
 					});
 					adb.setHidden(true);
 					adb.show();
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						
-						Boolean isCorrectPin = false;
+						Boolean isCorrectPin;
 						try {
 							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
 						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						
-						Boolean isCorrectPin = false;
+						Boolean isCorrectPin;
 						try {
 							isCorrectPin = Utils.compareToSHA1(adb.getPin(), prefs.getString("pin", ""));
 						} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                         NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
 
                         // Check if the notification policy access has been granted for the app.
-                        if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                        if (!Objects.requireNonNull(mNotificationManager).isNotificationPolicyAccessGranted()) {
                             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                             startActivity(intent);
                             CustomToast.makeText(_this, getStr(R.string.message_activatedndaccess), Toast.LENGTH_LONG, 0).show();
@@ -522,7 +522,6 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 			updateStates();
 			
 			//show adblock warning dialog
-			final Activity _act = this;
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
 			adb.setTitle(getStr(R.string.dialog_adblock_title));
 			adb.setMessage(getStr(R.string.dialog_adblock_msg));
@@ -565,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 		mAdView.loadAd(adreq);
 	}
 	
-	private Dialog showAdminDialog(){
+	private void showAdminDialog(){
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getStr(R.string.dialog_notice));
 		adb.setMessage(getStr(R.string.message_noadmin));
@@ -586,10 +585,10 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 			}
 			
 		});
-		return adb.show();
+		adb.show();
 	}
 	
-	protected void requestAdmin(){
+	void requestAdmin(){
 		
 		if(prefs.getBoolean("admin", false)) return;
 		
@@ -610,7 +609,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 			public void onClick(DialogInterface dialog, int which) {
 				final String pin1 = adb.getPin();
 				
-				if(pin1.equals("") || pin1 == null || pin1.length() < 4){
+				if(pin1.equals("") || pin1.length() < 4){
 					ComponentName cm = new ComponentName(_this, DevAdmin.class);
 					DPM.removeActiveAdmin(cm);
 					prefs.edit().putBoolean("admin", true).apply();
@@ -626,7 +625,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if(pin1.equals(adbc.getPin()) && !adbc.getPin().equals("")){
-							String pin = "";
+							String pin;
 							try {
 								pin = Utils.SHA1(adbc.getPin());
 							} catch (NoSuchAlgorithmException|UnsupportedEncodingException e) {
@@ -713,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
         }
     }
 	
-	protected void updateStates(){
+	private void updateStates(){
 		Boolean current = smsenabled;
 		smsenabled = prefs.getBoolean("smsenabled", false);
 		if(current!= smsenabled){
@@ -748,7 +747,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                 NotificationManager mNotificationManager = (NotificationManager) _this.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 // Check if the notification policy access has been granted for the app.
-                if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
+                if (!Objects.requireNonNull(mNotificationManager).isNotificationPolicyAccessGranted()) {
                     toggleDnd.setChecked(false);
                     prefs.edit().putBoolean("dndcontrol", false).apply();
                 }else{
@@ -768,7 +767,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 		}
 	}
 
-	public void showPostSetup(){
+	private void showPostSetup(){
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getStr(R.string.dialog_finishSetupTitle));
 		adb.setMessage(getStr(R.string.dialog_finishSetupMessage));
@@ -792,7 +791,7 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
 		adb.show();
 	}
 	
-	public String getStr(int id){
+	private String getStr(int id){
     	return getResources().getString(id);
     }
 
