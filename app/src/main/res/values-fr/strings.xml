@@ -92,6 +92,7 @@
     <string name="error_permissions">Droit(s) d\'accès non-accordés! Ceux-ci sont nécessaires pour que l\'appli fonctionne.</string>
     <string name="error_novideo">Erreur lors du chargement de la vidéo!</string>
     <string name="error_nokeyword">Mot clé non-défini. Veuillez réessayer!</string>
+    <string name="error_permissions_permanent">Certaines ou toutes les drois d\'accès ont été définitivement non-accordés. Veuillez les activer dans vos paramètres pour pouvoir utiliser SMSLocator.</string>
 
     <!-- Notifications -->
     <string name="notif_sent_title">Message envoyé</string>

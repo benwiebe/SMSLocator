@@ -106,31 +106,28 @@ public class EnableActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new RuntimePermission((FragmentActivity) _this).request(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
-                        .onAccepted((result) -> {
-                            if (prefs.getBoolean("premium", false)) {
-                                el_s3.setEnabled(true);
-                                el_s3.expand(true);
-                            } else {
-                                el_s4.setEnabled(true);
-                                el_s4.expand(true);
-                                tv_s3Label.setTextColor(getResources().getColor(R.color.primary));
-                            }
-                            tv_s2Label.setTextColor(getResources().getColor(R.color.primary));
-                        })
-                        .onDenied((result) -> {
-                            CustomToast.makeText(_this, getStr(R.string.error_permissions), Toast.LENGTH_LONG, 1).show();
-                        })
-                        .onForeverDenied((result) -> {
-                            //TODO: this
-                            //the list of forever denied permissions, user has check 'never ask again'
-                            for (String permission : result.getForeverDenied()) {
-
-                            }
-                            // you need to open setting manually if you really need it
-                            //result.goToSettings();
-                        })
-                        .ask();
+                    .onAccepted((result) -> {
+                        if (prefs.getBoolean("premium", false)) {
+                            el_s3.setEnabled(true);
+                            el_s3.expand(true);
+                        } else {
+                            el_s4.setEnabled(true);
+                            el_s4.expand(true);
+                            tv_s3Label.setTextColor(getResources().getColor(R.color.primary));
+                        }
+                        tv_s2Label.setTextColor(getResources().getColor(R.color.primary));
+                    })
+                    .onDenied((result) -> {
+                        CustomToast.makeText(_this, getStr(R.string.error_permissions), Toast.LENGTH_LONG, 1).show();
+                    })
+                    .onForeverDenied((result) -> {
+                        CustomToast.makeText(_this, getStr(R.string.error_permissions_permanent), Toast.LENGTH_LONG, 1);
+                        // you need to open setting manually if you really need it
+                        result.goToSettings();
+                    })
+                    .ask();
             }
+
         });
 
         bt_grant_admin.setOnClickListener(new OnClickListener() {
@@ -273,7 +270,7 @@ public class EnableActivity extends AppCompatActivity {
 
                 if (pin1.equals("") || pin1.length() < 4) {
                     CustomToast.makeText(_this, getStr(R.string.error_setpin), Toast.LENGTH_LONG, 1).show();
-                    setPin();
+                    return;
                 }
 
                 final PinDialog adbc = new PinDialog(_this, getStr(R.string.message_confirmpin), "Set Pin");

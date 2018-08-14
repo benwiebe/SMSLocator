@@ -95,6 +95,7 @@
     <string name="error_permissions">Permission(s) not granted! These are required for the app to work.</string>
     <string name="error_novideo">Failed to load video!</string>
     <string name="error_nokeyword">Keyword not set. Please try again!</string>
+    <string name="error_permissions_permanent">Some or all permissions were permanently denied. Please enable them in your settings in order to use SMSLocator.</string>
 
     <!-- Notifications -->
     <string name="notif_sent_title">Message Sent</string>

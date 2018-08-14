@@ -5,11 +5,13 @@
 
     <!-- Update everything below for each new release! -->
     <string-array name="whatsnew_titles">
+        <item>Amélioration de l\'expérience utilisateur</item>
         <item>Regardez des vidéos pour le deluxe gratuit</item>
         <item>Correction de plusieurs bugs</item>
         <item>Améliorations dans les coulisses</item>
     </string-array>
     <string-array name="whatsnew_contents">
+        <item>L\'interface de SMSLocator est maintenant plus claire, plus facile et plus rapide que jamais!</item>
         <item>Vous pouvez maintenant regardez des publicités pour recevoir 7 jours de deluxe gratuit!</item>
         <item>Les correctifs incluent les notifications manquantes, les pannes liés au contrôle du mode Ne pas déranger, le contrôle du volume de la sonnerie, etc.</item>
         <item>Le code de l\'application a été amélioré pour être plus robuste et pour construire une application plus petite.</item>
