@@ -22,4 +22,10 @@
 -keep class !android.support.v7.internal.view.menu.**,android.support.** {*;}
 -keepattributes InnerClasses
 -keepattributes EnclosingMethod
--dontoptimize
+#-dontoptimize
+
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**

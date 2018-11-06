@@ -1,5 +1,6 @@
 package com.t3kbau5.smslocator;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -105,7 +106,11 @@ public class EnableActivity extends AppCompatActivity {
         bt_grant_perm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                new RuntimePermission((FragmentActivity) _this).request(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
+                new RuntimePermission((FragmentActivity) _this).request(android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.RECEIVE_SMS,
+                        android.Manifest.permission.SEND_SMS,
+                        android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                        Manifest.permission.READ_PHONE_STATE)
                     .onAccepted((result) -> {
                         if (prefs.getBoolean("premium", false)) {
                             el_s3.setEnabled(true);

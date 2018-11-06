@@ -11,7 +11,7 @@
         <item>Behind-the-Scenes Improvements</item>
     </string-array>
     <string-array name="whatsnew_contents">
-        <item>SMSLocator's interface is now clearer, easier, and faster than ever!</item>
+        <item>SMSLocator\'s interface is now clearer, easier, and faster than ever!</item>
         <item>You can now watch rewarded videos to get 7 days of premium for free!</item>
         <item>Fixes include missing notifications, crashes related to Do Not Disturb control, ringer volume control, and more.</item>
         <item>The application code has been improved to be more robust and build a smaller application.</item>
