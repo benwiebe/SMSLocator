@@ -64,7 +64,10 @@
     <string name="dialog_adblock_msg">Il semble que vous utilisez une blockeur de publicité sur cet appareil. Pour utiliser SMSLocator, s\'il vous plaît désactivez-le, ou achetez deluxe. Si vous pensez que ce message est en erreur, s\'il vous plaît contactez-nous.</string>
     <string name="dialog_purchase">Acheter</string>
     <string name="dialog_watchad">Regarder un publicité</string>
-    
+    <string name="dialog_premium_eol_title">Deluxe non-disponible</string>
+    <string name="dialog_premium_eol_message">SMSLocator sera supprimé de Google Play le 31 décembre 2018 à cause des nouvelles restrictions de Google. Pour cette raison, la mise à niveau deluxe ne peut plus être achetée. Voir www.smslocator.net pour plus d\'informations.</string>
+
+
     <!-- Messages -->
     <string name="message_confirmpin">S\'il vous plaît confirmer votre NIP pour modifier ce paramètre.</string>
     <string name="message_confirmdisable">S\'il vous plaît confirmer votre NIP pour désactiver SMSLocator.</string>

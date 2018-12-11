@@ -58,6 +58,8 @@
     <string name="dialog_adblock_msg">It seems that you\'re using an ad blocker on this device. To use SMSLocator, please disable it or purchase premium. If you believe this message is in error, please contact support.</string>
     <string name="dialog_purchase">Purchase</string>
     <string name="dialog_watchad">Watch Ad</string>
+    <string name="dialog_premium_eol_title">Upgrade Not Available</string>
+    <string name="dialog_premium_eol_message">SMSLocator is being removed from Google Play on December 31, 2018 due to new restrictions from Google. For this reason, the premium upgrade can no longer be purchased. See www.smslocator.net for more info.</string>
 
     <string name="dialog_pleaseWait">Please wait&#8230;</string>
     <string name="dialog_interactionLoad">Interactions are currently loading.</string>

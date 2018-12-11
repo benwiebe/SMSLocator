@@ -5,23 +5,14 @@
 
     <!-- Update everything below for each new release! -->
     <string-array name="whatsnew_titles">
-        <item>Improved User Experience</item>
-        <item>Watch Videos for Free Premium</item>
-        <item>Multiple Bugfixes</item>
-        <item>Behind-the-Scenes Improvements</item>
+        <item>App Discontinuation</item>
     </string-array>
     <string-array name="whatsnew_contents">
-        <item>SMSLocator\'s interface is now clearer, easier, and faster than ever!</item>
-        <item>You can now watch rewarded videos to get 7 days of premium for free!</item>
-        <item>Fixes include missing notifications, crashes related to Do Not Disturb control, ringer volume control, and more.</item>
-        <item>The application code has been improved to be more robust and build a smaller application.</item>
+        <item>SMSLocator is being removed from Google Play on December 31, 2018. For this reason, the premium upgrade can no longer be purchased. See www.smslocator.net for more info.</item>
     </string-array>
 
     <!-- These apply to both English & French dialogs -->
     <integer-array name="whatsnew_drawables" translatable="false">
-        <item>@drawable/ic_sentiment_very_satisfied_black_24dp</item>
-        <item>@drawable/ic_ondemand_video_black_24dp</item>
-        <item>@drawable/ic_bug_report_black_24dp</item>
-        <item>@drawable/ic_code_black_24dp</item>
+        <item>@drawable/ic_launcher</item>
     </integer-array>
 </resources>

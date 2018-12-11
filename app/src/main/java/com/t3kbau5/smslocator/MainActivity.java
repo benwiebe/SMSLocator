@@ -383,15 +383,26 @@ public class MainActivity extends AppCompatActivity implements GDPR.IGDPRCallbac
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            AlertDialog.Builder adb2 = new AlertDialog.Builder(_this);
+                            adb2.setTitle(getStr(R.string.dialog_premium_eol_title));
+                            adb2.setMessage(getStr(R.string.dialog_premium_eol_message));
+                            adb2.setPositiveButton(getStr(R.string.dialog_close), new DialogInterface.OnClickListener(){
 
-                            if (bu.hasPremium()) {
-                                CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
-                            } else {
-                                Bundle event = new Bundle();
-                                event.putString(FirebaseAnalytics.Param.ITEM_ID, "premium");
-                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, event);
-                                bu.buyPremium();
-                            }
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            adb2.show();
+
+//                            if (bu.hasPremium()) {
+//                                CustomToast.makeText(getBaseContext(), getStr(R.string.message_restored), Toast.LENGTH_LONG, 2).show();
+//                            } else {
+//                                Bundle event = new Bundle();
+//                                event.putString(FirebaseAnalytics.Param.ITEM_ID, "premium");
+//                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, event);
+//                                bu.buyPremium();
+//                            }
                         }
                     });
                     adb.setNegativeButton(getStr(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
